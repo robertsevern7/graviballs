@@ -114,6 +114,8 @@ public abstract class Ballable {
 	}
 	
 	public float getMass() {
+		System.out.print(Math.pow(radius, 3));
+		System.out.print(Math.pow(radius, 3)/3f);
 		System.out.print((float) (4 * Math.PI * Math.pow(radius, 3)/3f));
 		return 1f;//(float) (4 * Math.PI * Math.pow(radius, 3)/3f);
 	}

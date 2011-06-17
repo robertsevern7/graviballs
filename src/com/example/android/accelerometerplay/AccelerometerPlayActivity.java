@@ -110,10 +110,6 @@ public class AccelerometerPlayActivity extends Activity {
     }
 
     class SimulationView extends View implements SensorEventListener {
-        // diameter of the balls in meters
-        private static final float sBallDiameter = 0.004f;
-        private static final float sBallDiameter2 = sBallDiameter * sBallDiameter;
-
         // friction of the virtual table and air
         private static final float sFriction = 0.1f;
 
@@ -125,7 +121,6 @@ public class AccelerometerPlayActivity extends Activity {
         private float mYDpi;
         private float mMetersToPixelsX;
         private float mMetersToPixelsY;
-        private Bitmap mBitmap;
         private Bitmap mWood;
         private float mXOrigin;
         private float mYOrigin;
@@ -151,6 +146,8 @@ public class AccelerometerPlayActivity extends Activity {
                  */
                 for (int i = 0; i < mBalls.length; i++) {
                     mBalls[i] = new AttackingBallacks(0.001f, mainBall);
+                    mBalls[i].setmPosX(0.005f);
+                    mBalls[i].setmPosY(0.005f);
                 }
             }
             
@@ -257,8 +254,8 @@ public class AccelerometerPlayActivity extends Activity {
             // the bitmap
             mXOrigin = w * 0.5f;
             mYOrigin = h * 0.5f;
-            mHorizontalBound = ((w / mMetersToPixelsX - sBallDiameter) * 0.5f);
-            mVerticalBound = ((h / mMetersToPixelsY - sBallDiameter) * 0.5f);
+            mHorizontalBound = ((w / mMetersToPixelsX) * 0.5f);
+            mVerticalBound = ((h / mMetersToPixelsY) * 0.5f);
         }
 
         @Override
@@ -274,7 +271,7 @@ public class AccelerometerPlayActivity extends Activity {
              * to with the screen in its native orientation).
              */
 
-            switch (mDisplay.getRotation()) {
+            switch (mDisplay.getOrientation()) {
                 case Surface.ROTATION_0:
                     mSensorX = event.values[0];
                     mSensorY = event.values[1];
