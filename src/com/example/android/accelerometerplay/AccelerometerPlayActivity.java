@@ -110,13 +110,7 @@ public class AccelerometerPlayActivity extends Activity {
     }
 
     class SimulationView extends View implements SensorEventListener {
-        // friction of the virtual table and air
-        private static final float sFriction = 0.1f;
-
         private Sensor mAccelerometer;
-        private long mLastT;
-        private float mLastDeltaT;
-
         private float mXDpi;
         private float mYDpi;
         private float mMetersToPixelsX;
@@ -130,83 +124,7 @@ public class AccelerometerPlayActivity extends Activity {
         private long mCpuTimeStamp;
         private float mHorizontalBound;
         private float mVerticalBound;
-        private Ballable mainBall = new Ballocks(sFriction, 0.003f);
-        private final ParticleSystem mParticleSystem = new ParticleSystem();
-
-        /*
-         * A particle system is just a collection of particles
-         */
-        class ParticleSystem {
-            static final int NUM_PARTICLES = 1;
-            private Ballable mBalls[] = new Ballable[NUM_PARTICLES];
-
-            ParticleSystem() {
-                /*
-                 * Initially our particles have no speed or acceleration
-                 */
-                for (int i = 0; i < mBalls.length; i++) {
-                    mBalls[i] = new AttackingBallacks(0.001f, mainBall);
-                    mBalls[i].setmPosX(0.02f);
-                    mBalls[i].setmPosY(0.02f);
-                }
-            }
-            
-            public Ballable getBall(final int i) {
-            	return mBalls[i];
-            }
-
-            /*
-             * Update the position of each particle in the system using the
-             * Verlet integrator.
-             */
-            private void updatePositions(float sx, float sy, long timestamp) {
-                final long t = timestamp;
-                if (mLastT != 0) {
-                    final float dT = (float) (t - mLastT) * (1.0f / 5000000000.0f);
-                    if (mLastDeltaT != 0) {
-                        final float dTC = dT / mLastDeltaT;
-                        
-                        mainBall.computePhysics(sx, sy, dT, dTC);
-                        
-                        final int count = mBalls.length;
-                        for (int i = 0; i < count; i++) {
-                            Ballable ball = mBalls[i];
-                            ball.computePhysics(sx, sy, dT, dTC);
-                        }
-                    }
-                    mLastDeltaT = dT;
-                }
-                mLastT = t;
-            }
-
-            /*
-             * Performs one iteration of the simulation. First updating the
-             * position of all the particles and resolving the constraints and
-             * collisions.
-             */
-            public void update(float sx, float sy, long now) {
-                // update the system's positions
-                updatePositions(sx, sy, now);
-
-                mainBall.resolveCollisionWithBounds(mHorizontalBound, mVerticalBound);
-                
-                for (int i = 0; i < mBalls.length; ++i) {
-                	mBalls[i].resolveCollisionWithBounds(mHorizontalBound, mVerticalBound);
-                }
-            }
-
-            public int getParticleCount() {
-                return mBalls.length;
-            }
-
-            public float getPosX(int i) {
-                return mBalls[i].getmPosX();
-            }
-
-            public float getPosY(int i) {
-                return mBalls[i].getmPosY();
-            }
-        }
+        private final BallBag mParticleSystem = new BallBag();
 
         public void startSimulation() {
             /*
@@ -296,11 +214,6 @@ public class AccelerometerPlayActivity extends Activity {
 
         @Override
         protected void onDraw(Canvas canvas) {
-
-            /*
-             * draw the background
-             */
-
             canvas.drawBitmap(mWood, 0, 0, null);
 
             /*
@@ -308,18 +221,19 @@ public class AccelerometerPlayActivity extends Activity {
              * data and present time.
              */
 
-            final ParticleSystem particleSystem = mParticleSystem;
+            final BallBag particleSystem = mParticleSystem;
             final long now = mSensorTimeStamp + (System.nanoTime() - mCpuTimeStamp);
             final float sx = mSensorX;
             final float sy = mSensorY;
 
-            particleSystem.update(sx, sy, now);
+            particleSystem.update(sx, sy, now, mHorizontalBound, mVerticalBound);
 
             final float xc = mXOrigin;
             final float yc = mYOrigin;
             final float xs = mMetersToPixelsX;
             final float ys = mMetersToPixelsY;
             
+            final Ballable mainBall = particleSystem.getMainBall();
             final float x = xc + mainBall.getmPosX() * xs;
             final float y = yc - mainBall.getmPosY() * ys;
             
