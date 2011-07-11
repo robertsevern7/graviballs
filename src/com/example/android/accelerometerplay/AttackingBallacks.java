@@ -1,8 +1,5 @@
 package com.example.android.accelerometerplay;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 public class AttackingBallacks extends Ballable {
 
 	private final Ballable bigBoy;

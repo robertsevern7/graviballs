@@ -80,31 +80,24 @@ public abstract class Ballable {
             mPosY = -ymax;
         }
     }
+	
+	public void setInitialPos(float x, float y) {
+		setmPosX(x);
+		setmPosY(y);
+	}
 
-	/* (non-Javadoc)
-	 * @see com.example.android.accelerometerplay.Ballable#getmPosX()
-	 */
 	public float getmPosX() {
 		return mPosX;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.example.android.accelerometerplay.Ballable#setmPosX(float)
-	 */
 	public void setmPosX(float mPosX) {
 		this.mPosX = mPosX;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.example.android.accelerometerplay.Ballable#setmPosY(float)
-	 */
 	public void setmPosY(float mPosY) {
 		this.mPosY = mPosY;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.example.android.accelerometerplay.Ballable#getmPosY()
-	 */
 	public float getmPosY() {
 		return mPosY;
 	}

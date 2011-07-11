@@ -14,8 +14,7 @@ public class BallBag {
          */
         for (int i = 0; i < mBalls.length; i++) {
             mBalls[i] = new AttackingBallacks(0.001f, mainBall);
-            mBalls[i].setmPosX(0.02f);
-            mBalls[i].setmPosY(0.02f);
+            mBalls[i].setInitialPos(0.02f, 0.02f);
         }
     }
     
