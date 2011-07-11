@@ -9,6 +9,8 @@ public abstract class Ballable {
     float mLastPosY;
     private float mOneMinusFriction;
     private float radius;
+    float initialSpeedX;
+    float initialSpeedY;
     
     Ballable(final float sFriction, final float radius) {
         // make each particle a bit different by randomizing its
@@ -84,6 +86,9 @@ public abstract class Ballable {
 	public void setInitialPos(float x, float y) {
 		setmPosX(x);
 		setmPosY(y);
+		
+		initialSpeedX = -x;
+		initialSpeedY = -y;
 	}
 
 	public float getmPosX() {

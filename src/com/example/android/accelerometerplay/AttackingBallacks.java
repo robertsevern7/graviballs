@@ -22,8 +22,8 @@ public class AttackingBallacks extends Ballable {
 		if (!computed) {
 			computed = true;
 			//TODO randomise some initial speed
-			currentSpeedX = 0;
-			currentSpeedY = 0;
+			currentSpeedX = initialSpeedX;
+			currentSpeedY = initialSpeedY;
 		}
 		
 		mLastPosX = mPosX;
