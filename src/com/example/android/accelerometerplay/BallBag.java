@@ -10,12 +10,16 @@ public class BallBag {
     
     BallBag() {
         for (int i = 0; i < mBalls.length; i++) {
-            mBalls[i] = new AttackingBallacks(0.001f, mainBall);
+            mBalls[i] = new AttackingBallacks(generateRandomRadius(), mainBall);
             
             final float initialX = generateRandomPosition(mainBall.getmPosX());
             final float initialY = generateRandomPosition(mainBall.getmPosY());
             mBalls[i].setInitialPos(initialX, initialY);
         }
+    }
+    
+    private float generateRandomRadius() {
+    	return (float) (0.001f + Math.random() * 0.001f);
     }
     
     private float generateRandomPosition(float relativeFrom) {
