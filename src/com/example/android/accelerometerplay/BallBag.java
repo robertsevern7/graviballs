@@ -1,7 +1,7 @@
 package com.example.android.accelerometerplay;
 
 public class BallBag {
-	static final int NUM_PARTICLES = 1;
+	static final int NUM_PARTICLES = 3;
 	private static final float sFriction = 0.1f;
 	private long mLastT;
     private float mLastDeltaT;
@@ -14,8 +14,16 @@ public class BallBag {
          */
         for (int i = 0; i < mBalls.length; i++) {
             mBalls[i] = new AttackingBallacks(0.001f, mainBall);
-            mBalls[i].setInitialPos(0.02f, 0.02f);
+            
+            final float initialX = generateRandomPosition(mainBall.getmPosX());
+            final float initialY = generateRandomPosition(mainBall.getmPosY());
+            mBalls[i].setInitialPos(initialX, initialY);
         }
+    }
+    
+    private float generateRandomPosition(float relativeFrom) {
+    	final int posOrNeg = Math.random() > 0.5 ? 1 : -1;
+    	return (float) (mainBall.getmPosX() + Math.random() * 0.05f * posOrNeg);
     }
     
     public Ballable getBall(final int i) {
