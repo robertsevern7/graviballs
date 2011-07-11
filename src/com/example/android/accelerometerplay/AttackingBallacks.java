@@ -3,7 +3,7 @@ package com.example.android.accelerometerplay;
 public class AttackingBallacks extends Ballable {
 
 	private final Ballable bigBoy;
-	private final float G = 0.00007f;
+	private final float G = 700f;
 	private boolean computed = false;
 
 	AttackingBallacks(final float radius, final Ballable bigBoy) {
