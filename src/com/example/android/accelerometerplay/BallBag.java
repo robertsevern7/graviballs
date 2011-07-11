@@ -9,9 +9,6 @@ public class BallBag {
     private Ballable mainBall = new Ballocks(sFriction, 0.003f);
     
     BallBag() {
-        /*
-         * Initially our particles have no speed or acceleration
-         */
         for (int i = 0; i < mBalls.length; i++) {
             mBalls[i] = new AttackingBallacks(0.001f, mainBall);
             
