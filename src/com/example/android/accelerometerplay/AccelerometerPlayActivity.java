@@ -146,8 +146,8 @@ public class AccelerometerPlayActivity extends Activity {
                  */
                 for (int i = 0; i < mBalls.length; i++) {
                     mBalls[i] = new AttackingBallacks(0.001f, mainBall);
-                    mBalls[i].setmPosX(0.005f);
-                    mBalls[i].setmPosY(0.005f);
+                    mBalls[i].setmPosX(0.02f);
+                    mBalls[i].setmPosY(0.02f);
                 }
             }
             

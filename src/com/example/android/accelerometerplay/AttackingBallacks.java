@@ -6,7 +6,8 @@ import java.math.RoundingMode;
 public class AttackingBallacks extends Ballable {
 
 	private final Ballable bigBoy;
-	private final float G = 0f;
+	private final float G = 0.00007f;
+	private boolean computed = false;
 
 	AttackingBallacks(final float radius, final Ballable bigBoy) {
 		super(1, radius);
@@ -17,18 +18,30 @@ public class AttackingBallacks extends Ballable {
 	public void computePhysics(float sx, float sy, float dT, float dTC) {
 		final float lastDt = (dTC > 0) ? dT/dTC : 1;
 		//new BigDecimal(Float.valueOf(mPosX).toString()).divide(divisor, 20, RoundingMode.HALF_UP )
-		final float currentSpeedX = 0.11f;//(mPosX - mLastPosX) / lastDt;
-		final float currentSpeedY = 0.11f;//(mPosY - mLastPosY) / lastDt;
+		System.out.println("Hi mPosX " + mPosX + ", mLastPosX " + mLastPosX + ", lastDt " + lastDt);
+	    float currentSpeedX = (mPosX - mLastPosX) / lastDt;				
+		float currentSpeedY = (mPosY - mLastPosY) / lastDt;
+		
+		if (!computed) {
+			computed = true;
+			//TODO randomise some initial speed
+			currentSpeedX = 0;
+			currentSpeedY = 0;
+		}
 		
 		mLastPosX = mPosX;
         mLastPosY = mPosY;
         
-        final double a = G * bigBoy.getMass() / (Math.pow(mPosX - bigBoy.mPosX, 2) + Math.pow(mPosY - bigBoy.mPosY, 2));
-        final double theta = Math.atan((mPosX - bigBoy.mPosX) / (mPosY - bigBoy.mPosY));
-        System.out.println("mPosX " + mPosX);
-        System.out.println("mLastPosX " + mLastPosX);
+        final double relX = mPosX - bigBoy.mPosX;
+        final double relY = mPosY - bigBoy.mPosY;
+        final double a = G * bigBoy.getMass() / (Math.pow(relX, 2) + Math.pow(relY, 2));
+        double theta = Math.atan(relX / relY);
         
-        mPosX = (float) (mLastPosX - currentSpeedX * dT + a * Math.pow(dT, 2) * Math.sin(theta) * 0.5);
-        mPosY = (float) (mLastPosY - currentSpeedY * dT + a * Math.pow(dT, 2) * Math.cos(theta) * 0.5);
+        if (relY < 0) {
+        	theta += Math.PI;
+        }
+        
+        mPosX = (float) (mLastPosX + currentSpeedX * dT - a * Math.pow(dT, 2) * Math.sin(theta) * 0.5);
+        mPosY = (float) (mLastPosY + currentSpeedY * dT - a * Math.pow(dT, 2) * Math.cos(theta) * 0.5);
 	}
 }
