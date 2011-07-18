@@ -8,7 +8,7 @@ public class BallBag {
     private Ballable mBalls[] = new Ballable[NUM_PARTICLES];
     private Ballable mainBall = new Ballocks(sFriction, 0.003f);
     
-    BallBag() {
+    public BallBag() {
         for (int i = 0; i < mBalls.length; i++) {
             mBalls[i] = new AttackingBallacks(generateRandomRadius(), mainBall);
             
@@ -31,10 +31,6 @@ public class BallBag {
     	return mBalls[i];
     }
 
-    /*
-     * Update the position of each particle in the system using the
-     * Verlet integrator.
-     */
     private void updatePositions(float sx, float sy, long timestamp) {
         final long t = timestamp;
         if (mLastT != 0) {
@@ -55,13 +51,7 @@ public class BallBag {
         mLastT = t;
     }
 
-    /*
-     * Performs one iteration of the simulation. First updating the
-     * position of all the particles and resolving the constraints and
-     * collisions.
-     */
     public void update(float sx, float sy, long now, float mHorizontalBound, float mVerticalBound) {
-        // update the system's positions
         updatePositions(sx, sy, now);
 
         mainBall.resolveCollisionWithBounds(mHorizontalBound, mVerticalBound);

@@ -16,6 +16,9 @@
 
 package com.example.android.accelerometerplay;
 
+import com.example.android.accelerometerplay.levels.Level;
+import com.example.android.accelerometerplay.levels.Level1;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -88,7 +91,7 @@ public class AccelerometerPlayActivity extends Activity {
         private long mCpuTimeStamp;
         private float mHorizontalBound;
         private float mVerticalBound;
-        private final BallBag mParticleSystem = new BallBag();
+        private final Level level = new Level1(getResources());
 
         public void startSimulation() {
             mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
@@ -108,6 +111,8 @@ public class AccelerometerPlayActivity extends Activity {
             mYDpi = metrics.ydpi;
             mMetersToPixelsX = mXDpi / 0.0254f;
             mMetersToPixelsY = mYDpi / 0.0254f;
+            
+            level.setMetersToPixels(mMetersToPixelsX, mMetersToPixelsY);
 
             // rescale the ball so it's about 0.5 cm on screen
             Options opts = new Options();
@@ -115,13 +120,6 @@ public class AccelerometerPlayActivity extends Activity {
             opts.inPreferredConfig = Bitmap.Config.RGB_565;
             mWood = BitmapFactory.decodeResource(getResources(), R.drawable.wood, opts);
         }
-
-		private Bitmap createBitmap(final float radius) {
-			Bitmap ball = BitmapFactory.decodeResource(getResources(), R.drawable.ball);
-            final int dstWidth = (int) (radius * 2 * mMetersToPixelsX + 0.5f);
-            final int dstHeight = (int) (radius * 2 * mMetersToPixelsY + 0.5f);
-            return Bitmap.createScaledBitmap(ball, dstWidth, dstHeight, true);
-		}
 
         @Override
         protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -165,31 +163,8 @@ public class AccelerometerPlayActivity extends Activity {
         protected void onDraw(Canvas canvas) {
             //TODO render this once. And make it not wood
         	//canvas.drawBitmap(mWood, 0, 0, null);
-
-            final BallBag particleSystem = mParticleSystem;
             final long now = mSensorTimeStamp + (System.nanoTime() - mCpuTimeStamp);
-            final float sx = mSensorX;
-            final float sy = mSensorY;
-
-            particleSystem.update(sx, sy, now, mHorizontalBound, mVerticalBound);
-
-            final float xc = mXOrigin;
-            final float yc = mYOrigin;
-            final float xs = mMetersToPixelsX;
-            final float ys = mMetersToPixelsY;
-            
-            final Ballable mainBall = particleSystem.getMainBall();
-            final float x = xc + (mainBall.getmPosX() - mainBall.getRadius()) * xs ;
-            final float y = yc - (mainBall.getmPosY() + mainBall.getRadius()) * ys;
-            
-            canvas.drawBitmap(createBitmap(mainBall.getRadius()), x, y, null);
-            
-            final int count = particleSystem.getParticleCount();
-            for (int i = 0; i < count; i++) {
-                final float x1 = xc + (particleSystem.getPosX(i) - particleSystem.getBall(i).getRadius()) * xs;
-                final float y1 = yc - (particleSystem.getPosY(i) + particleSystem.getBall(i).getRadius()) * ys;
-                canvas.drawBitmap(createBitmap(particleSystem.getBall(i).getRadius()), x1, y1, null);
-            }
+        	level.drawLevel(canvas, now, mSensorX, mSensorY, mXOrigin, mYOrigin, mHorizontalBound, mVerticalBound);
 
             invalidate();
         }
