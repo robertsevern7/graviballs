@@ -35,18 +35,6 @@ import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
 
-/**
- * This is an example of using the accelerometer to integrate the device's
- * acceleration to a position using the Verlet method. This is illustrated with
- * a very simple particle system comprised of a few iron balls freely moving on
- * an inclined wooden table. The inclination of the virtual table is controlled
- * by the device's accelerometer.
- * 
- * @see SensorManager
- * @see SensorEvent
- * @see Sensor
- */
-
 public class AccelerometerPlayActivity extends Activity {
 
     private SimulationView mSimulationView;
@@ -56,26 +44,17 @@ public class AccelerometerPlayActivity extends Activity {
     private Display mDisplay;
     private WakeLock mWakeLock;
 
-    /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Get an instance of the SensorManager
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-
-        // Get an instance of the PowerManager
         mPowerManager = (PowerManager) getSystemService(POWER_SERVICE);
-
-        // Get an instance of the WindowManager
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         mDisplay = mWindowManager.getDefaultDisplay();
-
-        // Create a bright wake lock
         mWakeLock = mPowerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, getClass()
                 .getName());
 
-        // instantiate our simulation view and set it as the activity's content
         mSimulationView = new SimulationView(this);
         setContentView(mSimulationView);
     }
@@ -83,29 +62,14 @@ public class AccelerometerPlayActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        /*
-         * when the activity is resumed, we acquire a wake-lock so that the
-         * screen stays on, since the user will likely not be fiddling with the
-         * screen or buttons.
-         */
         mWakeLock.acquire();
-
-        // Start the simulation
         mSimulationView.startSimulation();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        /*
-         * When the activity is paused, we make sure to stop the simulation,
-         * release our sensor resources and wake locks
-         */
-
-        // Stop the simulation
         mSimulationView.stopSimulation();
-
-        // and release our wake-lock
         mWakeLock.release();
     }
 
@@ -127,13 +91,6 @@ public class AccelerometerPlayActivity extends Activity {
         private final BallBag mParticleSystem = new BallBag();
 
         public void startSimulation() {
-            /*
-             * It is not necessary to get accelerometer events at a very high
-             * rate, by using a slower rate (SENSOR_DELAY_UI), we get an
-             * automatic low-pass filter, which "extracts" the gravity component
-             * of the acceleration. As an added benefit, we use less power and
-             * CPU resources.
-             */
             mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
         }
 
@@ -172,22 +129,14 @@ public class AccelerometerPlayActivity extends Activity {
             // the bitmap
             mXOrigin = w * 0.5f;
             mYOrigin = h * 0.5f;
-            mHorizontalBound = ((w / mMetersToPixelsX) * 0.5f);
-            mVerticalBound = ((h / mMetersToPixelsY) * 0.5f);
+            mHorizontalBound = (w / mMetersToPixelsX) * 0.5f;
+            mVerticalBound = (h / mMetersToPixelsY) * 0.5f;
         }
 
         @Override
         public void onSensorChanged(SensorEvent event) {
             if (event.sensor.getType() != Sensor.TYPE_ACCELEROMETER)
                 return;
-            /*
-             * record the accelerometer data, the event's timestamp as well as
-             * the current time. The latter is needed so we can calculate the
-             * "present" time during rendering. In this application, we need to
-             * take into account how the screen is rotated with respect to the
-             * sensors (which always return data in a coordinate space aligned
-             * to with the screen in its native orientation).
-             */
 
             switch (mDisplay.getOrientation()) {
                 case Surface.ROTATION_0:
@@ -214,12 +163,8 @@ public class AccelerometerPlayActivity extends Activity {
 
         @Override
         protected void onDraw(Canvas canvas) {
-            canvas.drawBitmap(mWood, 0, 0, null);
-
-            /*
-             * compute the new position of our object, based on accelerometer
-             * data and present time.
-             */
+            //TODO render this once. And make it not wood
+        	//canvas.drawBitmap(mWood, 0, 0, null);
 
             final BallBag particleSystem = mParticleSystem;
             final long now = mSensorTimeStamp + (System.nanoTime() - mCpuTimeStamp);
@@ -234,25 +179,18 @@ public class AccelerometerPlayActivity extends Activity {
             final float ys = mMetersToPixelsY;
             
             final Ballable mainBall = particleSystem.getMainBall();
-            final float x = xc + mainBall.getmPosX() * xs;
-            final float y = yc - mainBall.getmPosY() * ys;
+            final float x = xc + (mainBall.getmPosX() - mainBall.getRadius()) * xs ;
+            final float y = yc - (mainBall.getmPosY() + mainBall.getRadius()) * ys;
             
             canvas.drawBitmap(createBitmap(mainBall.getRadius()), x, y, null);
             
             final int count = particleSystem.getParticleCount();
             for (int i = 0; i < count; i++) {
-                /*
-                 * We transform the canvas so that the coordinate system matches
-                 * the sensors coordinate system with the origin in the center
-                 * of the screen and the unit is the meter.
-                 */
-
-                final float x1 = xc + particleSystem.getPosX(i) * xs;
-                final float y1 = yc - particleSystem.getPosY(i) * ys;
+                final float x1 = xc + (particleSystem.getPosX(i) - particleSystem.getBall(i).getRadius()) * xs;
+                final float y1 = yc - (particleSystem.getPosY(i) + particleSystem.getBall(i).getRadius()) * ys;
                 canvas.drawBitmap(createBitmap(particleSystem.getBall(i).getRadius()), x1, y1, null);
             }
 
-            // and make sure to redraw asap
             invalidate();
         }
 

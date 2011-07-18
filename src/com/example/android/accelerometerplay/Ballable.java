@@ -57,18 +57,9 @@ public abstract class Ballable {
         mAccelY = ay;
     }
 	
-	/*
-     * Resolving constraints and collisions with the Verlet integrator
-     * can be very simple, we simply need to move a colliding or
-     * constrained particle in such way that the constraint is
-     * satisfied.
-     */
-    /* (non-Javadoc)
-	 * @see com.example.android.accelerometerplay.Ballable#resolveCollisionWithBounds(float, float)
-	 */
 	public void resolveCollisionWithBounds(final float mHorizontalBound, float mVerticalBound) {
-        final float xmax = mHorizontalBound;
-        final float ymax = mVerticalBound;
+        final float xmax = mHorizontalBound - radius;
+        final float ymax = mVerticalBound - radius;
         final float x = mPosX;
         final float y = mPosY;
         if (x > xmax) {
