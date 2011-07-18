@@ -27,6 +27,10 @@ public abstract class Level {
 	
 	abstract void setUpGoals();
 	
+	List<Goal> getGoals() {
+		return goals;
+	}
+	
 	abstract int getBallReleaseTiming();
 	
 	public void setMetersToPixels(final float mMetersToPixelsX, final float mMetersToPixelsY) {
@@ -48,10 +52,31 @@ public abstract class Level {
         
         final int count = ballBag.getParticleCount();
         for (int i = 0; i < count; i++) {
-            final float x1 = mXOrigin + (ballBag.getPosX(i) - ballBag.getBall(i).getRadius()) * mMetersToPixelsX;
-            final float y1 = mYOrigin - (ballBag.getPosY(i) + ballBag.getBall(i).getRadius()) * mMetersToPixelsY;
-            canvas.drawBitmap(createBitmap(ballBag.getBall(i).getRadius()), x1, y1, null);
+        	final Ballable ball = ballBag.getBall(i);
+            final float x1 = mXOrigin + (ballBag.getPosX(i) - ball.getRadius()) * mMetersToPixelsX;
+            final float y1 = mYOrigin - (ballBag.getPosY(i) + ball.getRadius()) * mMetersToPixelsY;
+            
+            for (final Goal goal : getGoals()) {
+            	if (goalBallCollision(goal, ball, mHorizontalBound, mVerticalBound)) {
+            		ballBag.removeBall(ball);
+            	}
+            }
+            
+            canvas.drawBitmap(createBitmap(ball.getRadius()), x1, y1, null);
         }
+        
+        //TODO don't need to redraw the goals, they won't move
+        for (final Goal goal : getGoals()) {
+        	canvas.drawBitmap(createBitmap(goal.getRadius()), mXOrigin + goal.getXProportion() * mHorizontalBound * mMetersToPixelsX, mYOrigin + goal.getYProportion() * mVerticalBound * mMetersToPixelsY, null);
+        }
+	}
+	
+	//TODO common interface so we can compare any 2 rendered objects
+	private boolean goalBallCollision(final Goal goal, final Ballable ball, final float mHorizontalBound, final float mVerticalBound) {
+		final double xDist = goal.getXProportion() * mHorizontalBound - ball.getmPosX();
+		final double yDist = -goal.getYProportion() * mVerticalBound - ball.getmPosY();
+		final double collisionDist = (goal.getRadius() + ball.getRadius());
+		return (Math.pow(xDist, 2) + Math.pow(yDist, 2) < Math.pow(collisionDist, 2));
 	}
 	
 	private Bitmap createBitmap(final float radius) {

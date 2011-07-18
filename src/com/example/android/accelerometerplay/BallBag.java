@@ -1,7 +1,7 @@
 package com.example.android.accelerometerplay;
 
 public class BallBag {
-	static final int NUM_PARTICLES = 3;
+	static final int NUM_PARTICLES = 1;
 	private static final float sFriction = 0.1f;
 	private long mLastT;
     private float mLastDeltaT;
@@ -49,6 +49,10 @@ public class BallBag {
             mLastDeltaT = dT;
         }
         mLastT = t;
+    }
+    
+    public void removeBall(final Ballable ball) {
+    	//TODO remove the ball. I'm asking for a Concurrent modification exception
     }
 
     public void update(float sx, float sy, long now, float mHorizontalBound, float mVerticalBound) {

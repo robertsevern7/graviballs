@@ -1,5 +1,9 @@
 package com.example.android.accelerometerplay.levels;
 
+import java.util.List;
+
+import com.example.android.accelerometerplay.Goal;
+
 import android.content.res.Resources;
 
 public class Level1 extends Level {
@@ -10,6 +14,8 @@ public class Level1 extends Level {
 
 	@Override
 	void setUpGoals() {
+		final List<Goal> goals = getGoals();
+		goals.add(new Goal(0, 0.33f, 0.001f));
 	}
 
 	@Override
