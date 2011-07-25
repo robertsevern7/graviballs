@@ -1,6 +1,7 @@
 package com.example.android.accelerometerplay.levels;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import android.content.res.Resources;
@@ -50,15 +51,16 @@ public abstract class Level {
         
         canvas.drawBitmap(createBitmap(mainBall.getRadius()), x, y, null);
         
-        final int count = ballBag.getParticleCount();
-        for (int i = 0; i < count; i++) {
-        	final Ballable ball = ballBag.getBall(i);
-            final float x1 = mXOrigin + (ballBag.getPosX(i) - ball.getRadius()) * mMetersToPixelsX;
-            final float y1 = mYOrigin - (ballBag.getPosY(i) + ball.getRadius()) * mMetersToPixelsY;
+        final Iterator<Ballable> iter = ballBag.getIterator();
+        
+        while(iter.hasNext()) {
+        	final Ballable ball = iter.next();
+            final float x1 = mXOrigin + (ball.getmPosX() - ball.getRadius()) * mMetersToPixelsX;
+            final float y1 = mYOrigin - (ball.getmPosY() + ball.getRadius()) * mMetersToPixelsY;
             
             for (final Goal goal : getGoals()) {
             	if (goalBallCollision(goal, ball, mHorizontalBound, mVerticalBound)) {
-            		ballBag.removeBall(ball);
+            		iter.remove();
             	}
             }
             
