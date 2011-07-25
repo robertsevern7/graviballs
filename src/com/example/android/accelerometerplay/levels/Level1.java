@@ -20,6 +20,6 @@ public class Level1 extends Level {
 
 	@Override
 	int getBallReleaseTiming() {
-		return 10;
+		return 20;
 	}
 }
