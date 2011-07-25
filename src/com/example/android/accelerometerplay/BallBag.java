@@ -11,17 +11,19 @@ public class BallBag {
     private float mLastDeltaT;
     private List<Ballable> mBalls = new ArrayList<Ballable>(NUM_PARTICLES);
     private Ballable mainBall = new Ballocks(sFriction, 0.002f);
+    private float mHorizontalBound = 0;
+    private float mVerticalBound = 0;
     
     public BallBag() {
-        for (int i = 0; i < NUM_PARTICLES; i++) {        	
-            mBalls.add(generateRandomBall());
-        }
     }
     
     private Ballable generateRandomBall() {
     	final Ballable ball = new AttackingBallacks(generateRandomRadius(), mainBall);
-    	final float initialX = generateRandomPosition(mainBall.getmPosX());
-        final float initialY = generateRandomPosition(mainBall.getmPosY());
+    	final int xRandomSide = (Math.random() < 0.5) ? -1 : 1;
+    	final int yRandomSide = (Math.random() < 0.5) ? -1 : 1;
+    	
+    	final float initialX = (float) (mHorizontalBound * Math.random() * xRandomSide);
+    	final float initialY = (float) (mVerticalBound * Math.random() * yRandomSide);
         ball.setInitialPos(initialX, initialY);
         
         return ball;
@@ -29,11 +31,6 @@ public class BallBag {
     
     private float generateRandomRadius() {
     	return (float) (0.001f + Math.random() * 0.001f);
-    }
-    
-    private float generateRandomPosition(float relativeFrom) {
-    	final int posOrNeg = Math.random() > 0.5 ? 1 : -1;
-    	return (float) (mainBall.getmPosX() + Math.random() * 0.05f * posOrNeg);
     }
     
     public Ballable getBall(final int i) {
@@ -61,9 +58,15 @@ public class BallBag {
     public Iterator<Ballable> getIterator() {
     	return mBalls.iterator();
     }
+    
+    public void updateBounds(float mHorizontalBound, float mVerticalBound) {
+    	this.mHorizontalBound = mHorizontalBound;
+    	this.mVerticalBound = mVerticalBound;
+    }
 
     public void update(float sx, float sy, long now, float mHorizontalBound, float mVerticalBound) {
-        updatePositions(sx, sy, now);
+    	updateBounds(mHorizontalBound, mVerticalBound);
+    	updatePositions(sx, sy, now);
 
         mainBall.resolveCollisionWithBounds(mHorizontalBound, mVerticalBound);
         

@@ -43,7 +43,7 @@ public abstract class Level {
 	public void drawLevel(Canvas canvas, final long now, final float mSensorX, final float mSensorY,
 			final float mXOrigin, final float mYOrigin,
 			final float mHorizontalBound, final float mVerticalBound) {
-		System.out.println(now);
+		ballBag.updateBounds(mHorizontalBound, mVerticalBound);
 		final long scaledNow = now/1000;
 		if (scaledNow - lastBallRelease > getBallReleaseTiming() * 1000000) {
 			ballBag.addBall();
