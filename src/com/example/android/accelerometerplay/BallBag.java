@@ -6,7 +6,7 @@ import java.util.List;
 
 public class BallBag {
 	static final int NUM_PARTICLES = 3;
-	private static final float sFriction = 0.1f;
+	private static final float sFriction = 0.3f;
 	private long mLastT;
     private float mLastDeltaT;
     private List<Ballable> mBalls = new ArrayList<Ballable>(NUM_PARTICLES);

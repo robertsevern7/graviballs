@@ -13,15 +13,8 @@ public class AttackingBallacks extends Ballable {
 	
 	@Override
 	public void computePhysics(float sx, float sy, float dT, float dTC) {
-		final float lastDt = (dTC > 0) ? dT/dTC : 1;
-		//new BigDecimal(Float.valueOf(mPosX).toString()).divide(divisor, 20, RoundingMode.HALF_UP )
-		System.out.println("Hi mPosX " + mPosX + ", mLastPosX " + mLastPosX + ", lastDt " + lastDt);
-	    float currentSpeedX = (mPosX - mLastPosX) / lastDt;				
-		float currentSpeedY = (mPosY - mLastPosY) / lastDt;
-		
 		if (!computed) {
 			computed = true;
-			//TODO randomise some initial speed
 			currentSpeedX = initialSpeedX;
 			currentSpeedY = initialSpeedY;
 		}
@@ -38,7 +31,13 @@ public class AttackingBallacks extends Ballable {
         	theta += Math.PI;
         }
         
-        mPosX = (float) (mLastPosX + currentSpeedX * dT - a * Math.pow(dT, 2) * Math.sin(theta) * 0.5);
-        mPosY = (float) (mLastPosY + currentSpeedY * dT - a * Math.pow(dT, 2) * Math.cos(theta) * 0.5);
+        float newSpeedX = (float) (currentSpeedX - a * Math.sin(theta) * dT);
+        float newSpeedY = (float) (currentSpeedY - a * Math.cos(theta) * dT);
+        
+        mPosX = (float) (mLastPosX + newSpeedX * dT - a * Math.pow(dT, 2) * Math.sin(theta) * 0.5);
+        mPosY = (float) (mLastPosY + newSpeedY * dT - a * Math.pow(dT, 2) * Math.cos(theta) * 0.5);
+        
+        currentSpeedX = newSpeedX;
+        currentSpeedY = newSpeedY;
 	}
 }

@@ -11,6 +11,8 @@ public abstract class Ballable {
     private float radius;
     float initialSpeedX;
     float initialSpeedY;
+    float currentSpeedX;
+    float currentSpeedY;
     
     Ballable(final float sFriction, final float radius) {
         // make each particle a bit different by randomizing its
@@ -62,14 +64,19 @@ public abstract class Ballable {
         final float ymax = mVerticalBound - radius;
         final float x = mPosX;
         final float y = mPosY;
+        final float slowingValue = 0.3f;
         if (x > xmax) {
             mPosX = xmax;
+            currentSpeedX = -currentSpeedX * slowingValue;
         } else if (x < -xmax) {
             mPosX = -xmax;
+            currentSpeedX = -currentSpeedX * slowingValue;
         }
         if (y > ymax) {
+        	currentSpeedY = -currentSpeedY * slowingValue;
             mPosY = ymax;
         } else if (y < -ymax) {
+        	currentSpeedY = -currentSpeedY * slowingValue;
             mPosY = -ymax;
         }
     }
