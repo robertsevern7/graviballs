@@ -5,22 +5,26 @@ import java.util.Iterator;
 import java.util.List;
 
 public class BallBag {
-	static final int NUM_PARTICLES = 3;
+	static final int NUM_PARTICLES = 0;
 	private static final float sFriction = 0.3f;
 	private long mLastT;
     private float mLastDeltaT;
     private List<Ballable> mBalls = new ArrayList<Ballable>(NUM_PARTICLES);
-    private Ballable mainBall = new Ballocks(sFriction, 0.003f);
+    private Ballable mainBall = new Ballocks(sFriction, 0.002f);
     
     public BallBag() {
-        for (int i = 0; i < NUM_PARTICLES; i++) {
-        	final Ballable ball = new AttackingBallacks(generateRandomRadius(), mainBall);
-            mBalls.add(ball);
-            
-            final float initialX = generateRandomPosition(mainBall.getmPosX());
-            final float initialY = generateRandomPosition(mainBall.getmPosY());
-            ball.setInitialPos(initialX, initialY);
+        for (int i = 0; i < NUM_PARTICLES; i++) {        	
+            mBalls.add(generateRandomBall());
         }
+    }
+    
+    private Ballable generateRandomBall() {
+    	final Ballable ball = new AttackingBallacks(generateRandomRadius(), mainBall);
+    	final float initialX = generateRandomPosition(mainBall.getmPosX());
+        final float initialY = generateRandomPosition(mainBall.getmPosY());
+        ball.setInitialPos(initialX, initialY);
+        
+        return ball;
     }
     
     private float generateRandomRadius() {
@@ -83,5 +87,9 @@ public class BallBag {
     
     public Ballable getMainBall() {
     	return mainBall;
+    }
+    
+    public void addBall() {
+    	mBalls.add(generateRandomBall());
     }
 }

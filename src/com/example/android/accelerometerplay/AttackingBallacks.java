@@ -12,7 +12,7 @@ public class AttackingBallacks extends Ballable {
 	}
 	
 	@Override
-	public void computePhysics(float sx, float sy, float dT, float dTC) {
+	public void computePhysics(float sx, float sy, float dT, float dTC) {	
 		if (!computed) {
 			computed = true;
 			currentSpeedX = initialSpeedX;

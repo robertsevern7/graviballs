@@ -20,6 +20,7 @@ public abstract class Level {
 	private final Resources resources;
 	float mMetersToPixelsX = 0;
 	float mMetersToPixelsY = 0;
+	long lastBallRelease = 0;
 	
 	public Level(Resources resources) {
 		setUpGoals();
@@ -42,7 +43,13 @@ public abstract class Level {
 	public void drawLevel(Canvas canvas, final long now, final float mSensorX, final float mSensorY,
 			final float mXOrigin, final float mYOrigin,
 			final float mHorizontalBound, final float mVerticalBound) {
-
+		System.out.println(now);
+		final long scaledNow = now/1000;
+		if (scaledNow - lastBallRelease > getBallReleaseTiming() * 1000000) {
+			ballBag.addBall();
+			lastBallRelease = scaledNow;
+		}
+		
         ballBag.update(mSensorX, mSensorY, now, mHorizontalBound, mVerticalBound);
         
         final Ballable mainBall = ballBag.getMainBall();
