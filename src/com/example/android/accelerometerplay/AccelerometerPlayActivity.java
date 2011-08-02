@@ -18,6 +18,7 @@ package com.example.android.accelerometerplay;
 
 import com.example.android.accelerometerplay.levels.Level;
 import com.example.android.accelerometerplay.levels.Level1;
+import com.example.android.accelerometerplay.levels.Level2;
 
 import android.app.Activity;
 import android.content.Context;
@@ -91,7 +92,7 @@ public class AccelerometerPlayActivity extends Activity {
         private long mCpuTimeStamp;
         private float mHorizontalBound;
         private float mVerticalBound;
-        private final Level level = new Level1(getResources());
+        private final Level level = new Level2(getResources());
 
         public void startSimulation() {
             mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);

@@ -22,4 +22,9 @@ public class Level1 extends Level {
 	int getBallReleaseTiming() {
 		return 20;
 	}
+
+	@Override
+	int getInitialCount() {
+		return 1;
+	}
 }

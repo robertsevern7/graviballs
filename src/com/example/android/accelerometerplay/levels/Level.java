@@ -21,12 +21,15 @@ public abstract class Level {
 	float mMetersToPixelsX = 0;
 	float mMetersToPixelsY = 0;
 	long lastBallRelease = 0;
+	//TODO get the size earlier, so I don't have to add this boolean into the update logic
+	private boolean initialBallsAdded = false;
 	
 	public Level(Resources resources) {
 		setUpGoals();
 		this.resources = resources;
 	}
 	
+	abstract int getInitialCount();
 	abstract void setUpGoals();
 	
 	List<Goal> getGoals() {
@@ -44,6 +47,14 @@ public abstract class Level {
 			final float mXOrigin, final float mYOrigin,
 			final float mHorizontalBound, final float mVerticalBound) {
 		ballBag.updateBounds(mHorizontalBound, mVerticalBound);
+		
+		if (!initialBallsAdded) {
+			initialBallsAdded = true;
+			for (int i = 1; i < getInitialCount(); ++i) {
+				ballBag.addBall();
+			}
+		}
+		
 		final long scaledNow = now/1000;
 		if (scaledNow - lastBallRelease > getBallReleaseTiming() * 1000000) {
 			ballBag.addBall();
