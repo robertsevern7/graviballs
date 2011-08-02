@@ -56,7 +56,7 @@ public abstract class Level {
 		}
 		
 		final long scaledNow = now/1000;
-		if (scaledNow - lastBallRelease > getBallReleaseTiming() * 1000000) {
+		if (scaledNow - lastBallRelease > getBallReleaseTiming() * 1000000 || ballBag.isEmpty()) {
 			ballBag.addBall();
 			lastBallRelease = scaledNow;
 		}

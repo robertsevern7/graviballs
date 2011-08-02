@@ -36,6 +36,10 @@ public class BallBag {
         return ball;
     }
     
+    public boolean isEmpty() {
+    	return mBalls.isEmpty();
+    }
+    
     private float generateRandomRadius() {
     	return (float) (0.001f + Math.random() * 0.001f);
     }
