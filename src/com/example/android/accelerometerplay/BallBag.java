@@ -21,8 +21,16 @@ public class BallBag {
     	final int xRandomSide = (Math.random() < 0.5) ? -1 : 1;
     	final int yRandomSide = (Math.random() < 0.5) ? -1 : 1;
     	
-    	final float initialX = (float) (mHorizontalBound * Math.random() * xRandomSide);
-    	final float initialY = (float) (mVerticalBound * Math.random() * yRandomSide);
+    	final float initialY;
+    	final float initialX;
+    	
+    	if (Math.random() < 0.5) {
+    		initialX = (float) (mHorizontalBound * xRandomSide);
+    		initialY = (float) (mVerticalBound * Math.random() * yRandomSide);
+    	} else {
+    		initialX = (float) (mHorizontalBound * Math.random() * xRandomSide);
+    		initialY = (float) (mVerticalBound * yRandomSide);
+    	}
         ball.setInitialPos(initialX, initialY);
         
         return ball;
