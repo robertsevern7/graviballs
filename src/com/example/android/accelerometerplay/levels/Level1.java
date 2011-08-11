@@ -19,6 +19,9 @@ public class Level1 extends Level {
 	}
 
 	@Override
+	void setUpDeflectors() {}
+	
+	@Override
 	int getBallReleaseTiming() {
 		return 20;
 	}

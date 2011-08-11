@@ -12,10 +12,12 @@ import android.graphics.Canvas;
 import com.example.android.accelerometerplay.BallBag;
 import com.example.android.accelerometerplay.Ballable;
 import com.example.android.accelerometerplay.Goal;
+import com.example.android.accelerometerplay.Deflector;
 import com.example.android.accelerometerplay.R;
 
 public abstract class Level {
 	private final List<Goal> goals = new ArrayList<Goal>();
+	private final List<Deflector> deflectors = new ArrayList<Deflector>();
 	private final BallBag ballBag = new BallBag();
 	private final Resources resources;
 	float mMetersToPixelsX = 0;
@@ -26,14 +28,20 @@ public abstract class Level {
 	
 	public Level(Resources resources) {
 		setUpGoals();
+		setUpDeflectors();
 		this.resources = resources;
 	}
 	
 	abstract int getInitialCount();
 	abstract void setUpGoals();
+	abstract void setUpDeflectors();
 	
 	List<Goal> getGoals() {
 		return goals;
+	}
+	
+	List<Deflector> getDeflectors() {
+		return deflectors;
 	}
 	
 	abstract int getBallReleaseTiming();
@@ -88,6 +96,10 @@ public abstract class Level {
         //TODO don't need to redraw the goals, they won't move
         for (final Goal goal : getGoals()) {
         	canvas.drawBitmap(createBitmap(goal.getRadius()), mXOrigin + goal.getXProportion() * mHorizontalBound * mMetersToPixelsX, mYOrigin + goal.getYProportion() * mVerticalBound * mMetersToPixelsY, null);
+        }
+        
+        for (final Deflector deflector : getDeflectors()) {
+        	canvas.drawBitmap(createBitmap(deflector.getRadius()), mXOrigin + deflector.getXProportion() * mHorizontalBound * mMetersToPixelsX, mYOrigin + deflector.getYProportion() * mVerticalBound * mMetersToPixelsY, null);
         }
 	}
 	
