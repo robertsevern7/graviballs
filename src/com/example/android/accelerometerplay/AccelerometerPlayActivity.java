@@ -18,7 +18,6 @@ package com.example.android.accelerometerplay;
 
 import com.example.android.accelerometerplay.levels.Level;
 import com.example.android.accelerometerplay.levels.Level1;
-import com.example.android.accelerometerplay.levels.Level2;
 
 import android.app.Activity;
 import android.content.Context;
@@ -83,7 +82,6 @@ public class AccelerometerPlayActivity extends Activity {
         private float mYDpi;
         private float mMetersToPixelsX;
         private float mMetersToPixelsY;
-        private Bitmap mWood;
         private float mXOrigin;
         private float mYOrigin;
         private float mSensorX;
@@ -92,7 +90,7 @@ public class AccelerometerPlayActivity extends Activity {
         private long mCpuTimeStamp;
         private float mHorizontalBound;
         private float mVerticalBound;
-        private final Level level = new Level2(getResources());
+        private final Level level = new Level1(getResources());
 
         public void startSimulation() {
             mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
@@ -118,8 +116,7 @@ public class AccelerometerPlayActivity extends Activity {
             // rescale the ball so it's about 0.5 cm on screen
             Options opts = new Options();
             opts.inDither = true;
-            opts.inPreferredConfig = Bitmap.Config.RGB_565;
-            mWood = BitmapFactory.decodeResource(getResources(), R.drawable.wood, opts);
+            opts.inPreferredConfig = Bitmap.Config.ALPHA_8;
         }
 
         @Override
