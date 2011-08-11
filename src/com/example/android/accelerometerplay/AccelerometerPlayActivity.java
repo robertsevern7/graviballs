@@ -16,38 +16,34 @@
 
 package com.example.android.accelerometerplay;
 
-import com.example.android.accelerometerplay.levels.Level;
-import com.example.android.accelerometerplay.levels.Level1;
+import android.app.ListActivity;
+import android.view.*;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.BitmapFactory.Options;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.util.DisplayMetrics;
-import android.view.Display;
-import android.view.Surface;
-import android.view.View;
-import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import com.example.android.accelerometerplay.R;
 
 public class AccelerometerPlayActivity extends Activity {
 
     private SimulationView mSimulationView;
-    private SensorManager mSensorManager;
+    SensorManager mSensorManager;
     private PowerManager mPowerManager;
     private WindowManager mWindowManager;
-    private Display mDisplay;
+    Display mDisplay;
     private WakeLock mWakeLock;
 
-    @Override
+//	@Override public boolean onCreateOptionsMenu(Menu menu) {
+//		MenuInflater inflater = getMenuInflater();
+//		inflater.inflate(R.menu.menu, menu);
+//		return true;
+//	}
+
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -58,11 +54,13 @@ public class AccelerometerPlayActivity extends Activity {
         mWakeLock = mPowerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, getClass()
                 .getName());
 
-        mSimulationView = new SimulationView(this);
+        mSimulationView = new SimulationView(this, this);
         setContentView(mSimulationView);
     }
 
-    @Override
+
+
+	    @Override
     protected void onResume() {
         super.onResume();
         mWakeLock.acquire();
@@ -76,99 +74,4 @@ public class AccelerometerPlayActivity extends Activity {
         mWakeLock.release();
     }
 
-    class SimulationView extends View implements SensorEventListener {
-        private Sensor mAccelerometer;
-        private float mXDpi;
-        private float mYDpi;
-        private float mMetersToPixelsX;
-        private float mMetersToPixelsY;
-        private float mXOrigin;
-        private float mYOrigin;
-        private float mSensorX;
-        private float mSensorY;
-        private long mSensorTimeStamp;
-        private long mCpuTimeStamp;
-        private float mHorizontalBound;
-        private float mVerticalBound;
-        private final Level level = new Level1(getResources());
-
-        public void startSimulation() {
-            mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
-        }
-
-        public void stopSimulation() {
-            mSensorManager.unregisterListener(this);
-        }
-
-        public SimulationView(Context context) {
-            super(context);
-            mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-
-            DisplayMetrics metrics = new DisplayMetrics();
-            getWindowManager().getDefaultDisplay().getMetrics(metrics);
-            mXDpi = metrics.xdpi;
-            mYDpi = metrics.ydpi;
-            mMetersToPixelsX = mXDpi / 0.0254f;
-            mMetersToPixelsY = mYDpi / 0.0254f;
-            
-            level.setMetersToPixels(mMetersToPixelsX, mMetersToPixelsY);
-
-            // rescale the ball so it's about 0.5 cm on screen
-            Options opts = new Options();
-            opts.inDither = true;
-            opts.inPreferredConfig = Bitmap.Config.ALPHA_8;
-        }
-
-        @Override
-        protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-            // compute the origin of the screen relative to the origin of
-            // the bitmap
-            mXOrigin = w * 0.5f;
-            mYOrigin = h * 0.5f;
-            mHorizontalBound = (w / mMetersToPixelsX) * 0.5f;
-            mVerticalBound = (h / mMetersToPixelsY) * 0.5f;
-        }
-
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-            if (event.sensor.getType() != Sensor.TYPE_ACCELEROMETER)
-                return;
-
-            switch (mDisplay.getOrientation()) {
-                case Surface.ROTATION_0:
-                    mSensorX = event.values[0];
-                    mSensorY = event.values[1];
-                    break;
-                case Surface.ROTATION_90:
-                    mSensorX = -event.values[1];
-                    mSensorY = event.values[0];
-                    break;
-                case Surface.ROTATION_180:
-                    mSensorX = -event.values[0];
-                    mSensorY = -event.values[1];
-                    break;
-                case Surface.ROTATION_270:
-                    mSensorX = event.values[1];
-                    mSensorY = -event.values[0];
-                    break;
-            }
-
-            mSensorTimeStamp = event.timestamp;
-            mCpuTimeStamp = System.nanoTime();
-        }
-
-        @Override
-        protected void onDraw(Canvas canvas) {
-            //TODO render this once. And make it not wood
-        	//canvas.drawBitmap(mWood, 0, 0, null);
-            final long now = mSensorTimeStamp + (System.nanoTime() - mCpuTimeStamp);
-        	level.drawLevel(canvas, now, mSensorX, mSensorY, mXOrigin, mYOrigin, mHorizontalBound, mVerticalBound);
-
-            invalidate();
-        }
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        }
-    }
 }
