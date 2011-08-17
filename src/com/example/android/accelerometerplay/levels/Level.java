@@ -8,12 +8,14 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.util.Pair;
 
 import com.example.android.accelerometerplay.BallBag;
 import com.example.android.accelerometerplay.Ballable;
 import com.example.android.accelerometerplay.Goal;
 import com.example.android.accelerometerplay.Deflector;
 import com.example.android.accelerometerplay.R;
+import com.example.android.accelerometerplay.ScreenItem;
 
 public abstract class Level {
 	private final List<Goal> goals = new ArrayList<Goal>();
@@ -90,24 +92,39 @@ public abstract class Level {
             	}
             }
             
+            for (final Deflector deflector : getDeflectors()) {
+            	if (goalBallCollision(deflector, ball, mHorizontalBound, mVerticalBound)) {
+            		deflect(deflector, ball, mHorizontalBound, mVerticalBound);
+            	}
+            }
+            
             canvas.drawBitmap(createBitmap(ball.getRadius()), x1, y1, null);
         }
         
         //TODO don't need to redraw the goals, they won't move
         for (final Goal goal : getGoals()) {
-        	canvas.drawBitmap(createBitmap(goal.getRadius()), mXOrigin + goal.getXProportion() * mHorizontalBound * mMetersToPixelsX, mYOrigin + goal.getYProportion() * mVerticalBound * mMetersToPixelsY, null);
+        	canvas.drawBitmap(createBitmap(goal.getRadius()), mXOrigin - goal.getRadius() * mMetersToPixelsX + (goal.getXProportion() * mHorizontalBound)* mMetersToPixelsX, mYOrigin - goal.getRadius() * mMetersToPixelsY + (goal.getYProportion() * mVerticalBound) * mMetersToPixelsY, null);
         }
         
         for (final Deflector deflector : getDeflectors()) {
-        	canvas.drawBitmap(createBitmap(deflector.getRadius()), mXOrigin + deflector.getXProportion() * mHorizontalBound * mMetersToPixelsX, mYOrigin + deflector.getYProportion() * mVerticalBound * mMetersToPixelsY, null);
+        	canvas.drawBitmap(createBitmap(deflector.getRadius()), mXOrigin - deflector.getRadius() * mMetersToPixelsX + deflector.getXProportion() * mHorizontalBound * mMetersToPixelsX, mYOrigin - deflector.getRadius() * mMetersToPixelsY + deflector.getYProportion() * mVerticalBound * mMetersToPixelsY, null);
         }
 	}
 	
+	private void deflect(final Deflector deflector, final Ballable ball, final float mHorizontalBound, final float mVerticalBound) {
+		final double xDist = deflector.getXProportion() * mHorizontalBound - ball.getmPosX();
+		final double yDist = -deflector.getYProportion() * mVerticalBound - ball.getmPosY();
+		//TODO don't just reverse the speed. Bounce it off the deflector
+		ball.revertToPreviousPosition();
+		Pair<Float, Float> velocity = ball.getVelocity();
+		ball.setVelocity(- 2 * velocity.first, - 2 * velocity.second);
+	}
+	
 	//TODO common interface so we can compare any 2 rendered objects
-	private boolean goalBallCollision(final Goal goal, final Ballable ball, final float mHorizontalBound, final float mVerticalBound) {
-		final double xDist = goal.getXProportion() * mHorizontalBound - ball.getmPosX();
-		final double yDist = -goal.getYProportion() * mVerticalBound - ball.getmPosY();
-		final double collisionDist = (goal.getRadius() + ball.getRadius());
+	private boolean goalBallCollision(final ScreenItem screenItem, final Ballable ball, final float mHorizontalBound, final float mVerticalBound) {
+		final double xDist = screenItem.getXProportion() * mHorizontalBound - ball.getmPosX();
+		final double yDist = -screenItem.getYProportion() * mVerticalBound - ball.getmPosY();
+		final double collisionDist = (screenItem.getRadius() + ball.getRadius());
 		return (Math.pow(xDist, 2) + Math.pow(yDist, 2) < Math.pow(collisionDist, 2));
 	}
 	

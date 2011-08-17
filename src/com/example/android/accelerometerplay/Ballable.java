@@ -1,5 +1,7 @@
 package com.example.android.accelerometerplay;
 
+import android.util.Pair;
+
 public abstract class Ballable {
 	float mPosX;
     float mPosY;
@@ -69,6 +71,15 @@ public abstract class Ballable {
         }
     }
 	
+	public Pair<Float, Float> getVelocity() {
+		return new Pair<Float, Float>(currentSpeedX, currentSpeedX);
+	}
+	
+	public void setVelocity(final float xVel, final float yVel) {
+		currentSpeedX = xVel;
+		currentSpeedY = yVel;
+	}
+	
 	public void setInitialPos(float x, float y) {
 		setmPosX(x);
 		setmPosY(y);
@@ -103,5 +114,10 @@ public abstract class Ballable {
 
 	public float getRadius() {
 		return radius;
+	}
+	
+	public void revertToPreviousPosition() {
+		mPosX = mLastPosX;
+		mPosY = mLastPosY;
 	}
 }

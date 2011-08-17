@@ -13,6 +13,7 @@ import android.view.Surface;
 import android.view.View;
 import com.example.android.accelerometerplay.levels.Level;
 import com.example.android.accelerometerplay.levels.Level1;
+import com.example.android.accelerometerplay.levels.Level2;
 
 /**
 * Author: Rahul Gidwani
@@ -32,7 +33,7 @@ public class SimulationView extends View implements SensorEventListener {
 	private long mCpuTimeStamp;
 	private float mHorizontalBound;
 	private float mVerticalBound;
-	private final Level level = new Level1(getResources());
+	private final Level level = new Level2(getResources());
 	private AccelerometerPlayActivity accelerometerPlayActivity;
 
 	public void startSimulation() {
