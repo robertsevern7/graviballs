@@ -37,12 +37,6 @@ public class AccelerometerPlayActivity extends Activity {
     Display mDisplay;
     private WakeLock mWakeLock;
 
-//	@Override public boolean onCreateOptionsMenu(Menu menu) {
-//		MenuInflater inflater = getMenuInflater();
-//		inflater.inflate(R.menu.menu, menu);
-//		return true;
-//	}
-
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
