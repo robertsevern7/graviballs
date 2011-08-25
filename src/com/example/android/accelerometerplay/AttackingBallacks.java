@@ -16,8 +16,7 @@ public class AttackingBallacks extends Ballable {
 	public void computePhysics(float sx, float sy, float dT, float dTC) {	
 		if (!computed) {
 			computed = true;
-			currentSpeedX = initialSpeedX;
-			currentSpeedY = initialSpeedY;
+			setVelocity(initialSpeedX, initialSpeedY);
 		}
 		
 		mLastPosX = mPosX;
@@ -32,13 +31,9 @@ public class AttackingBallacks extends Ballable {
         	theta += Math.PI;
         }
         
-        float newSpeedX = (float) (currentSpeedX - a * Math.sin(theta) * dT);
-        float newSpeedY = (float) (currentSpeedY - a * Math.cos(theta) * dT);
+        setVelocity((float) (getVelocity().first - a * Math.sin(theta) * dT), (float) (getVelocity().second - a * Math.cos(theta) * dT));
         
-        mPosX = (float) (mLastPosX + newSpeedX * dT - a * Math.pow(dT, 2) * Math.sin(theta) * 0.5);
-        mPosY = (float) (mLastPosY + newSpeedY * dT - a * Math.pow(dT, 2) * Math.cos(theta) * 0.5);
-        
-        currentSpeedX = newSpeedX;
-        currentSpeedY = newSpeedY;
+        mPosX = (float) (mLastPosX + getVelocity().first * dT - a * Math.pow(dT, 2) * Math.sin(theta) * 0.5);
+        mPosY = (float) (mLastPosY + getVelocity().second * dT - a * Math.pow(dT, 2) * Math.cos(theta) * 0.5);
 	}
 }

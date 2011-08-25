@@ -1,5 +1,6 @@
 package com.example.android.accelerometerplay;
 
+import android.util.Log;
 import android.util.Pair;
 
 public abstract class Ballable {
@@ -13,8 +14,10 @@ public abstract class Ballable {
     private float radius;
     float initialSpeedX;
     float initialSpeedY;
-    float currentSpeedX;
-    float currentSpeedY;
+    private float currentSpeedX;
+    private float currentSpeedY;
+    
+    final private float SPEED_LIMIT = 0.15f;
     
     Ballable(final float sFriction, final float radius) {
         // make each particle a bit different by randomizing its
@@ -76,8 +79,10 @@ public abstract class Ballable {
 	}
 	
 	public void setVelocity(final float xVel, final float yVel) {
-		currentSpeedX = xVel;
-		currentSpeedY = yVel;
+		final double speed = Math.sqrt(Math.pow(xVel, 2) + Math.pow(yVel, 2)); 
+		final double speedRatio = Math.max(speed / SPEED_LIMIT, 1);
+		currentSpeedX = (float) (xVel/speedRatio);
+		currentSpeedY = (float) (yVel/speedRatio);
 	}
 	
 	public void setInitialPos(float x, float y) {
