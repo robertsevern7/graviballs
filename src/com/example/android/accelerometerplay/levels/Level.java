@@ -112,12 +112,41 @@ public abstract class Level {
 	}
 	
 	private void deflect(final Deflector deflector, final Ballable ball, final float mHorizontalBound, final float mVerticalBound) {
-		final double xDist = deflector.getXProportion() * mHorizontalBound - ball.getmPosX();
-		final double yDist = -deflector.getYProportion() * mVerticalBound - ball.getmPosY();
-		//TODO don't just reverse the speed. Bounce it off the deflector
-		ball.revertToPreviousPosition();
-		Pair<Float, Float> velocity = ball.getVelocity();
-		ball.setVelocity(- 2 * velocity.first, - 2 * velocity.second);
+		final double xDist = ball.getmPosX() - deflector.getXProportion() * mHorizontalBound;
+		final double yDist = ball.getmPosY() - deflector.getYProportion() * mVerticalBound;
+		
+		//rotation (cos2a  sin2a)(v_x) = (v_x')
+		//matrix   (-sin2a cos2a)(v_y)   (v_y')
+		//We want v_x' and v_y'
+		
+		final double theta = Math.atan(yDist/xDist) + getPiAddition(xDist, yDist);
+		
+		final Pair<Float, Float> vel = ball.getVelocity();
+		//Reverse velocity to get correct direction for angle
+		final float vel_x_dir = -vel.first;
+		final float vel_y_dir = -vel.second;
+		final double psi = Math.atan(vel_y_dir/vel_x_dir) + getPiAddition(vel_x_dir, vel_y_dir);
+		 
+		double tot = psi - theta;
+		final float newVelX = (float) (vel.first * Math.cos(2 * tot) + vel.second * Math.sin(2 * tot));
+		final float newVelY = (float) (-1 * vel.first * Math.sin(2 * tot) + vel.second * Math.cos(2 * tot));
+		
+		final float realignedVelX = (float) (vel.first * Math.cos(tot) + vel.second * Math.sin(tot));
+
+		if (realignedVelX <= 0 && xDist > 0 || realignedVelX >= 0 && xDist < 0) {
+			ball.setVelocity(- 2 * newVelX, - 2 * newVelY);
+		}
+	}
+	
+	private double getPiAddition(final double x, final double y) {
+		if (x < 0) {
+			return Math.PI;
+		}
+		else if (y < 0) {
+			return Math.PI * 2;
+		}
+		
+		return 0;
 	}
 	
 	//TODO common interface so we can compare any 2 rendered objects

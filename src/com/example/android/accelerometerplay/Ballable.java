@@ -72,7 +72,7 @@ public abstract class Ballable {
     }
 	
 	public Pair<Float, Float> getVelocity() {
-		return new Pair<Float, Float>(currentSpeedX, currentSpeedX);
+		return new Pair<Float, Float>(currentSpeedX, currentSpeedY);
 	}
 	
 	public void setVelocity(final float xVel, final float yVel) {

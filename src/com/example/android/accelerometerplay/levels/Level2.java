@@ -16,19 +16,18 @@ public class Level2 extends Level {
 	@Override
 	void setUpGoals() {
 		final List<Goal> goals = getGoals();
-		goals.add(new Goal(0, 0.33f, 0.002f));
 		goals.add(new Goal(0, -0.33f, 0.002f));
 	}
 	
 	@Override
 	void setUpDeflectors() {
 		final List<Deflector> deflectors = getDeflectors();
-		deflectors.add(new Deflector(0.33f, 0.33f, 0.003f));
+		deflectors.add(new Deflector(0.33f, 0.2f, 0.006f));
 	}
 
 	@Override
 	int getBallReleaseTiming() {
-		return 30;
+		return 300;
 	}
 
 	@Override
