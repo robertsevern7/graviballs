@@ -1,5 +1,8 @@
 package com.example.android.accelerometerplay;
 
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.util.Pair;
 
@@ -16,6 +19,7 @@ public abstract class Ballable {
     float initialSpeedY;
     private float currentSpeedX;
     private float currentSpeedY;
+    private Bitmap bitmap;
     
     final private float SPEED_LIMIT = 0.15f;
     
@@ -124,5 +128,16 @@ public abstract class Ballable {
 	public void revertToPreviousPosition() {
 		mPosX = mLastPosX;
 		mPosY = mLastPosY;
+	}
+	
+	public Bitmap getBitmap(final Resources resources, final float mMetersToPixelsX, final float mMetersToPixelsY) {
+		if (bitmap == null) {
+			final Bitmap ball = BitmapFactory.decodeResource(resources, R.drawable.ball);
+			final int dstWidth = (int) (radius * 2 * mMetersToPixelsX + 0.5f);
+	        final int dstHeight = (int) (radius * 2 * mMetersToPixelsY + 0.5f);
+	        bitmap =  Bitmap.createScaledBitmap(ball, dstWidth, dstHeight, true);
+		}
+		
+		return bitmap;		
 	}
 }

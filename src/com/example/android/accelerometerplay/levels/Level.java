@@ -18,6 +18,7 @@ import com.example.android.accelerometerplay.R;
 import com.example.android.accelerometerplay.ScreenItem;
 
 public abstract class Level {
+	private final Bitmap ball;
 	private final List<Goal> goals = new ArrayList<Goal>();
 	private final List<Deflector> deflectors = new ArrayList<Deflector>();
 	private final BallBag ballBag = new BallBag();
@@ -32,6 +33,7 @@ public abstract class Level {
 		setUpGoals();
 		setUpDeflectors();
 		this.resources = resources;
+		ball = BitmapFactory.decodeResource(resources, R.drawable.ball);
 	}
 	
 	abstract int getInitialCount();
@@ -77,7 +79,7 @@ public abstract class Level {
         final float x = mXOrigin + (mainBall.getmPosX() - mainBall.getRadius()) * mMetersToPixelsX;
         final float y = mYOrigin - (mainBall.getmPosY() + mainBall.getRadius()) * mMetersToPixelsY;
         
-        canvas.drawBitmap(createBitmap(mainBall.getRadius()), x, y, null);
+        canvas.drawBitmap(mainBall.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), x, y, null);
         
         final Iterator<Ballable> iter = ballBag.getIterator();
         
@@ -98,16 +100,16 @@ public abstract class Level {
             	}
             }
             
-            canvas.drawBitmap(createBitmap(ball.getRadius()), x1, y1, null);
+            canvas.drawBitmap(ball.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), x1, y1, null);
         }
         
         //TODO don't need to redraw the goals, they won't move
         for (final Goal goal : getGoals()) {
-        	canvas.drawBitmap(createBitmap(goal.getRadius()), mXOrigin - goal.getRadius() * mMetersToPixelsX + (goal.getXProportion() * mHorizontalBound)* mMetersToPixelsX, mYOrigin - goal.getRadius() * mMetersToPixelsY + (goal.getYProportion() * mVerticalBound) * mMetersToPixelsY, null);
+        	canvas.drawBitmap(goal.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), mXOrigin - goal.getRadius() * mMetersToPixelsX + (goal.getXProportion() * mHorizontalBound)* mMetersToPixelsX, mYOrigin - goal.getRadius() * mMetersToPixelsY + (goal.getYProportion() * mVerticalBound) * mMetersToPixelsY, null);
         }
         
         for (final Deflector deflector : getDeflectors()) {
-        	canvas.drawBitmap(createBitmap(deflector.getRadius()), mXOrigin - deflector.getRadius() * mMetersToPixelsX + deflector.getXProportion() * mHorizontalBound * mMetersToPixelsX, mYOrigin - deflector.getRadius() * mMetersToPixelsY + deflector.getYProportion() * mVerticalBound * mMetersToPixelsY, null);
+        	canvas.drawBitmap(deflector.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), mXOrigin - deflector.getRadius() * mMetersToPixelsX + deflector.getXProportion() * mHorizontalBound * mMetersToPixelsX, mYOrigin - deflector.getRadius() * mMetersToPixelsY + deflector.getYProportion() * mVerticalBound * mMetersToPixelsY, null);
         }
 	}
 	
@@ -155,12 +157,5 @@ public abstract class Level {
 		final double yDist = -screenItem.getYProportion() * mVerticalBound - ball.getmPosY();
 		final double collisionDist = (screenItem.getRadius() + ball.getRadius());
 		return (Math.pow(xDist, 2) + Math.pow(yDist, 2) < Math.pow(collisionDist, 2));
-	}
-	
-	private Bitmap createBitmap(final float radius) {
-		Bitmap ball = BitmapFactory.decodeResource(resources, R.drawable.ball);
-        final int dstWidth = (int) (radius * 2 * mMetersToPixelsX + 0.5f);
-        final int dstHeight = (int) (radius * 2 * mMetersToPixelsY + 0.5f);
-        return Bitmap.createScaledBitmap(ball, dstWidth, dstHeight, true);
 	}
 }
