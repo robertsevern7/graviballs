@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.util.Pair;
 
 import com.example.android.accelerometerplay.BallBag;
@@ -18,7 +19,6 @@ import com.example.android.accelerometerplay.R;
 import com.example.android.accelerometerplay.ScreenItem;
 
 public abstract class Level {
-	private final Bitmap ball;
 	private final List<Goal> goals = new ArrayList<Goal>();
 	private final List<Deflector> deflectors = new ArrayList<Deflector>();
 	private final BallBag ballBag = new BallBag();
@@ -33,7 +33,6 @@ public abstract class Level {
 		setUpGoals();
 		setUpDeflectors();
 		this.resources = resources;
-		ball = BitmapFactory.decodeResource(resources, R.drawable.ball);
 	}
 	
 	abstract int getInitialCount();
@@ -75,12 +74,6 @@ public abstract class Level {
 		
         ballBag.update(mSensorX, mSensorY, now, mHorizontalBound, mVerticalBound);
         
-        final Ballable mainBall = ballBag.getMainBall();
-        final float x = mXOrigin + (mainBall.getmPosX() - mainBall.getRadius()) * mMetersToPixelsX;
-        final float y = mYOrigin - (mainBall.getmPosY() + mainBall.getRadius()) * mMetersToPixelsY;
-        
-        canvas.drawBitmap(mainBall.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), x, y, null);
-        
         final Iterator<Ballable> iter = ballBag.getIterator();
         
         while(iter.hasNext()) {
@@ -102,6 +95,19 @@ public abstract class Level {
             
             canvas.drawBitmap(ball.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), x1, y1, null);
         }
+        
+        final Ballable mainBall = ballBag.getMainBall();
+        
+        for (final Deflector deflector : getDeflectors()) {
+        	if (goalBallCollision(deflector, mainBall, mHorizontalBound, mVerticalBound)) {
+        		deflect(deflector, mainBall, mHorizontalBound, mVerticalBound);
+        	}
+        }
+        
+        final float x = mXOrigin + (mainBall.getmPosX() - mainBall.getRadius()) * mMetersToPixelsX;
+        final float y = mYOrigin - (mainBall.getmPosY() + mainBall.getRadius()) * mMetersToPixelsY;
+        
+        canvas.drawBitmap(mainBall.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), x, y, null);
         
         //TODO don't need to redraw the goals, they won't move
         for (final Goal goal : getGoals()) {

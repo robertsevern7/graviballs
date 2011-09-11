@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class BallBag {
-	private static final float sFriction = 0.05f;
+	private static final float sFriction = 0.07f;
 	private long mLastT;
     private float mLastDeltaT;
     private List<Ballable> mBalls = new ArrayList<Ballable>();

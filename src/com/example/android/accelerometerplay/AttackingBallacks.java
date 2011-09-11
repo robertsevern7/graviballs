@@ -36,4 +36,8 @@ public class AttackingBallacks extends Ballable {
         mPosX = (float) (mLastPosX + getVelocity().first * dT - a * Math.pow(dT, 2) * Math.sin(theta) * 0.5);
         mPosY = (float) (mLastPosY + getVelocity().second * dT - a * Math.pow(dT, 2) * Math.cos(theta) * 0.5);
 	}
+	
+	protected int getDrawable() {
+		return R.drawable.redball; 
+	}
 }

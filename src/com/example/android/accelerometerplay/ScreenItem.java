@@ -28,9 +28,13 @@ public class ScreenItem {
     	return mPosYProp;
     }
     
+    protected int getDrawable() {
+		return R.drawable.ball; 
+	}
+    
     public Bitmap getBitmap(final Resources resources, final float mMetersToPixelsX, final float mMetersToPixelsY) {
 		if (bitmap == null) {
-			final Bitmap ball = BitmapFactory.decodeResource(resources, R.drawable.ball);
+			final Bitmap ball = BitmapFactory.decodeResource(resources, getDrawable());
 			final int dstWidth = (int) (radius * 2 * mMetersToPixelsX + 0.5f);
 	        final int dstHeight = (int) (radius * 2 * mMetersToPixelsY + 0.5f);
 	        bitmap =  Bitmap.createScaledBitmap(ball, dstWidth, dstHeight, true);

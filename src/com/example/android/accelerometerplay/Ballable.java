@@ -21,7 +21,7 @@ public abstract class Ballable {
     private float currentSpeedY;
     private Bitmap bitmap;
     
-    final private float SPEED_LIMIT = 0.15f;
+    final private float SPEED_LIMIT = 0.3f;
     
     Ballable(final float sFriction, final float radius) {
         // make each particle a bit different by randomizing its
@@ -42,11 +42,12 @@ public abstract class Ballable {
         final float ax = gx * invm;
         final float ay = gy * invm;
 
-
+        setVelocity((float)getVelocity().first + mAccelX * dT, (float) getVelocity().second + mAccelY * dT);
+       
         final float dTdT = dT * dT;
-        final float x = mPosX + mOneMinusFriction * dTC * (mPosX - mLastPosX) + mAccelX
+        final float x = mPosX + mOneMinusFriction * dT * currentSpeedX + mAccelX
                 * dTdT;
-        final float y = mPosY + mOneMinusFriction * dTC * (mPosY - mLastPosY) + mAccelY
+        final float y = mPosY + mOneMinusFriction * dT * currentSpeedY + mAccelY
                 * dTdT;
         mLastPosX = mPosX;
         mLastPosY = mPosY;
@@ -130,9 +131,13 @@ public abstract class Ballable {
 		mPosY = mLastPosY;
 	}
 	
+	protected int getDrawable() {
+		return R.drawable.ball; 
+	}
+	
 	public Bitmap getBitmap(final Resources resources, final float mMetersToPixelsX, final float mMetersToPixelsY) {
 		if (bitmap == null) {
-			final Bitmap ball = BitmapFactory.decodeResource(resources, R.drawable.ball);
+			final Bitmap ball = BitmapFactory.decodeResource(resources, getDrawable());
 			final int dstWidth = (int) (radius * 2 * mMetersToPixelsX + 0.5f);
 	        final int dstHeight = (int) (radius * 2 * mMetersToPixelsY + 0.5f);
 	        bitmap =  Bitmap.createScaledBitmap(ball, dstWidth, dstHeight, true);
