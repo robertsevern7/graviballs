@@ -4,16 +4,20 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import android.util.Pair;
+
 public class BallBag {
 	private static final float sFriction = 0.07f;
 	private long mLastT;
     private float mLastDeltaT;
     private List<Ballable> mBalls = new ArrayList<Ballable>();
-    private Ballable mainBall = new Ballocks(sFriction, 0.002f);
+    private final Ballable mainBall;
     private float mHorizontalBound = 0;
     private float mVerticalBound = 0;
     
-    public BallBag() {
+    public BallBag(Pair<Float, Float> initialMainBallPositions) {
+    	mainBall = new Ballocks(sFriction, 0.002f);
+    	mainBall.setInitialPos(initialMainBallPositions.first, initialMainBallPositions.second);
     }
     
     private Ballable generateRandomBall() {

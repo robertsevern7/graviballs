@@ -5,6 +5,7 @@ import java.util.List;
 import com.example.android.accelerometerplay.Goal;
 
 import android.content.res.Resources;
+import android.util.Pair;
 
 public class Level1 extends Level {
 
@@ -39,5 +40,10 @@ public class Level1 extends Level {
 	@Override
 	int getTotalBallCount() {
 		return 5;
+	}
+
+	@Override
+	Pair<Float, Float> getInitialMainBallPosition() {
+		return new Pair<Float, Float>(0f, 0f);
 	}
 }

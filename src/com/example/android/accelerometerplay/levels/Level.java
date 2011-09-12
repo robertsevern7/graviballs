@@ -23,7 +23,7 @@ import com.example.android.accelerometerplay.ScreenItem;
 public abstract class Level {
 	private final List<Goal> goals = new ArrayList<Goal>();
 	private final List<Deflector> deflectors = new ArrayList<Deflector>();
-	private final BallBag ballBag = new BallBag();
+	private final BallBag ballBag = new BallBag(getInitialMainBallPosition());
 	private final Resources resources;
 	float mMetersToPixelsX = 0;
 	float mMetersToPixelsY = 0;
@@ -33,6 +33,8 @@ public abstract class Level {
 	private Long startTime;
 	private final Paint textPaint = new Paint();
 	private int totalBallsScored = 0;
+	private boolean levelPassed = false;
+	private boolean levelFailed = false;
 	
 	public Level(Resources resources) {
 		setUpGoals();
@@ -60,87 +62,117 @@ public abstract class Level {
 	
 	abstract int getBallReleaseTiming();
 	abstract int getTimeLimit();
+	abstract Pair<Float, Float> getInitialMainBallPosition();
 	
 	public void setMetersToPixels(final float mMetersToPixelsX, final float mMetersToPixelsY) {
 		this.mMetersToPixelsX = mMetersToPixelsX;
 		this.mMetersToPixelsY = mMetersToPixelsY;
 	}
 	
+	public void drawFailScreen(Canvas canvas) {
+		textPaint.setTextSize(40);
+		canvas.drawText("Level Failed", 5, 175, textPaint);
+	}
+	
+	public void drawPassScreen(Canvas canvas) {
+		textPaint.setTextSize(40);
+		canvas.drawText("Level Passed", 5, 175, textPaint);
+	}
+	
 	public void drawLevel(Canvas canvas, final long now, final float mSensorX, final float mSensorY,
 			final float mXOrigin, final float mYOrigin,
 			final float mHorizontalBound, final float mVerticalBound) {
-		
-		ballBag.updateBounds(mHorizontalBound, mVerticalBound);
-		
-		if (!initialBallsAdded) {
-			initialBallsAdded = true;
-			for (int i = 1; i < getInitialCount(); ++i) {
-				ballBag.addBall();
+		if (levelPassed) {
+			drawPassScreen(canvas);
+		} else if (levelFailed) {
+			drawFailScreen(canvas);
+		} else {
+			ballBag.updateBounds(mHorizontalBound, mVerticalBound);
+			
+			if (!initialBallsAdded) {
+				initialBallsAdded = true;
+				for (int i = 1; i < getInitialCount(); ++i) {
+					ballBag.addBall();
+				}
 			}
+			
+			final long scaledNow = now/1000;
+			if (scaledNow - lastBallRelease > getBallReleaseTiming() * 1000000 || ballBag.isEmpty()) {
+				ballBag.addBall();
+				lastBallRelease = scaledNow;
+			}
+			
+	        ballBag.update(mSensorX, mSensorY, now, mHorizontalBound, mVerticalBound);
+	        
+	        final Ballable mainBall = ballBag.getMainBall();
+	        final Iterator<Ballable> iter = ballBag.getIterator();
+	        
+	        while(iter.hasNext()) {
+	        	final Ballable ball = iter.next();
+	            final float x1 = mXOrigin + (ball.getmPosX() - ball.getRadius()) * mMetersToPixelsX;
+	            final float y1 = mYOrigin - (ball.getmPosY() + ball.getRadius()) * mMetersToPixelsY;
+	            
+	            if (ballBallCollision(mainBall, ball, mHorizontalBound, mVerticalBound)) {
+	            	levelFailed = true;
+	            }
+	            
+	            for (final Goal goal : getGoals()) {
+	            	if (goalBallCollision(goal, ball, mHorizontalBound, mVerticalBound)) {
+	            		++totalBallsScored;
+	            		iter.remove();
+	            		
+	            		if (totalBallsScored >= getTotalBallCount()) {
+	            			levelPassed = true;
+	            		}
+	            	}
+	            }
+	            
+	            for (final Deflector deflector : getDeflectors()) {
+	            	if (goalBallCollision(deflector, ball, mHorizontalBound, mVerticalBound)) {
+	            		deflect(deflector, ball, mHorizontalBound, mVerticalBound);
+	            	}
+	            }
+	            
+	            canvas.drawBitmap(ball.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), x1, y1, null);
+	        }
+	        
+	        for (final Deflector deflector : getDeflectors()) {
+	        	if (goalBallCollision(deflector, mainBall, mHorizontalBound, mVerticalBound)) {
+	        		deflect(deflector, mainBall, mHorizontalBound, mVerticalBound);
+	        	}
+	        }
+	        
+	        final float x = mXOrigin + (mainBall.getmPosX() - mainBall.getRadius()) * mMetersToPixelsX;
+	        final float y = mYOrigin - (mainBall.getmPosY() + mainBall.getRadius()) * mMetersToPixelsY;
+	        
+	        canvas.drawBitmap(mainBall.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), x, y, null);
+	        
+	        //TODO don't need to redraw the goals, they won't move
+	        for (final Goal goal : getGoals()) {
+	        	if (goalBallCollision(goal, mainBall, mHorizontalBound, mVerticalBound)) {
+		        	levelFailed = true;
+	        	}
+	        	canvas.drawBitmap(goal.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), mXOrigin - goal.getRadius() * mMetersToPixelsX + (goal.getXProportion() * mHorizontalBound)* mMetersToPixelsX, mYOrigin - goal.getRadius() * mMetersToPixelsY + (goal.getYProportion() * mVerticalBound) * mMetersToPixelsY, null);
+	        }
+	        
+	        for (final Deflector deflector : getDeflectors()) {
+	        	canvas.drawBitmap(deflector.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), mXOrigin - deflector.getRadius() * mMetersToPixelsX + deflector.getXProportion() * mHorizontalBound * mMetersToPixelsX, mYOrigin - deflector.getRadius() * mMetersToPixelsY + deflector.getYProportion() * mVerticalBound * mMetersToPixelsY, null);
+	        }
+	        
+	        if (startTime == null) {
+				startTime = now;
+			}
+			
+			final int elapsedTime = getTimeInSeconds(now - startTime);
+			final int timeRemaining = getTimeLimit() - elapsedTime;
+			
+			if (timeRemaining <= 0 ) {
+				levelFailed = true;
+			}
+			
+			canvas.drawText("Time Remaining: " + formatTime(timeRemaining), 5, 25, textPaint);
+			canvas.drawText("Balls removed: " + totalBallsScored + "/" + getTotalBallCount(), 5, 50, textPaint);
 		}
-		
-		final long scaledNow = now/1000;
-		if (scaledNow - lastBallRelease > getBallReleaseTiming() * 1000000 || ballBag.isEmpty()) {
-			ballBag.addBall();
-			lastBallRelease = scaledNow;
-		}
-		
-        ballBag.update(mSensorX, mSensorY, now, mHorizontalBound, mVerticalBound);
-        
-        final Iterator<Ballable> iter = ballBag.getIterator();
-        
-        while(iter.hasNext()) {
-        	final Ballable ball = iter.next();
-            final float x1 = mXOrigin + (ball.getmPosX() - ball.getRadius()) * mMetersToPixelsX;
-            final float y1 = mYOrigin - (ball.getmPosY() + ball.getRadius()) * mMetersToPixelsY;
-            
-            for (final Goal goal : getGoals()) {
-            	if (goalBallCollision(goal, ball, mHorizontalBound, mVerticalBound)) {
-            		++totalBallsScored;
-            		iter.remove();
-            	}
-            }
-            
-            for (final Deflector deflector : getDeflectors()) {
-            	if (goalBallCollision(deflector, ball, mHorizontalBound, mVerticalBound)) {
-            		deflect(deflector, ball, mHorizontalBound, mVerticalBound);
-            	}
-            }
-            
-            canvas.drawBitmap(ball.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), x1, y1, null);
-        }
-        
-        final Ballable mainBall = ballBag.getMainBall();
-        
-        for (final Deflector deflector : getDeflectors()) {
-        	if (goalBallCollision(deflector, mainBall, mHorizontalBound, mVerticalBound)) {
-        		deflect(deflector, mainBall, mHorizontalBound, mVerticalBound);
-        	}
-        }
-        
-        final float x = mXOrigin + (mainBall.getmPosX() - mainBall.getRadius()) * mMetersToPixelsX;
-        final float y = mYOrigin - (mainBall.getmPosY() + mainBall.getRadius()) * mMetersToPixelsY;
-        
-        canvas.drawBitmap(mainBall.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), x, y, null);
-        
-        //TODO don't need to redraw the goals, they won't move
-        for (final Goal goal : getGoals()) {
-        	canvas.drawBitmap(goal.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), mXOrigin - goal.getRadius() * mMetersToPixelsX + (goal.getXProportion() * mHorizontalBound)* mMetersToPixelsX, mYOrigin - goal.getRadius() * mMetersToPixelsY + (goal.getYProportion() * mVerticalBound) * mMetersToPixelsY, null);
-        }
-        
-        for (final Deflector deflector : getDeflectors()) {
-        	canvas.drawBitmap(deflector.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), mXOrigin - deflector.getRadius() * mMetersToPixelsX + deflector.getXProportion() * mHorizontalBound * mMetersToPixelsX, mYOrigin - deflector.getRadius() * mMetersToPixelsY + deflector.getYProportion() * mVerticalBound * mMetersToPixelsY, null);
-        }
-        
-        if (startTime == null) {
-			startTime = now;
-		}
-		
-		final int elapsedTime = getTimeInSeconds(now - startTime);
-		final int timeRemaining = getTimeLimit() - elapsedTime;
-		
-		canvas.drawText("Time Remaining: " + formatTime(timeRemaining), 5, 25, textPaint);
-		canvas.drawText("Balls removed: " + totalBallsScored + "/" + getTotalBallCount(), 5, 50, textPaint);
 	}
 	
 	private int getTimeInSeconds(long time) {
@@ -203,6 +235,13 @@ public abstract class Level {
 		final double xDist = screenItem.getXProportion() * mHorizontalBound - ball.getmPosX();
 		final double yDist = -screenItem.getYProportion() * mVerticalBound - ball.getmPosY();
 		final double collisionDist = (screenItem.getRadius() + ball.getRadius());
+		return (Math.pow(xDist, 2) + Math.pow(yDist, 2) < Math.pow(collisionDist, 2));
+	}
+	
+	private boolean ballBallCollision(final Ballable ball1, final Ballable ball2, final float mHorizontalBound, final float mVerticalBound) {
+		final double xDist = ball1.getmPosX() - ball2.getmPosX();
+		final double yDist = ball1.getmPosY() - ball2.getmPosY();
+		final double collisionDist = (ball1.getRadius() + ball2.getRadius());
 		return (Math.pow(xDist, 2) + Math.pow(yDist, 2) < Math.pow(collisionDist, 2));
 	}
 }

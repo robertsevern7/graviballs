@@ -126,11 +126,6 @@ public abstract class Ballable {
 		return radius;
 	}
 	
-	public void revertToPreviousPosition() {
-		mPosX = mLastPosX;
-		mPosY = mLastPosY;
-	}
-	
 	protected int getDrawable() {
 		return R.drawable.ball; 
 	}

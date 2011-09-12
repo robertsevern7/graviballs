@@ -3,6 +3,7 @@ package com.example.android.accelerometerplay.levels;
 import java.util.List;
 
 import android.content.res.Resources;
+import android.util.Pair;
 
 import com.example.android.accelerometerplay.Deflector;
 import com.example.android.accelerometerplay.Goal;
@@ -48,6 +49,11 @@ public class Level3 extends Level {
 
 	@Override
 	int getTotalBallCount() {
-		return 5;
+		return 3;
+	}
+	
+	@Override
+	Pair<Float, Float> getInitialMainBallPosition() {
+		return new Pair<Float, Float>(0.006f, 0.006f);
 	}
 }

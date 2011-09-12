@@ -16,10 +16,6 @@ import com.example.android.accelerometerplay.levels.Level1;
 import com.example.android.accelerometerplay.levels.Level2;
 import com.example.android.accelerometerplay.levels.Level3;
 
-/**
-* Author: Rahul Gidwani
-* Copyright 2011 - Viglink Inc.
-*/
 public class SimulationView extends View implements SensorEventListener {
 	private Sensor mAccelerometer;
 	private float mXDpi;
