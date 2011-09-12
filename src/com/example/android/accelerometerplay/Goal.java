@@ -6,6 +6,6 @@ public class Goal extends ScreenItem {
 	}
 	
 	protected int getDrawable() {
-		return R.drawable.greenball; 
+		return R.drawable.whitehole; 
 	}
 }
