@@ -35,6 +35,7 @@ public abstract class Level {
 	private int totalBallsScored = 0;
 	private boolean levelPassed = false;
 	private boolean levelFailed = false;
+	private int elapsedTime = 0;
 	
 	public Level(Resources resources) {
 		setUpGoals();
@@ -77,6 +78,8 @@ public abstract class Level {
 	public void drawPassScreen(Canvas canvas) {
 		textPaint.setTextSize(40);
 		canvas.drawText("Level Passed", 5, 175, textPaint);
+		textPaint.setTextSize(30);
+		canvas.drawText("Time taken: " + formatTime(elapsedTime), 10, 220, textPaint);
 	}
 	
 	public void drawLevel(Canvas canvas, final long now, final float mSensorX, final float mSensorY,
@@ -163,7 +166,7 @@ public abstract class Level {
 				startTime = now;
 			}
 			
-			final int elapsedTime = getTimeInSeconds(now - startTime);
+			elapsedTime = getTimeInSeconds(now - startTime);
 			final int timeRemaining = getTimeLimit() - elapsedTime;
 			
 			if (timeRemaining <= 0 ) {

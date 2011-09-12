@@ -24,7 +24,7 @@ public class Level1 extends Level {
 	
 	@Override
 	int getBallReleaseTiming() {
-		return 20;
+		return 10;
 	}
 
 	@Override
@@ -34,16 +34,16 @@ public class Level1 extends Level {
 
 	@Override
 	int getTimeLimit() {
-		return 0;
+		return 60;
 	}
 
 	@Override
 	int getTotalBallCount() {
-		return 5;
+		return 3;
 	}
 
 	@Override
 	Pair<Float, Float> getInitialMainBallPosition() {
-		return new Pair<Float, Float>(0f, 0f);
+		return new Pair<Float, Float>(0.01f, 0.01f);
 	}
 }
