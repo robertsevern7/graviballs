@@ -8,6 +8,8 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.Log;
 import android.util.Pair;
 
@@ -28,16 +30,25 @@ public abstract class Level {
 	long lastBallRelease = 0;
 	//TODO get the size earlier, so I don't have to add this boolean into the update logic
 	private boolean initialBallsAdded = false;
+	private Long startTime;
+	private final Paint textPaint = new Paint();
+	private int totalBallsScored = 0;
 	
 	public Level(Resources resources) {
 		setUpGoals();
 		setUpDeflectors();
 		this.resources = resources;
+		
+		textPaint.setTextSize(20);
+
+		textPaint.setStyle(Paint.Style.FILL);
+		textPaint.setColor(Color.WHITE);
 	}
 	
 	abstract int getInitialCount();
 	abstract void setUpGoals();
 	abstract void setUpDeflectors();
+	abstract int getTotalBallCount();
 	
 	List<Goal> getGoals() {
 		return goals;
@@ -48,6 +59,7 @@ public abstract class Level {
 	}
 	
 	abstract int getBallReleaseTiming();
+	abstract int getTimeLimit();
 	
 	public void setMetersToPixels(final float mMetersToPixelsX, final float mMetersToPixelsY) {
 		this.mMetersToPixelsX = mMetersToPixelsX;
@@ -57,6 +69,7 @@ public abstract class Level {
 	public void drawLevel(Canvas canvas, final long now, final float mSensorX, final float mSensorY,
 			final float mXOrigin, final float mYOrigin,
 			final float mHorizontalBound, final float mVerticalBound) {
+		
 		ballBag.updateBounds(mHorizontalBound, mVerticalBound);
 		
 		if (!initialBallsAdded) {
@@ -83,6 +96,7 @@ public abstract class Level {
             
             for (final Goal goal : getGoals()) {
             	if (goalBallCollision(goal, ball, mHorizontalBound, mVerticalBound)) {
+            		++totalBallsScored;
             		iter.remove();
             	}
             }
@@ -117,6 +131,31 @@ public abstract class Level {
         for (final Deflector deflector : getDeflectors()) {
         	canvas.drawBitmap(deflector.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), mXOrigin - deflector.getRadius() * mMetersToPixelsX + deflector.getXProportion() * mHorizontalBound * mMetersToPixelsX, mYOrigin - deflector.getRadius() * mMetersToPixelsY + deflector.getYProportion() * mVerticalBound * mMetersToPixelsY, null);
         }
+        
+        if (startTime == null) {
+			startTime = now;
+		}
+		
+		final int elapsedTime = getTimeInSeconds(now - startTime);
+		final int timeRemaining = getTimeLimit() - elapsedTime;
+		
+		canvas.drawText("Time Remaining: " + formatTime(timeRemaining), 5, 25, textPaint);
+		canvas.drawText("Balls removed: " + totalBallsScored + "/" + getTotalBallCount(), 5, 50, textPaint);
+	}
+	
+	private int getTimeInSeconds(long time) {
+		return (int) (time / 1000000000);
+	}
+	
+	private String formatTime(int seconds) {
+        int minutes = seconds / 60;
+        seconds     = seconds % 60;
+        
+        if (seconds < 10) {
+            return minutes + ":0" + seconds;
+        } else {
+            return minutes + ":" + seconds;            
+        }
 	}
 	
 	private void deflect(final Deflector deflector, final Ballable ball, final float mHorizontalBound, final float mVerticalBound) {
@@ -142,12 +181,14 @@ public abstract class Level {
 		final float realignedVelX = (float) (vel.first * Math.cos(tot) + vel.second * Math.sin(tot));
 
 		if (realignedVelX <= 0 && xDist > 0 || realignedVelX >= 0 && xDist < 0) {
-			ball.setVelocity(- 2 * newVelX, - 2 * newVelY);
+			ball.setVelocity( - 2 * newVelX, - 2 * newVelY);
 		}
 	}
 	
 	private double getPiAddition(final double x, final double y) {
+		//Log.i("PI addition", x + ", " + y);
 		if (x < 0) {
+			//Log.i("in", "IN HERE");
 			return Math.PI;
 		}
 		else if (y < 0) {

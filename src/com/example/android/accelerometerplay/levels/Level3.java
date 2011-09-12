@@ -21,7 +21,7 @@ public class Level3 extends Level {
 	@Override
 	void setUpGoals() {
 		final List<Goal> goals = getGoals();
-		goals.add(new Goal(0, 0, 0.003f));
+		goals.add(new Goal(0, 0, 0.004f));
 
 	}
 
@@ -41,4 +41,13 @@ public class Level3 extends Level {
 		return 30;
 	}
 
+	@Override
+	int getTimeLimit() {
+		return 30;
+	}
+
+	@Override
+	int getTotalBallCount() {
+		return 5;
+	}
 }

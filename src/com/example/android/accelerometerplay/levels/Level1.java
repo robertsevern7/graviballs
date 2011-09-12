@@ -30,4 +30,14 @@ public class Level1 extends Level {
 	int getInitialCount() {
 		return 1;
 	}
+
+	@Override
+	int getTimeLimit() {
+		return 0;
+	}
+
+	@Override
+	int getTotalBallCount() {
+		return 5;
+	}
 }
