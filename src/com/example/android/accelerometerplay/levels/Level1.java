@@ -4,13 +4,14 @@ import java.util.List;
 
 import com.example.android.accelerometerplay.Goal;
 
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.util.Pair;
 
 public class Level1 extends Level {
 
-	public Level1(Resources resources) {
-		super(resources);
+	public Level1(Resources resources, SharedPreferences scoreCard) {
+		super(resources, scoreCard);
 	}
 
 	@Override
@@ -45,5 +46,10 @@ public class Level1 extends Level {
 	@Override
 	Pair<Float, Float> getInitialMainBallPosition() {
 		return new Pair<Float, Float>(0.01f, 0.01f);
+	}
+	
+	@Override
+	public String getLevelIdentifier() {
+		return "1";
 	}
 }

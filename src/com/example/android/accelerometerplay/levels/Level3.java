@@ -2,6 +2,7 @@ package com.example.android.accelerometerplay.levels;
 
 import java.util.List;
 
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.util.Pair;
 
@@ -10,8 +11,8 @@ import com.example.android.accelerometerplay.Goal;
 
 public class Level3 extends Level {
 
-	public Level3(Resources resources) {
-		super(resources);
+	public Level3(Resources resources, SharedPreferences scoreCard) {
+		super(resources, scoreCard);
 	}
 
 	@Override
@@ -49,11 +50,16 @@ public class Level3 extends Level {
 
 	@Override
 	int getTotalBallCount() {
-		return 3;
+		return 1;
 	}
 	
 	@Override
 	Pair<Float, Float> getInitialMainBallPosition() {
 		return new Pair<Float, Float>(0.006f, 0.006f);
+	}
+	
+	@Override
+	public String getLevelIdentifier() {
+		return "3";
 	}
 }

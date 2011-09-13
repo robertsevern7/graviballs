@@ -1,6 +1,7 @@
 package com.example.android.accelerometerplay;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -30,7 +31,7 @@ public class SimulationView extends View implements SensorEventListener {
 	private long mCpuTimeStamp;
 	private float mHorizontalBound;
 	private float mVerticalBound;
-	private final Level level = new Level3(getResources());
+	private final Level level;
 	private AccelerometerPlayActivity accelerometerPlayActivity;
 
 	public void startSimulation() {
@@ -53,6 +54,8 @@ public class SimulationView extends View implements SensorEventListener {
 		mMetersToPixelsX = mXDpi / 0.0254f;
 		mMetersToPixelsY = mYDpi / 0.0254f;
 
+		SharedPreferences SCORE_CARD = accelerometerPlayActivity.getSharedPreferences("ScoreHolder", 0);
+		level = new Level3(getResources(), SCORE_CARD);
 		level.setMetersToPixels(mMetersToPixelsX, mMetersToPixelsY);
 
 		// rescale the ball so it's about 0.5 cm on screen

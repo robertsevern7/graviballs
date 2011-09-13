@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -36,8 +37,11 @@ public abstract class Level {
 	private boolean levelPassed = false;
 	private boolean levelFailed = false;
 	private int elapsedTime = 0;
+	private final SharedPreferences scoreCard;
+	private final int bestTime;
 	
-	public Level(Resources resources) {
+	public Level(Resources resources, SharedPreferences scoreCard) {
+		this.scoreCard = scoreCard;
 		setUpGoals();
 		setUpDeflectors();
 		this.resources = resources;
@@ -46,12 +50,15 @@ public abstract class Level {
 
 		textPaint.setStyle(Paint.Style.FILL);
 		textPaint.setColor(Color.WHITE);
+	
+		bestTime = scoreCard.getInt(getLevelIdentifier(), -1);
 	}
 	
 	abstract int getInitialCount();
 	abstract void setUpGoals();
 	abstract void setUpDeflectors();
 	abstract int getTotalBallCount();
+	abstract String getLevelIdentifier();
 	
 	List<Goal> getGoals() {
 		return goals;
@@ -126,6 +133,13 @@ public abstract class Level {
 	            		
 	            		if (totalBallsScored >= getTotalBallCount()) {
 	            			levelPassed = true;
+	            			//TODO event driven is probably better
+	            			if (bestTime < 0 || elapsedTime < bestTime) {
+		            			SharedPreferences.Editor editor = scoreCard.edit();
+		            			//TODO each level needs an id
+		            			editor.putInt(getLevelIdentifier(), elapsedTime);
+		            			editor.commit();
+	            			}
 	            		}
 	            	}
 	            }
@@ -175,6 +189,9 @@ public abstract class Level {
 			
 			canvas.drawText("Time Remaining: " + formatTime(timeRemaining), 5, 25, textPaint);
 			canvas.drawText("Balls removed: " + totalBallsScored + "/" + getTotalBallCount(), 5, 50, textPaint);
+			if (bestTime > 0) {
+				canvas.drawText("Best: " + formatTime(bestTime), 5, 75, textPaint);
+			}
 		}
 	}
 	
