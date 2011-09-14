@@ -3,25 +3,40 @@ package com.graviballs.menus;
 import com.graviballs.R;
 import com.graviballs.game.GameActivity;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.GridView;
 import android.widget.ListView;
 
-public class LevelsMenuActivity extends ListActivity {
+public class LevelsMenuActivity extends Activity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.levelgridview);
 
-		setListAdapter(ArrayAdapter.createFromResource(getApplicationContext(),
-			R.array.graviballs_menu, R.layout.list_item));
+		GridView gridview = (GridView) findViewById(R.id.levelgridview);
+		gridview.setAdapter(new LevelAdapter(this));
+		
+		gridview.setOnItemClickListener(new OnItemClickListener() {
+	        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+	        	SharedPreferences CURRENT_LEVEL = getSharedPreferences("CurrentLevel", 0);
+	    		SharedPreferences.Editor editor = CURRENT_LEVEL.edit();
+	    		editor.putInt("level", position);
+	    		editor.commit();
+	    		
+	    		Intent showContent = new Intent(getApplicationContext(), GameActivity.class);
+	    		startActivity(showContent);
+	        }
+	    });
 	}
 
-	@Override protected void onListItemClick(ListView l, View v, int position, long id) {
+	protected void onListItemClick(ListView l, View v, int position, long id) {
 		SharedPreferences CURRENT_LEVEL = getSharedPreferences("CurrentLevel", 0);
 		SharedPreferences.Editor editor = CURRENT_LEVEL.edit();
 		editor.putInt("level", position);
