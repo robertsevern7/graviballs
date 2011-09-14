@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class BollocksMenuActivity extends ListActivity {
+public class LevelsMenuActivity extends ListActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
