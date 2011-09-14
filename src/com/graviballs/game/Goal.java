@@ -1,4 +1,6 @@
-package com.example.android.accelerometerplay;
+package com.graviballs.game;
+
+import com.graviballs.R;
 
 public class Goal extends ScreenItem {
 	public Goal(float mPosXProp, float mPosYProp, float radius) {

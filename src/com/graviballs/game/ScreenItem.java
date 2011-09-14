@@ -1,5 +1,6 @@
-package com.example.android.accelerometerplay;
+package com.graviballs.game;
 
+import com.graviballs.R;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

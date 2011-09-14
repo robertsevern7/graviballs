@@ -1,8 +1,10 @@
-package com.example.android.accelerometerplay.levels;
+package com.graviballs.game.levels;
+
 
 import java.util.List;
 
-import com.example.android.accelerometerplay.Goal;
+import com.graviballs.game.Goal;
+
 
 import android.content.SharedPreferences;
 import android.content.res.Resources;

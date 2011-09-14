@@ -1,13 +1,15 @@
-package com.example.android.accelerometerplay.levels;
+package com.graviballs.game.levels;
+
 
 import java.util.List;
+
+import com.graviballs.game.Deflector;
+import com.graviballs.game.Goal;
 
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.util.Pair;
 
-import com.example.android.accelerometerplay.Deflector;
-import com.example.android.accelerometerplay.Goal;
 
 public class Level3 extends Level {
 

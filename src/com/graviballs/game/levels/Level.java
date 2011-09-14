@@ -1,25 +1,23 @@
-package com.example.android.accelerometerplay.levels;
+package com.graviballs.game.levels;
+
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.graviballs.game.BallBag;
+import com.graviballs.game.Ballable;
+import com.graviballs.game.Deflector;
+import com.graviballs.game.Goal;
+import com.graviballs.game.ScreenItem;
+
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 import android.util.Pair;
 
-import com.example.android.accelerometerplay.BallBag;
-import com.example.android.accelerometerplay.Ballable;
-import com.example.android.accelerometerplay.Goal;
-import com.example.android.accelerometerplay.Deflector;
-import com.example.android.accelerometerplay.R;
-import com.example.android.accelerometerplay.ScreenItem;
 
 public abstract class Level {
 	private final List<Goal> goals = new ArrayList<Goal>();
@@ -136,7 +134,6 @@ public abstract class Level {
 	            			//TODO event driven is probably better
 	            			if (bestTime < 0 || elapsedTime < bestTime) {
 		            			SharedPreferences.Editor editor = scoreCard.edit();
-		            			//TODO each level needs an id
 		            			editor.putInt(getLevelIdentifier(), elapsedTime);
 		            			editor.commit();
 	            			}

@@ -1,4 +1,7 @@
-package com.example.android.accelerometerplay;
+package com.graviballs.menus;
+
+import com.graviballs.R;
+import com.graviballs.game.GameActivity;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -24,7 +27,7 @@ public class BollocksMenuActivity extends ListActivity {
 		editor.putInt("level", position);
 		editor.commit();
 		
-		Intent showContent = new Intent(getApplicationContext(), AccelerometerPlayActivity.class);
+		Intent showContent = new Intent(getApplicationContext(), GameActivity.class);
 		startActivity(showContent);
 	}
 }

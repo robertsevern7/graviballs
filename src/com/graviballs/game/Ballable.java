@@ -1,9 +1,10 @@
-package com.example.android.accelerometerplay;
+package com.graviballs.game;
+
+import com.graviballs.R;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 import android.util.Pair;
 
 public abstract class Ballable {

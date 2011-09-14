@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package com.example.android.accelerometerplay;
+package com.graviballs.game;
 
-import android.app.ListActivity;
 import android.view.*;
 
 import android.app.Activity;
@@ -24,11 +23,8 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import com.example.android.accelerometerplay.R;
 
-public class AccelerometerPlayActivity extends Activity {
+public class GameActivity extends Activity {
 
     private SimulationView mSimulationView;
     SensorManager mSensorManager;

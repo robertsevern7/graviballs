@@ -1,4 +1,4 @@
-package com.example.android.accelerometerplay;
+package com.graviballs.game;
 
 public class Ballocks extends Ballable {
 

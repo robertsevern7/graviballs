@@ -1,4 +1,4 @@
-package com.example.android.accelerometerplay;
+package com.graviballs.game;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -12,10 +12,11 @@ import android.hardware.SensorManager;
 import android.util.DisplayMetrics;
 import android.view.Surface;
 import android.view.View;
-import com.example.android.accelerometerplay.levels.Level;
-import com.example.android.accelerometerplay.levels.Level1;
-import com.example.android.accelerometerplay.levels.Level2;
-import com.example.android.accelerometerplay.levels.Level3;
+
+import com.graviballs.game.levels.Level;
+import com.graviballs.game.levels.Level1;
+import com.graviballs.game.levels.Level2;
+import com.graviballs.game.levels.Level3;
 
 public class SimulationView extends View implements SensorEventListener {
 	private Sensor mAccelerometer;
@@ -32,7 +33,7 @@ public class SimulationView extends View implements SensorEventListener {
 	private float mHorizontalBound;
 	private float mVerticalBound;
 	private final Level level;
-	private AccelerometerPlayActivity accelerometerPlayActivity;
+	private GameActivity accelerometerPlayActivity;
 
 	public void startSimulation() {
 		accelerometerPlayActivity.mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
@@ -42,7 +43,7 @@ public class SimulationView extends View implements SensorEventListener {
 		accelerometerPlayActivity.mSensorManager.unregisterListener(this);
 	}
 
-	public SimulationView(AccelerometerPlayActivity accelerometerPlayActivity, Context context) {
+	public SimulationView(GameActivity accelerometerPlayActivity, Context context) {
 		super(context);
 		this.accelerometerPlayActivity = accelerometerPlayActivity;
 		mAccelerometer = accelerometerPlayActivity.mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
