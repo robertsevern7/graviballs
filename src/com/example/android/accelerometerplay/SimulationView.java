@@ -54,8 +54,8 @@ public class SimulationView extends View implements SensorEventListener {
 		mMetersToPixelsX = mXDpi / 0.0254f;
 		mMetersToPixelsY = mYDpi / 0.0254f;
 
-		SharedPreferences SCORE_CARD = accelerometerPlayActivity.getSharedPreferences("ScoreHolder", 0);
-		level = new Level3(getResources(), SCORE_CARD);
+		
+		level = getLevel();
 		level.setMetersToPixels(mMetersToPixelsX, mMetersToPixelsY);
 
 		// rescale the ball so it's about 0.5 cm on screen
@@ -64,6 +64,17 @@ public class SimulationView extends View implements SensorEventListener {
 		opts.inPreferredConfig = Bitmap.Config.ALPHA_8;
 	}
 
+	private Level getLevel() {
+		SharedPreferences SCORE_CARD = accelerometerPlayActivity.getSharedPreferences("ScoreHolder", 0);
+		SharedPreferences CURRENT_LEVEL = accelerometerPlayActivity.getSharedPreferences("CurrentLevel", 0);
+		
+		switch (CURRENT_LEVEL.getInt("level", -1)) {
+			case 0: return new Level1(getResources(), SCORE_CARD);
+			case 1: return new Level2(getResources(), SCORE_CARD);
+			case 2: return new Level3(getResources(), SCORE_CARD);
+			default: return new Level1(getResources(), SCORE_CARD);
+		}
+	}
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		// compute the origin of the screen relative to the origin of

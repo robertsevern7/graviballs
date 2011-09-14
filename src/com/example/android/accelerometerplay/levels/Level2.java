@@ -23,13 +23,11 @@ public class Level2 extends Level {
 	
 	@Override
 	void setUpDeflectors() {
-		final List<Deflector> deflectors = getDeflectors();
-		deflectors.add(new Deflector(0.33f, 0, 0.006f));
 	}
 
 	@Override
 	int getBallReleaseTiming() {
-		return 300;
+		return 10;
 	}
 
 	@Override
@@ -39,7 +37,7 @@ public class Level2 extends Level {
 
 	@Override
 	int getTimeLimit() {
-		return 0;
+		return 60;
 	}
 	
 	@Override
@@ -49,7 +47,7 @@ public class Level2 extends Level {
 	
 	@Override
 	Pair<Float, Float> getInitialMainBallPosition() {
-		return new Pair<Float, Float>(0f, 0f);
+		return new Pair<Float, Float>(0f, 0.01f);
 	}
 	
 	@Override
