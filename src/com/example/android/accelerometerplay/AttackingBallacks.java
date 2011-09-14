@@ -38,6 +38,6 @@ public class AttackingBallacks extends Ballable {
 	}
 	
 	protected int getDrawable() {
-		return R.drawable.redball; 
+		return R.drawable.spikyball; 
 	}
 }

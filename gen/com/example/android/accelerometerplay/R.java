@@ -18,9 +18,10 @@ public final class R {
         public static final int greenball=0x7f020001;
         public static final int icon=0x7f020002;
         public static final int redball=0x7f020003;
-        public static final int whitehole=0x7f020004;
-        public static final int wood=0x7f020005;
-        public static final int yellowball=0x7f020006;
+        public static final int spikyball=0x7f020004;
+        public static final int whitehole=0x7f020005;
+        public static final int wood=0x7f020006;
+        public static final int yellowball=0x7f020007;
     }
     public static final class id {
         public static final int icon=0x7f070000;

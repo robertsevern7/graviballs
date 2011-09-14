@@ -5,8 +5,6 @@ import java.util.List;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.util.Pair;
-
-import com.example.android.accelerometerplay.Deflector;
 import com.example.android.accelerometerplay.Goal;
 
 public class Level2 extends Level {
@@ -18,7 +16,7 @@ public class Level2 extends Level {
 	@Override
 	void setUpGoals() {
 		final List<Goal> goals = getGoals();
-		goals.add(new Goal(0, -0.5f, 0.002f));
+		goals.add(new Goal(0, -0.5f, 0.003f));
 	}
 	
 	@Override
@@ -27,12 +25,12 @@ public class Level2 extends Level {
 
 	@Override
 	int getBallReleaseTiming() {
-		return 10;
+		return 15;
 	}
 
 	@Override
 	int getInitialCount() {
-		return 1;
+		return 2;
 	}
 
 	@Override
@@ -42,7 +40,7 @@ public class Level2 extends Level {
 	
 	@Override
 	int getTotalBallCount() {
-		return 5;
+		return 4;
 	}
 	
 	@Override
