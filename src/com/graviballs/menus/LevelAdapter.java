@@ -1,6 +1,7 @@
 package com.graviballs.menus;
 
-import android.R;
+import com.graviballs.R;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
@@ -33,27 +34,23 @@ public class LevelAdapter extends BaseAdapter {
     }
 
     public View getView(final int position, final View convertView, final ViewGroup parent) {    	
-        final TextView textView;
-        if (convertView == null) {  // if it's not recycled, initialize some attributes
-            textView = new TextView(mContext) {
-            	private boolean backgroundSet = false;
-            	protected void onDraw(Canvas canvas) {
-            		final int bestTime = SCORE_CARD.getInt(Integer.toString(position + 1), -1);
-            		if (bestTime != -1 && !backgroundSet) {
-                    	setBackgroundResource(R.drawable.toast_frame);
-                    	backgroundSet = true;
-                    }
-            		super.onDraw(canvas);
-            	}
-            };
-            textView.setLayoutParams(new GridView.LayoutParams(85, 85));
-            textView.setTextSize(25);
-            textView.setPadding(4, 4, 4, 4);
-            textView.setGravity(Gravity.CENTER);
-        } else {
-        	textView = (TextView) convertView;
-        }
-
+    	final TextView textView = new TextView(mContext) {
+        	protected void onDraw(Canvas canvas) {
+        		final int bestTime = SCORE_CARD.getInt(Integer.toString(position + 1), -1);
+        		
+        		if (bestTime != -1) {
+                	setBackgroundResource(R.drawable.toast_frame_green);
+                } else{
+                	setBackgroundResource(R.drawable.toast_frame_red);
+                }
+            		
+        		super.onDraw(canvas);
+        	}
+        };
+        textView.setLayoutParams(new GridView.LayoutParams(85, 85));
+        textView.setTextSize(25);
+        textView.setPadding(4, 4, 4, 4);
+        textView.setGravity(Gravity.CENTER);
         textView.setText(levels[position]);
         return textView;
     }
