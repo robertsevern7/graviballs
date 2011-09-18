@@ -21,7 +21,8 @@ public class LevelsMenuActivity extends Activity {
 		setContentView(R.layout.levelgridview);
 
 		GridView gridview = (GridView) findViewById(R.id.levelgridview);
-		gridview.setAdapter(new LevelAdapter(this));
+		SharedPreferences SCORE_CARD = getSharedPreferences("ScoreHolder", 0);
+		gridview.setAdapter(new LevelAdapter(this, SCORE_CARD));
 		
 		gridview.setOnItemClickListener(new OnItemClickListener() {
 	        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
@@ -34,15 +35,5 @@ public class LevelsMenuActivity extends Activity {
 	    		startActivity(showContent);
 	        }
 	    });
-	}
-
-	protected void onListItemClick(ListView l, View v, int position, long id) {
-		SharedPreferences CURRENT_LEVEL = getSharedPreferences("CurrentLevel", 0);
-		SharedPreferences.Editor editor = CURRENT_LEVEL.edit();
-		editor.putInt("level", position);
-		editor.commit();
-		
-		Intent showContent = new Intent(getApplicationContext(), GameActivity.class);
-		startActivity(showContent);
 	}
 }

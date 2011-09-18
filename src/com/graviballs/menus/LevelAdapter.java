@@ -2,6 +2,8 @@ package com.graviballs.menus;
 
 import android.R;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Canvas;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +13,11 @@ import android.widget.TextView;
 
 public class LevelAdapter extends BaseAdapter {
 	private Context mContext;
+	final SharedPreferences SCORE_CARD;
 
-    public LevelAdapter(Context c) {
+    public LevelAdapter(Context c, SharedPreferences SCORE_CARD) {
         mContext = c;
+        this.SCORE_CARD = SCORE_CARD;
     }
 
     public int getCount() {
@@ -28,17 +32,24 @@ public class LevelAdapter extends BaseAdapter {
         return 0;
     }
 
-    public View getView(int position, View convertView, ViewGroup parent) {
-        TextView textView;
+    public View getView(final int position, final View convertView, final ViewGroup parent) {    	
+        final TextView textView;
         if (convertView == null) {  // if it's not recycled, initialize some attributes
-            textView = new TextView(mContext);
+            textView = new TextView(mContext) {
+            	private boolean backgroundSet = false;
+            	protected void onDraw(Canvas canvas) {
+            		final int bestTime = SCORE_CARD.getInt(Integer.toString(position + 1), -1);
+            		if (bestTime != -1 && !backgroundSet) {
+                    	setBackgroundResource(R.drawable.toast_frame);
+                    	backgroundSet = true;
+                    }
+            		super.onDraw(canvas);
+            	}
+            };
             textView.setLayoutParams(new GridView.LayoutParams(85, 85));
             textView.setTextSize(25);
             textView.setPadding(4, 4, 4, 4);
             textView.setGravity(Gravity.CENTER);
-            textView.setBackgroundResource(R.drawable.toast_frame);
-            
-            textView.setHapticFeedbackEnabled(true);
         } else {
         	textView = (TextView) convertView;
         }
