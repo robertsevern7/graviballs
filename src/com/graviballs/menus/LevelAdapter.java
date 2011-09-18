@@ -1,6 +1,8 @@
 package com.graviballs.menus;
 
+import android.R;
 import android.content.Context;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -31,8 +33,12 @@ public class LevelAdapter extends BaseAdapter {
         if (convertView == null) {  // if it's not recycled, initialize some attributes
             textView = new TextView(mContext);
             textView.setLayoutParams(new GridView.LayoutParams(85, 85));
-            textView.setTextSize(30);
-            textView.setPadding(8, 8, 8, 8);
+            textView.setTextSize(25);
+            textView.setPadding(4, 4, 4, 4);
+            textView.setGravity(Gravity.CENTER);
+            textView.setBackgroundResource(R.drawable.toast_frame);
+            
+            textView.setHapticFeedbackEnabled(true);
         } else {
         	textView = (TextView) convertView;
         }
