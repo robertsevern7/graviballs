@@ -3,16 +3,20 @@
               android:layout_width="fill_parent" 
               android:layout_height="fill_parent" 
               android:orientation="horizontal" >
-    <TextView android:id="@+id/complete_text"
+    <TextView android:id="@+id/next_text"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:text="It's time to play GraviBalls" />
-    <Button android:id="@+id/play_button"
+              android:text="Level Complete" />
+    <Button android:id="@+id/start_menu_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Play" />
-    <Button android:id="@+id/quick_play_button"
+            android:text="Main Menu" />
+    <Button android:id="@+id/menu_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Continue" />
+            android:text="Level Menu" />
+    <Button android:id="@+id/next_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next Level" />
 </LinearLayout>

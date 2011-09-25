@@ -125,4 +125,8 @@ public class SimulationView extends View implements SensorEventListener {
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 	}
+	
+	public Level getGameLevel() {
+		return this.level;
+	}
 }

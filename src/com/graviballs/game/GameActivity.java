@@ -16,15 +16,23 @@
 
 package com.graviballs.game;
 
+import java.util.Observable;
+import java.util.Observer;
+
+import com.graviballs.menus.LevelCompleteActivity;
+
+//import com.graviballs.menus.LevelCompleteActivity;
+
 import android.view.*;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 
-public class GameActivity extends Activity {
+public class GameActivity extends Activity implements Observer {
 
     private SimulationView mSimulationView;
     SensorManager mSensorManager;
@@ -46,11 +54,10 @@ public class GameActivity extends Activity {
 
         mSimulationView = new SimulationView(this, this);
         setContentView(mSimulationView);
+        mSimulationView.getGameLevel().addObserver(this);
     }
 
-
-
-	    @Override
+	@Override
     protected void onResume() {
         super.onResume();
         mWakeLock.acquire();
@@ -63,5 +70,14 @@ public class GameActivity extends Activity {
         mSimulationView.stopSimulation();
         mWakeLock.release();
     }
+
+    @Override
+	public void update(Observable arg0, Object arg1) {
+    	mSimulationView.stopSimulation();
+		if (mSimulationView.getGameLevel().isLevelPassed()) {
+			Intent showContent = new Intent(getApplicationContext(), LevelCompleteActivity.class);
+			startActivity(showContent);
+		}
+	}
 
 }

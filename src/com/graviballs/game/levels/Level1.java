@@ -42,7 +42,7 @@ public class Level1 extends Level {
 
 	@Override
 	int getTotalBallCount() {
-		return 3;
+		return 1;
 	}
 
 	@Override

@@ -4,13 +4,13 @@ package com.graviballs.game.levels;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Observable;
 
 import com.graviballs.game.BallBag;
 import com.graviballs.game.Ballable;
 import com.graviballs.game.Deflector;
 import com.graviballs.game.Goal;
 import com.graviballs.game.ScreenItem;
-
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -19,7 +19,7 @@ import android.graphics.Paint;
 import android.util.Pair;
 
 
-public abstract class Level {
+public abstract class Level extends Observable {
 	private final List<Goal> goals = new ArrayList<Goal>();
 	private final List<Deflector> deflectors = new ArrayList<Deflector>();
 	private final BallBag ballBag = new BallBag(getInitialMainBallPosition());
@@ -90,9 +90,7 @@ public abstract class Level {
 	public void drawLevel(Canvas canvas, final long now, final float mSensorX, final float mSensorY,
 			final float mXOrigin, final float mYOrigin,
 			final float mHorizontalBound, final float mVerticalBound) {
-		if (levelPassed) {
-			drawPassScreen(canvas);
-		} else if (levelFailed) {
+		if (levelFailed) {
 			drawFailScreen(canvas);
 		} else {
 			ballBag.updateBounds(mHorizontalBound, mVerticalBound);
@@ -137,6 +135,8 @@ public abstract class Level {
 		            			editor.putInt(getLevelIdentifier(), elapsedTime);
 		            			editor.commit();
 	            			}
+	            			setChanged();
+	            			notifyObservers();
 	            		}
 	            	}
 	            }
@@ -190,6 +190,14 @@ public abstract class Level {
 				canvas.drawText("Best: " + formatTime(bestTime), 5, 75, textPaint);
 			}
 		}
+	}
+	
+	public boolean isLevelPassed() {
+		return levelPassed;
+	}
+	
+	public int getPassTime() {
+		return bestTime;
 	}
 	
 	private int getTimeInSeconds(long time) {
