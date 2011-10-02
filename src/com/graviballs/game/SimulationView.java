@@ -70,10 +70,10 @@ public class SimulationView extends View implements SensorEventListener {
 		SharedPreferences CURRENT_LEVEL = accelerometerPlayActivity.getSharedPreferences("CurrentLevel", 0);
 		
 		switch (CURRENT_LEVEL.getInt("level", -1)) {
-			case 0: return new Level1(getResources(), SCORE_CARD);
-			case 1: return new Level2(getResources(), SCORE_CARD);
-			case 2: return new Level3(getResources(), SCORE_CARD);
-			default: return new Level1(getResources(), SCORE_CARD);
+			case 0: return new Level1(getResources(), SCORE_CARD, CURRENT_LEVEL);
+			case 1: return new Level2(getResources(), SCORE_CARD, CURRENT_LEVEL);
+			case 2: return new Level3(getResources(), SCORE_CARD, CURRENT_LEVEL);
+			default: return new Level1(getResources(), SCORE_CARD, CURRENT_LEVEL);
 		}
 	}
 	@Override

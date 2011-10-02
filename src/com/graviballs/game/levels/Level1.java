@@ -12,8 +12,8 @@ import android.util.Pair;
 
 public class Level1 extends Level {
 
-	public Level1(Resources resources, SharedPreferences scoreCard) {
-		super(resources, scoreCard);
+	public Level1(Resources resources, SharedPreferences scoreCard, SharedPreferences currentLevel) {
+		super(resources, scoreCard, currentLevel);
 	}
 
 	@Override

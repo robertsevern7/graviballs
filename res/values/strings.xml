@@ -16,4 +16,9 @@
 
 <resources>
     <string name="app_name">GraviBalls</string>
+    <string name="level_failed">Level Failed</string>
+    <string name="retry_level">Retry Level</string>
+    <string name="next_level">Next Level</string>
+    <string name="level_menu">Level Menu</string>
+    <string name="main_menu">Main Menu</string>
 </resources>
