@@ -9,8 +9,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.GridView;
 
 public class LevelsMenuActivity extends Activity {
@@ -35,5 +37,14 @@ public class LevelsMenuActivity extends Activity {
 	    		startActivity(showContent);
 	        }
 	    });
+		
+		Button backToMenu = (Button)findViewById(R.id.back_to_main_button);
+		backToMenu.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent showContent = new Intent(getApplicationContext(), StartPageActivity.class);
+				startActivity(showContent);
+			}
+		});
 	}
 }
