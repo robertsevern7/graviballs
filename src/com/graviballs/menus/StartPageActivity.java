@@ -33,5 +33,13 @@ public class StartPageActivity extends Activity {
 				startActivity(showContent);
 			}
 		});
+		
+		Button exit = (Button)findViewById(R.id.exit_button);
+		exit.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				finish();
+			}
+		});
 	}
 }
