@@ -1,5 +1,6 @@
 package com.graviballs.menus;
 
+import com.graviballs.DataTypes;
 import com.graviballs.R;
 import com.graviballs.game.GameActivity;
 
@@ -20,12 +21,12 @@ public class LevelsMenuActivity extends Activity {
 		setContentView(R.layout.levelgridview);
 
 		GridView gridview = (GridView) findViewById(R.id.levelgridview);
-		SharedPreferences SCORE_CARD = getSharedPreferences("ScoreHolder", 0);
+		SharedPreferences SCORE_CARD = getSharedPreferences(DataTypes.SCORE_HOLDER.name(), 0);
 		gridview.setAdapter(new LevelAdapter(this, SCORE_CARD));
 		
 		gridview.setOnItemClickListener(new OnItemClickListener() {
 	        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-	        	SharedPreferences CURRENT_LEVEL = getSharedPreferences("CurrentLevel", 0);
+	        	SharedPreferences CURRENT_LEVEL = getSharedPreferences(DataTypes.CURRENT_LEVEL.name(), 0);
 	    		SharedPreferences.Editor editor = CURRENT_LEVEL.edit();
 	    		editor.putInt("level", position);
 	    		editor.commit();

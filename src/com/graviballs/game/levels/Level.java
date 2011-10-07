@@ -36,7 +36,7 @@ public abstract class Level extends Observable {
 	private int elapsedTime = 0;
 	private final SharedPreferences scoreCard;
 	private final SharedPreferences currentLevel;
-	private final int bestTime;
+	private int bestTime;
 	private boolean ended = false;
 	
 	public Level(Resources resources, SharedPreferences scoreCard, SharedPreferences currentLevel) {
@@ -189,6 +189,7 @@ public abstract class Level extends Observable {
 	public void failLevel() {
 		SharedPreferences.Editor editor = currentLevel.edit();
 		editor.putInt("previousAttempt", -1);
+		editor.putInt("bestTime", bestTime);
 		editor.commit();
 		ended = true;
 		setChanged();
@@ -198,6 +199,7 @@ public abstract class Level extends Observable {
 	public void passLevel() {
 		ended = true;
 		if (bestTime < 0 || elapsedTime < bestTime) {
+			bestTime = elapsedTime;
 			SharedPreferences.Editor editor = scoreCard.edit();
 			editor.putInt(getLevelIdentifier(), elapsedTime);
 			editor.commit();

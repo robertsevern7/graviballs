@@ -1,5 +1,6 @@
 package com.graviballs.menus;
 
+import com.graviballs.DataTypes;
 import com.graviballs.R;
 import com.graviballs.TimeUtils;
 import com.graviballs.game.GameActivity;
@@ -18,7 +19,7 @@ public class LevelCompleteActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		CURRENT_LEVEL = getSharedPreferences("CurrentLevel", 0);
+		CURRENT_LEVEL = getSharedPreferences(DataTypes.CURRENT_LEVEL.name(), 0);
 		setContentView(R.layout.level_complete);
 		
 		//TODO get best time and last attempt
@@ -32,7 +33,10 @@ public class LevelCompleteActivity extends Activity {
 			completeText.append("Level Complete\n");
 			completeText.append("You did it in " + TimeUtils.justParsingTheTime(previousAttempt) + "\n");
 		}
-		completeText.append("Best time: " + TimeUtils.justParsingTheTime(bestTime));
+		
+		if (bestTime != -1) {
+			completeText.append("Best time: " + TimeUtils.justParsingTheTime(bestTime));
+		}
 	
 		Button startMenu = (Button)findViewById(R.id.start_menu_button);
 		startMenu.setOnClickListener(new OnClickListener() {

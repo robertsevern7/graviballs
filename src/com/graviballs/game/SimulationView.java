@@ -13,6 +13,7 @@ import android.util.DisplayMetrics;
 import android.view.Surface;
 import android.view.View;
 
+import com.graviballs.DataTypes;
 import com.graviballs.game.levels.Level;
 import com.graviballs.game.levels.Level1;
 import com.graviballs.game.levels.Level2;
@@ -66,8 +67,8 @@ public class SimulationView extends View implements SensorEventListener {
 	}
 
 	private Level getLevel() {
-		SharedPreferences SCORE_CARD = accelerometerPlayActivity.getSharedPreferences("ScoreHolder", 0);
-		SharedPreferences CURRENT_LEVEL = accelerometerPlayActivity.getSharedPreferences("CurrentLevel", 0);
+		SharedPreferences SCORE_CARD = accelerometerPlayActivity.getSharedPreferences(DataTypes.SCORE_HOLDER.name(), 0);
+		SharedPreferences CURRENT_LEVEL = accelerometerPlayActivity.getSharedPreferences(DataTypes.CURRENT_LEVEL.name(), 0);
 		
 		switch (CURRENT_LEVEL.getInt("level", -1)) {
 			case 0: return new Level1(getResources(), SCORE_CARD, CURRENT_LEVEL);
