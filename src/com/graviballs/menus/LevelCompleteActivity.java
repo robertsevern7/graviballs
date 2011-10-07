@@ -42,8 +42,8 @@ public class LevelCompleteActivity extends Activity {
 		startMenu.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent showContent = new Intent(getApplicationContext(), StartPageActivity.class);
-				startActivity(showContent);
+				//Only the StartPageActivity doesn't get closed, so this will take us back to the first page
+				finish();
 			}
 		});
 		
@@ -53,6 +53,7 @@ public class LevelCompleteActivity extends Activity {
 			public void onClick(View v) {
 				Intent showContent = new Intent(getApplicationContext(), LevelsMenuActivity.class);
 				startActivity(showContent);
+				finish();
 			}
 		});
 		
@@ -62,6 +63,7 @@ public class LevelCompleteActivity extends Activity {
 			public void onClick(View v) {
 				Intent showContent = new Intent(getApplicationContext(), GameActivity.class);
 				startActivity(showContent);
+				finish();
 			}
 		});
 		
@@ -75,6 +77,7 @@ public class LevelCompleteActivity extends Activity {
 				editor.commit();
 				Intent showContent = new Intent(getApplicationContext(), GameActivity.class);
 				startActivity(showContent);
+				finish();
 			}
 		});
 	}

@@ -56,6 +56,7 @@ public class GameActivity extends Activity implements Observer {
     	mSimulationView.stopSimulation();
 		Intent showContent = new Intent(getApplicationContext(), LevelCompleteActivity.class);
 		startActivity(showContent);
+		finish();
 	}
 
 }

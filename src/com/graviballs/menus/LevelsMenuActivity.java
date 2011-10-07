@@ -35,6 +35,7 @@ public class LevelsMenuActivity extends Activity {
 	    		
 	    		Intent showContent = new Intent(getApplicationContext(), GameActivity.class);
 	    		startActivity(showContent);
+	    		finish();
 	        }
 	    });
 		
@@ -42,8 +43,8 @@ public class LevelsMenuActivity extends Activity {
 		backToMenu.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent showContent = new Intent(getApplicationContext(), StartPageActivity.class);
-				startActivity(showContent);
+				//Only the StartPageActivity doesn't get closed, so this will take us back to the first page
+				finish();
 			}
 		});
 	}
