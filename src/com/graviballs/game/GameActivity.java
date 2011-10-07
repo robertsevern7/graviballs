@@ -4,6 +4,7 @@ import java.util.Observable;
 import java.util.Observer;
 import com.graviballs.menus.LevelCompleteActivity;
 import android.view.*;
+import android.view.ContextMenu.ContextMenuInfo;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -35,6 +36,8 @@ public class GameActivity extends Activity implements Observer {
         mSimulationView = new SimulationView(this, this);
         setContentView(mSimulationView);
         mSimulationView.getGameLevel().addObserver(this);
+        
+        registerForContextMenu(mSimulationView);
     }
 
 	@Override
@@ -58,5 +61,4 @@ public class GameActivity extends Activity implements Observer {
 		startActivity(showContent);
 		finish();
 	}
-
 }

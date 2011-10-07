@@ -9,6 +9,9 @@
     <Button android:id="@+id/quick_play_button"
     		style="@style/Button"
             android:text="Continue Game" />
+    <Button android:id="@+id/instructions_button"
+    		style="@style/Button"
+            android:text="Instructions" />
     <Button android:id="@+id/exit_button"
     		style="@style/Button"
             android:text="Quit Game" />

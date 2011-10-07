@@ -34,6 +34,15 @@ public class StartPageActivity extends Activity {
 			}
 		});
 		
+		Button instructions = (Button)findViewById(R.id.instructions_button);
+		instructions.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent showContent = new Intent(getApplicationContext(), InstructionsActivity.class);
+				startActivity(showContent);
+			}
+		});
+		
 		Button exit = (Button)findViewById(R.id.exit_button);
 		exit.setOnClickListener(new OnClickListener() {
 			@Override

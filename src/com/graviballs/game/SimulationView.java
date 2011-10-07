@@ -117,7 +117,6 @@ public class SimulationView extends View implements SensorEventListener {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		//TODO render this once. And make it not wood
 		final long now = mSensorTimeStamp + (System.nanoTime() - mCpuTimeStamp);
 		level.drawLevel(canvas, now, mSensorX, mSensorY, mXOrigin, mYOrigin, mHorizontalBound, mVerticalBound);
 		invalidate();
