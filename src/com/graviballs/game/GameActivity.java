@@ -4,7 +4,6 @@ import java.util.Observable;
 import java.util.Observer;
 import com.graviballs.menus.LevelCompleteActivity;
 import android.view.*;
-import android.view.ContextMenu.ContextMenuInfo;
 
 import android.app.Activity;
 import android.content.Intent;
