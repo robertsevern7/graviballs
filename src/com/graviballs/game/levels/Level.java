@@ -38,6 +38,10 @@ public abstract class Level extends Observable {
 	private final SharedPreferences currentLevel;
 	private int bestTime;
 	private boolean ended = false;
+	private boolean paused = false;
+	private long timePaused = 0;
+	private long totalTimePaused = 0;
+	private long pauseTime = 0;
 	
 	public Level(Resources resources, SharedPreferences scoreCard, SharedPreferences currentLevel) {
 		this.scoreCard = scoreCard;
@@ -89,9 +93,24 @@ public abstract class Level extends Observable {
 		canvas.drawText("Time taken: " + TimeUtils.justParsingTheTime(elapsedTime), 10, 220, textPaint);
 	}
 	
+	public void pause() {
+		pauseTime = System.nanoTime();
+		if (!paused) {
+			totalTimePaused += timePaused;
+		}
+		
+		paused = !paused;
+	}
+	
 	public void drawLevel(Canvas canvas, final long now, final float mSensorX, final float mSensorY,
 			final float mXOrigin, final float mYOrigin,
 			final float mHorizontalBound, final float mVerticalBound) {
+		if (paused) {
+			timePaused = (now - pauseTime);
+		}
+		
+		final long timeToUse = now - timePaused - totalTimePaused;
+		
 		if (ended) {
 			return;
 		}
@@ -100,39 +119,47 @@ public abstract class Level extends Observable {
 		
 		addBalls();
 		
-		timeToAddNewBall(now);
+		timeToAddNewBall(timeToUse);
 		
-        ballBag.update(mSensorX, mSensorY, now, mHorizontalBound, mVerticalBound);
+		if (!paused) {
+            ballBag.update(mSensorX, mSensorY, timeToUse, mHorizontalBound, mVerticalBound);
+		}
         
         final Ballable mainBall = ballBag.getMainBall();
         drawTheBallBag(canvas, mXOrigin, mYOrigin, mHorizontalBound, mVerticalBound, mainBall);
         
         processDeflectors(mHorizontalBound, mVerticalBound, mainBall);
-        
+        	
         drawMainBall(canvas, mXOrigin, mYOrigin, mainBall);
         
         drawIncidentals(canvas, mXOrigin, mYOrigin, mHorizontalBound, mVerticalBound, mainBall);
         
         if (startTime == null) {
-			startTime = now;
+			startTime = timeToUse;
 		}
 		
-		drawText(canvas, now);
+		drawText(canvas, timeToUse, mHorizontalBound, mVerticalBound);
 	}
 
-	private void drawText(Canvas canvas, final long now) {
+	private void drawText(Canvas canvas, final long now, final float mHorizontalBound, final float mVerticalBound) {
 		elapsedTime = getTimeInSeconds(now - startTime);
 		final int timeRemaining = getTimeLimit() - elapsedTime;
 		
 		if (timeRemaining <= 0 ) {
 			failLevel();
-		}
+		} 
 		
 		canvas.drawText("Time Remaining: " + TimeUtils.justParsingTheTime(timeRemaining), 5, 25, textPaint);
 		canvas.drawText("Balls removed: " + totalBallsScored + "/" + getTotalBallCount(), 5, 50, textPaint);
 		if (bestTime > 0) {
 			canvas.drawText("Best: " + TimeUtils.justParsingTheTime(bestTime), 5, 75, textPaint);
 		}
+		
+		//TODO use an image and add a click event
+		//final int widthInPixels = (int) (2 * mMetersToPixelsX * mHorizontalBound);
+		//final Rect rectangle = new Rect(widthInPixels - 30, 5, widthInPixels, 25);
+		
+		//canvas.drawRect(rectangle, textPaint);
 	}
 
 	private void drawIncidentals(Canvas canvas, final float mXOrigin,

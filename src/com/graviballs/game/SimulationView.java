@@ -10,6 +10,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
 
@@ -128,5 +129,12 @@ public class SimulationView extends View implements SensorEventListener {
 	
 	public Level getGameLevel() {
 		return this.level;
+	}
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent e) {
+    	super.onTouchEvent(e);
+    	level.pause();
+		return false;
 	}
 }
