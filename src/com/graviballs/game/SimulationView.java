@@ -10,7 +10,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.DisplayMetrics;
-import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
 
@@ -35,23 +34,23 @@ public class SimulationView extends View implements SensorEventListener {
 	private float mHorizontalBound;
 	private float mVerticalBound;
 	private final Level level;
-	private GameActivity accelerometerPlayActivity;
+	private GameActivity gameActivity;
 
 	public void startSimulation() {
-		accelerometerPlayActivity.mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
+		gameActivity.mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
 	}
 
 	public void stopSimulation() {
-		accelerometerPlayActivity.mSensorManager.unregisterListener(this);
+		gameActivity.mSensorManager.unregisterListener(this);
 	}
 
-	public SimulationView(GameActivity accelerometerPlayActivity, Context context) {
+	public SimulationView(GameActivity gameActivity, Context context) {
 		super(context);
-		this.accelerometerPlayActivity = accelerometerPlayActivity;
-		mAccelerometer = accelerometerPlayActivity.mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		this.gameActivity = gameActivity;
+		mAccelerometer = gameActivity.mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
 		DisplayMetrics metrics = new DisplayMetrics();
-		accelerometerPlayActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		gameActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		mXDpi = metrics.xdpi;
 		mYDpi = metrics.ydpi;
 		mMetersToPixelsX = mXDpi / 0.0254f;
@@ -68,8 +67,8 @@ public class SimulationView extends View implements SensorEventListener {
 	}
 
 	private Level getLevel() {
-		SharedPreferences SCORE_CARD = accelerometerPlayActivity.getSharedPreferences(DataTypes.SCORE_HOLDER.name(), 0);
-		SharedPreferences CURRENT_LEVEL = accelerometerPlayActivity.getSharedPreferences(DataTypes.CURRENT_LEVEL.name(), 0);
+		SharedPreferences SCORE_CARD = gameActivity.getSharedPreferences(DataTypes.SCORE_HOLDER.name(), 0);
+		SharedPreferences CURRENT_LEVEL = gameActivity.getSharedPreferences(DataTypes.CURRENT_LEVEL.name(), 0);
 		
 		switch (CURRENT_LEVEL.getInt("level", -1)) {
 			case 0: return new Level1(getResources(), SCORE_CARD, CURRENT_LEVEL);
@@ -93,7 +92,7 @@ public class SimulationView extends View implements SensorEventListener {
 		if (event.sensor.getType() != Sensor.TYPE_ACCELEROMETER)
 			return;
 
-		switch (accelerometerPlayActivity.mDisplay.getOrientation()) {
+		switch (gameActivity.mDisplay.getOrientation()) {
 			case Surface.ROTATION_0:
 				mSensorX = event.values[0];
 				mSensorY = event.values[1];
@@ -131,10 +130,7 @@ public class SimulationView extends View implements SensorEventListener {
 		return this.level;
 	}
 	
-	@Override
-	public boolean onTouchEvent(MotionEvent e) {
-    	super.onTouchEvent(e);
-    	level.pause();
-		return false;
+	public void pause() {
+		level.pause();
 	}
 }
