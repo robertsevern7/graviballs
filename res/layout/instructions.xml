@@ -13,7 +13,8 @@
 You control the grey ball by tilting your phone.\n\n
 The other moving balls are attracted to you.\n\n
 If they hit you then you have failed.\n\n
-Guide these balls into the goals withing the time limit to complete the level" />
+Guide these balls into the goals withing the time limit to complete the level\n\n
+Tap the screen in the game to pause" />
     <Button android:id="@+id/main_menu_button"
     		style="@style/Button"
     		android:layout_height="wrap_content" android:layout_weight="5"
