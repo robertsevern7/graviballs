@@ -75,6 +75,10 @@ public abstract class Level extends Observable {
 		this.mVerticalBound = mVerticalBound;
 		ballBag.setBounds(mHorizontalBound, mVerticalBound);
 		ballBag.getMainBall().setInitialPos(getInitialMainBallPosition().first, getInitialMainBallPosition().second);
+		
+		if (ballBag.getAttackBallLaunchPoints().isEmpty()) {
+			ballBag.setAttackBallLaunchPoints(getAttackBallLaunchPoints());
+		}
 	}
 	
 	List<Goal> getGoals() {
@@ -93,6 +97,14 @@ public abstract class Level extends Observable {
 		return new Pair<Float, Float>(widthInPixels, heightInPixels);
 	}
 	
+	public List<Pair<Float, Float>> getAttackBallLaunchPoints() {
+		List<Pair<Float, Float>> launchPoints = new ArrayList<Pair<Float, Float>>();
+		launchPoints.add(new Pair<Float, Float>(2*mMetersToPixelsX * mHorizontalBound, 2*mMetersToPixelsY * mVerticalBound));
+		launchPoints.add(new Pair<Float, Float>(0f, 2*mMetersToPixelsY * mVerticalBound));
+		
+		return launchPoints;
+	}
+	
 	public void setMetersToPixels(final float mMetersToPixelsX, final float mMetersToPixelsY) {
 		this.mMetersToPixelsX = mMetersToPixelsX;
 		this.mMetersToPixelsY = mMetersToPixelsY;
@@ -108,8 +120,16 @@ public abstract class Level extends Observable {
 	}
 	
 	public void drawMainBallStartPoint(Canvas canvas) {
+		cornerPaint.setColor(Color.argb(200, 255, 255, 255));
 		final int widthInPixels = (int) (2 * mMetersToPixelsX * mHorizontalBound);
 		canvas.drawCircle(widthInPixels, 0, 30, cornerPaint);
+	}
+	
+	public void drawAttackBallLaunchPoints(Canvas canvas) {
+		cornerPaint.setColor(Color.argb(100, 255, 20, 20));
+		for (Pair<Float, Float> launchPoints : getAttackBallLaunchPoints()) {
+			canvas.drawCircle(launchPoints.first, launchPoints.second, 30, cornerPaint);
+		}
 	}
 	
 	public void drawLevel(Canvas canvas, final long now, final float mSensorX, final float mSensorY,
@@ -125,6 +145,7 @@ public abstract class Level extends Observable {
 		}
 		
 		drawMainBallStartPoint(canvas);
+		drawAttackBallLaunchPoints(canvas);
 		
 		addBalls();
 		
@@ -163,12 +184,6 @@ public abstract class Level extends Observable {
 		if (bestTime > 0) {
 			canvas.drawText("Best: " + TimeUtils.justParsingTheTime(bestTime), 5, 75, textPaint);
 		}
-		
-		//TODO use an image and add a click event
-		//final int widthInPixels = (int) (2 * mMetersToPixelsX * mHorizontalBound);
-		//final Rect rectangle = new Rect(widthInPixels - 30, 5, widthInPixels, 25);
-		
-		//canvas.drawRect(rectangle, textPaint);
 	}
 
 	private void drawIncidentals(Canvas canvas, final float mXOrigin,

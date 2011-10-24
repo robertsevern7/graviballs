@@ -95,8 +95,8 @@ public abstract class Ballable {
 		setmPosX(x);
 		setmPosY(y);
 		
-		initialSpeedX = (float) (-Math.random()  * x);
-		initialSpeedY = (float) (-Math.random()  * y);
+		initialSpeedX = (float) (-Math.random() * x * 0.0005);
+		initialSpeedY = (float) (-Math.random() * y * 0.0005);
 	}
 
 	public float getmPosX() {

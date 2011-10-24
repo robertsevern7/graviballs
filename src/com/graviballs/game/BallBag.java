@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import android.util.Pair;
+
 public class BallBag {
 	private static final float sFriction = 0.07f;
 	private long mLastT;
@@ -12,6 +14,7 @@ public class BallBag {
     private final Ballable mainBall;
     private float mHorizontalBound = 0;
     private float mVerticalBound = 0;
+    List<Pair<Float, Float>> launchPoints = new ArrayList<Pair<Float, Float>>();
     
     public BallBag() {
     	mainBall = new Ballocks(sFriction, 0.002f);
@@ -22,23 +25,29 @@ public class BallBag {
 		this.mVerticalBound = mVerticalBound;
 	}
     
+    public void setAttackBallLaunchPoints(List<Pair<Float, Float>> launchPoints) {
+    	this.launchPoints = launchPoints;
+	}
+    
+    public List<Pair<Float, Float>> getAttackBallLaunchPoints() {
+    	return launchPoints;
+	}
+    
     private Ballable generateRandomBall() {
     	final Ballable ball = new AttackingBallacks(generateRandomRadius(), mainBall);
-    	final int xRandomSide = (Math.random() < 0.5) ? -1 : 1;
-    	final int yRandomSide = (Math.random() < 0.5) ? -1 : 1;
     	
-    	final float initialY;
-    	final float initialX;
+    	final int launchOptions = launchPoints.size();
+    	final double scaledRandom = Math.random() * launchOptions;
     	
-    	if (Math.random() < 0.5) {
-    		initialX = (float) (mHorizontalBound * xRandomSide);
-    		initialY = (float) (mVerticalBound * Math.random() * yRandomSide);
-    	} else {
-    		initialX = (float) (mHorizontalBound * Math.random() * xRandomSide);
-    		initialY = (float) (mVerticalBound * yRandomSide);
+    	Pair<Float, Float> startPoint = launchPoints.get(0);
+    	for (int i = 0; i < launchOptions; ++i) {
+    		if (scaledRandom > i && scaledRandom < i + 1) {
+    			startPoint = launchPoints.get(i);
+    			break;
+    		}
     	}
-        ball.setInitialPos(initialX, initialY);
-        
+    	
+        ball.setInitialPos(startPoint.first - mHorizontalBound, -startPoint.second + mVerticalBound);
         return ball;
     }
     
