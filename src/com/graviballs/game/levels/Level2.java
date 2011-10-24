@@ -7,7 +7,6 @@ import com.graviballs.game.Goal;
 
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.util.Pair;
 
 public class Level2 extends Level {
 
@@ -43,11 +42,6 @@ public class Level2 extends Level {
 	@Override
 	int getTotalBallCount() {
 		return 4;
-	}
-	
-	@Override
-	Pair<Float, Float> getInitialMainBallPosition() {
-		return new Pair<Float, Float>(0f, 0.01f);
 	}
 	
 	@Override

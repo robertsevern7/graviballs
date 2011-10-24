@@ -85,6 +85,7 @@ public class SimulationView extends View implements SensorEventListener {
 		mYOrigin = h * 0.5f;
 		mHorizontalBound = (w / mMetersToPixelsX) * 0.5f;
 		mVerticalBound = (h / mMetersToPixelsY) * 0.5f;
+		level.setBounds(mHorizontalBound, mVerticalBound);
 	}
 
 	@Override
@@ -118,7 +119,7 @@ public class SimulationView extends View implements SensorEventListener {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		final long now = mSensorTimeStamp + (System.nanoTime() - mCpuTimeStamp);
-		level.drawLevel(canvas, now, mSensorX, mSensorY, mXOrigin, mYOrigin, mHorizontalBound, mVerticalBound);
+		level.drawLevel(canvas, now, mSensorX, mSensorY, mXOrigin, mYOrigin);
 		invalidate();
 	}
 

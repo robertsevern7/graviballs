@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import android.util.Pair;
-
 public class BallBag {
 	private static final float sFriction = 0.07f;
 	private long mLastT;
@@ -15,10 +13,14 @@ public class BallBag {
     private float mHorizontalBound = 0;
     private float mVerticalBound = 0;
     
-    public BallBag(Pair<Float, Float> initialMainBallPositions) {
+    public BallBag() {
     	mainBall = new Ballocks(sFriction, 0.002f);
-    	mainBall.setInitialPos(initialMainBallPositions.first, initialMainBallPositions.second);
     }
+    
+    public void setBounds(final float mHorizontalBound, final float mVerticalBound) {
+		this.mHorizontalBound = mHorizontalBound;
+		this.mVerticalBound = mVerticalBound;
+	}
     
     private Ballable generateRandomBall() {
     	final Ballable ball = new AttackingBallacks(generateRandomRadius(), mainBall);
@@ -73,14 +75,8 @@ public class BallBag {
     public Iterator<Ballable> getIterator() {
     	return mBalls.iterator();
     }
-    
-    public void updateBounds(float mHorizontalBound, float mVerticalBound) {
-    	this.mHorizontalBound = mHorizontalBound;
-    	this.mVerticalBound = mVerticalBound;
-    }
 
-    public void update(float sx, float sy, long now, float mHorizontalBound, float mVerticalBound) {
-    	updateBounds(mHorizontalBound, mVerticalBound);
+    public void update(float sx, float sy, long now) {
     	updatePositions(sx, sy, now);
 
         mainBall.resolveCollisionWithBounds(mHorizontalBound, mVerticalBound);

@@ -23,15 +23,18 @@ import android.util.Pair;
 public abstract class Level extends Observable {
 	private final List<Goal> goals = new ArrayList<Goal>();
 	private final List<Deflector> deflectors = new ArrayList<Deflector>();
-	private final BallBag ballBag = new BallBag(getInitialMainBallPosition());
+	private final BallBag ballBag = new BallBag();
 	private final Resources resources;
 	float mMetersToPixelsX = 0;
 	float mMetersToPixelsY = 0;
+	float mHorizontalBound = 0; 
+	float mVerticalBound = 0;
 	long lastBallRelease = 0;
 	//TODO get the size earlier, so I don't have to add this boolean into the update logic
 	private boolean initialBallsAdded = false;
 	private Long startTime;
 	private final Paint textPaint = new Paint();
+	private final Paint cornerPaint = new Paint();
 	private int totalBallsScored = 0;
 	private int elapsedTime = 0;
 	private final SharedPreferences scoreCard;
@@ -54,6 +57,9 @@ public abstract class Level extends Observable {
 
 		textPaint.setStyle(Paint.Style.FILL);
 		textPaint.setColor(Color.WHITE);
+		
+		cornerPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+		cornerPaint.setColor(Color.DKGRAY);
 	
 		bestTime = scoreCard.getInt(getLevelIdentifier(), -1);
 	}
@@ -63,6 +69,13 @@ public abstract class Level extends Observable {
 	abstract void setUpDeflectors();
 	abstract int getTotalBallCount();
 	abstract String getLevelIdentifier();
+	
+	public void setBounds(final float mHorizontalBound, final float mVerticalBound) {
+		this.mHorizontalBound = mHorizontalBound;
+		this.mVerticalBound = mVerticalBound;
+		ballBag.setBounds(mHorizontalBound, mVerticalBound);
+		ballBag.getMainBall().setInitialPos(getInitialMainBallPosition().first, getInitialMainBallPosition().second);
+	}
 	
 	List<Goal> getGoals() {
 		return goals;
@@ -74,23 +87,15 @@ public abstract class Level extends Observable {
 	
 	abstract int getBallReleaseTiming();
 	abstract int getTimeLimit();
-	abstract Pair<Float, Float> getInitialMainBallPosition();
+	public Pair<Float, Float> getInitialMainBallPosition() {
+		final float widthInPixels = (2 * mMetersToPixelsX * mHorizontalBound);
+		final float heightInPixels = (2 * mMetersToPixelsY * mVerticalBound);
+		return new Pair<Float, Float>(widthInPixels, heightInPixels);
+	}
 	
 	public void setMetersToPixels(final float mMetersToPixelsX, final float mMetersToPixelsY) {
 		this.mMetersToPixelsX = mMetersToPixelsX;
 		this.mMetersToPixelsY = mMetersToPixelsY;
-	}
-	
-	public void drawFailScreen(Canvas canvas) {
-		textPaint.setTextSize(40);
-		canvas.drawText("Level Failed", 5, 175, textPaint);
-	}
-	
-	public void drawPassScreen(Canvas canvas) {
-		textPaint.setTextSize(40);
-		canvas.drawText("Level Passed", 5, 175, textPaint);
-		textPaint.setTextSize(30);
-		canvas.drawText("Time taken: " + TimeUtils.justParsingTheTime(elapsedTime), 10, 220, textPaint);
 	}
 	
 	public void pause() {
@@ -102,9 +107,13 @@ public abstract class Level extends Observable {
 		paused = !paused;
 	}
 	
+	public void drawMainBallStartPoint(Canvas canvas) {
+		final int widthInPixels = (int) (2 * mMetersToPixelsX * mHorizontalBound);
+		canvas.drawCircle(widthInPixels, 0, 30, cornerPaint);
+	}
+	
 	public void drawLevel(Canvas canvas, final long now, final float mSensorX, final float mSensorY,
-			final float mXOrigin, final float mYOrigin,
-			final float mHorizontalBound, final float mVerticalBound) {
+			final float mXOrigin, final float mYOrigin) {
 		if (paused) {
 			timePaused = (now - pauseTime);
 		}
@@ -115,33 +124,33 @@ public abstract class Level extends Observable {
 			return;
 		}
 		
-		ballBag.updateBounds(mHorizontalBound, mVerticalBound);
+		drawMainBallStartPoint(canvas);
 		
 		addBalls();
 		
 		timeToAddNewBall(timeToUse);
 		
 		if (!paused) {
-            ballBag.update(mSensorX, mSensorY, timeToUse, mHorizontalBound, mVerticalBound);
+            ballBag.update(mSensorX, mSensorY, timeToUse);
 		}
         
         final Ballable mainBall = ballBag.getMainBall();
-        drawTheBallBag(canvas, mXOrigin, mYOrigin, mHorizontalBound, mVerticalBound, mainBall);
+        drawTheBallBag(canvas, mXOrigin, mYOrigin, mainBall);
         
-        processDeflectors(mHorizontalBound, mVerticalBound, mainBall);
+        processDeflectors(mainBall);
         	
         drawMainBall(canvas, mXOrigin, mYOrigin, mainBall);
         
-        drawIncidentals(canvas, mXOrigin, mYOrigin, mHorizontalBound, mVerticalBound, mainBall);
+        drawIncidentals(canvas, mXOrigin, mYOrigin, mainBall);
         
         if (startTime == null) {
 			startTime = timeToUse;
 		}
 		
-		drawText(canvas, timeToUse, mHorizontalBound, mVerticalBound);
+		drawText(canvas, timeToUse);
 	}
 
-	private void drawText(Canvas canvas, final long now, final float mHorizontalBound, final float mVerticalBound) {
+	private void drawText(Canvas canvas, final long now) {
 		elapsedTime = getTimeInSeconds(now - startTime);
 		final int timeRemaining = getTimeLimit() - elapsedTime;
 		
@@ -163,10 +172,9 @@ public abstract class Level extends Observable {
 	}
 
 	private void drawIncidentals(Canvas canvas, final float mXOrigin,
-			final float mYOrigin, final float mHorizontalBound,
-			final float mVerticalBound, final Ballable mainBall) {
+			final float mYOrigin, final Ballable mainBall) {
 		for (final Goal goal : getGoals()) {
-        	if (goalBallCollision(goal, mainBall, mHorizontalBound, mVerticalBound)) {
+        	if (goalBallCollision(goal, mainBall)) {
 	        	failLevel();
         	}
         	canvas.drawBitmap(goal.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), mXOrigin - goal.getRadius() * mMetersToPixelsX + (goal.getXProportion() * mHorizontalBound)* mMetersToPixelsX, mYOrigin - goal.getRadius() * mMetersToPixelsY + (goal.getYProportion() * mVerticalBound) * mMetersToPixelsY, null);
@@ -185,18 +193,16 @@ public abstract class Level extends Observable {
         canvas.drawBitmap(mainBall.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), x, y, null);
 	}
 
-	private void processDeflectors(final float mHorizontalBound,
-			final float mVerticalBound, final Ballable mainBall) {
+	private void processDeflectors(final Ballable mainBall) {
 		for (final Deflector deflector : getDeflectors()) {
-        	if (goalBallCollision(deflector, mainBall, mHorizontalBound, mVerticalBound)) {
-        		deflect(deflector, mainBall, mHorizontalBound, mVerticalBound);
+        	if (goalBallCollision(deflector, mainBall)) {
+        		deflect(deflector, mainBall);
         	}
         }
 	}
 
 	private void drawTheBallBag(Canvas canvas, final float mXOrigin,
-			final float mYOrigin, final float mHorizontalBound,
-			final float mVerticalBound, final Ballable mainBall) {
+			final float mYOrigin, final Ballable mainBall) {
 		final Iterator<Ballable> iter = ballBag.getIterator();
         
         while(iter.hasNext()) {
@@ -204,12 +210,12 @@ public abstract class Level extends Observable {
             final float x1 = mXOrigin + (ball.getmPosX() - ball.getRadius()) * mMetersToPixelsX;
             final float y1 = mYOrigin - (ball.getmPosY() + ball.getRadius()) * mMetersToPixelsY;
             
-            if (ballBallCollision(mainBall, ball, mHorizontalBound, mVerticalBound)) {
+            if (ballBallCollision(mainBall, ball)) {
             	failLevel();
             }
             
             for (final Goal goal : getGoals()) {
-            	if (goalBallCollision(goal, ball, mHorizontalBound, mVerticalBound)) {
+            	if (goalBallCollision(goal, ball)) {
             		++totalBallsScored;
             		iter.remove();
             		
@@ -219,7 +225,7 @@ public abstract class Level extends Observable {
             	}
             }
             
-            processDeflectors(mHorizontalBound, mVerticalBound, ball);
+            processDeflectors(ball);
             
             canvas.drawBitmap(ball.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), x1, y1, null);
         }
@@ -278,7 +284,7 @@ public abstract class Level extends Observable {
 		return (int) (time / 1000000000);
 	}
 	
-	private void deflect(final Deflector deflector, final Ballable ball, final float mHorizontalBound, final float mVerticalBound) {
+	private void deflect(final Deflector deflector, final Ballable ball) {
 		final double xDist = ball.getmPosX() - deflector.getXProportion() * mHorizontalBound;
 		final double yDist = ball.getmPosY() - deflector.getYProportion() * mVerticalBound;
 		
@@ -319,14 +325,14 @@ public abstract class Level extends Observable {
 	}
 	
 	//TODO common interface so we can compare any 2 rendered objects
-	private boolean goalBallCollision(final ScreenItem screenItem, final Ballable ball, final float mHorizontalBound, final float mVerticalBound) {
+	private boolean goalBallCollision(final ScreenItem screenItem, final Ballable ball) {
 		final double xDist = screenItem.getXProportion() * mHorizontalBound - ball.getmPosX();
 		final double yDist = -screenItem.getYProportion() * mVerticalBound - ball.getmPosY();
 		final double collisionDist = (screenItem.getRadius() + ball.getRadius());
 		return (Math.pow(xDist, 2) + Math.pow(yDist, 2) < Math.pow(collisionDist, 2));
 	}
 	
-	private boolean ballBallCollision(final Ballable ball1, final Ballable ball2, final float mHorizontalBound, final float mVerticalBound) {
+	private boolean ballBallCollision(final Ballable ball1, final Ballable ball2) {
 		final double xDist = ball1.getmPosX() - ball2.getmPosX();
 		final double yDist = ball1.getmPosY() - ball2.getmPosY();
 		final double collisionDist = (ball1.getRadius() + ball2.getRadius());
