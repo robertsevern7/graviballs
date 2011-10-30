@@ -31,7 +31,7 @@ public class Level9 extends Level {
 		
 		float xPos = -0.6f;
 		while(xPos <= 0.6) {
-			deflectors.add(new Deflector(xPos, 0.15f, 0.0015f));
+			deflectors.add(new Deflector(xPos, 0.2f, 0.0015f));
 			deflectors.add(new Deflector(xPos, -0.35f, 0.0015f));
 			xPos += 0.15f;
 		}

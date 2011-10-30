@@ -40,6 +40,7 @@ public class Level8 extends Level {
 		deflectors.add(new Deflector(-0.3f, -0.53f, 0.0015f));
 		deflectors.add(new Deflector(-0.53f, -0.3f, 0.0015f));
 		deflectors.add(new Deflector(-0.2f, -0.43f, 0.0015f));
+		deflectors.add(new Deflector(-0.43f, -0.2f, 0.0015f));
 	}
 
 	@Override

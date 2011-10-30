@@ -30,41 +30,41 @@ public class Level5 extends Level {
 	@Override
 	void setUpDeflectors() {
 		final List<Deflector> deflectors = getDeflectors();
-		deflectors.add(new Deflector(0f, 0f, 0.0015f));
+		//deflectors.add(new Deflector(0f, 0f, 0.0015f));
 		
 		float yPos = -1f;
-		while(yPos <= -0.6) {
+		while(yPos <= -0.8) {
 			deflectors.add(new Deflector(0f, yPos, 0.0015f));
-			yPos += 0.1f;
+			yPos += 0.15f;
 		}
 		
-		yPos = -0.4f;
+		yPos = -0.3f;
 		while(yPos <= 1) {
 			deflectors.add(new Deflector(0f, yPos, 0.0015f));
-			yPos += 0.1f;
+			yPos += 0.15f;
 		}
 		
 		float xPos = -1f;
-		while(xPos < -0.7) {
+		while(xPos < -0.8) {
 			deflectors.add(new Deflector(xPos, 0f, 0.0015f));
-			xPos += 0.15f;
+			xPos += 0.1f;
 		}
 		
 		xPos = -0.3f;
-		while(xPos < 0) {
+		while(xPos < -0.1) {
 			deflectors.add(new Deflector(xPos, 0f, 0.0015f));
-			xPos += 0.15f;
+			xPos += 0.1f;
 		}
-		xPos = 0.15f;
+		xPos = 0.1f;
 		while(xPos <= 0.3) {
 			deflectors.add(new Deflector(xPos, 0f, 0.0015f));
-			xPos += 0.15f;
+			xPos += 0.1f;
 		}
 		
 		xPos = 0.7f;
 		while(xPos < 1) {
 			deflectors.add(new Deflector(xPos, 0f, 0.0015f));
-			xPos += 0.15f;
+			xPos += 0.1f;
 		}
 	}
 
