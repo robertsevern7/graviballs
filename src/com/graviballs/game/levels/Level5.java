@@ -45,7 +45,7 @@ public class Level5 extends Level {
 		}
 		
 		float xPos = -1f;
-		while(xPos <= -0.7) {
+		while(xPos < -0.7) {
 			deflectors.add(new Deflector(xPos, 0f, 0.0015f));
 			xPos += 0.15f;
 		}
@@ -56,7 +56,7 @@ public class Level5 extends Level {
 			xPos += 0.15f;
 		}
 		xPos = 0.15f;
-		while(xPos < 0.3) {
+		while(xPos <= 0.3) {
 			deflectors.add(new Deflector(xPos, 0f, 0.0015f));
 			xPos += 0.15f;
 		}
