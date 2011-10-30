@@ -16,6 +16,7 @@ import android.view.View;
 import com.graviballs.DataTypes;
 import com.graviballs.game.levels.Level;
 import com.graviballs.game.levels.Level1;
+import com.graviballs.game.levels.Level10;
 import com.graviballs.game.levels.Level2;
 import com.graviballs.game.levels.Level3;
 import com.graviballs.game.levels.Level4;
@@ -86,6 +87,7 @@ public class SimulationView extends View implements SensorEventListener {
 			case 6: return new Level7(getResources(), SCORE_CARD, CURRENT_LEVEL);
 			case 7: return new Level8(getResources(), SCORE_CARD, CURRENT_LEVEL);
 			case 8: return new Level9(getResources(), SCORE_CARD, CURRENT_LEVEL);
+			case 9: return new Level10(getResources(), SCORE_CARD, CURRENT_LEVEL);
 			default: return new Level1(getResources(), SCORE_CARD, CURRENT_LEVEL);
 		}
 	}
