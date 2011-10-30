@@ -23,19 +23,14 @@ public class Level3 extends Level {
 	@Override
 	void setUpGoals() {
 		final List<Goal> goals = getGoals();
-		goals.add(new Goal(0, 0, 0.003f));
+		goals.add(new Goal(0, -0.33f, 0.002f));
 
 	}
 
 	@Override
 	void setUpDeflectors() {
 		final List<Deflector> deflectors = getDeflectors();
-		deflectors.add(new Deflector(0.33f, 0.33f, 0.002f));
-		
-		//TODO anything offcenter in the y direction doesn't work for deflection
-		deflectors.add(new Deflector(-0.33f, 0.33f, 0.002f));
-		deflectors.add(new Deflector(0.33f, -0.33f, 0.002f));
-		deflectors.add(new Deflector(-0.33f, -0.33f, 0.002f));
+		deflectors.add(new Deflector(0, 0.33f, 0.002f));
 	}
 
 	@Override
@@ -50,7 +45,7 @@ public class Level3 extends Level {
 
 	@Override
 	int getTotalBallCount() {
-		return 5;
+		return 3;
 	}
 	
 	@Override

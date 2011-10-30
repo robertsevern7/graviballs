@@ -18,6 +18,8 @@ import com.graviballs.game.levels.Level;
 import com.graviballs.game.levels.Level1;
 import com.graviballs.game.levels.Level2;
 import com.graviballs.game.levels.Level3;
+import com.graviballs.game.levels.Level4;
+import com.graviballs.game.levels.Level5;
 
 public class SimulationView extends View implements SensorEventListener {
 	private Sensor mAccelerometer;
@@ -74,6 +76,8 @@ public class SimulationView extends View implements SensorEventListener {
 			case 0: return new Level1(getResources(), SCORE_CARD, CURRENT_LEVEL);
 			case 1: return new Level2(getResources(), SCORE_CARD, CURRENT_LEVEL);
 			case 2: return new Level3(getResources(), SCORE_CARD, CURRENT_LEVEL);
+			case 3: return new Level4(getResources(), SCORE_CARD, CURRENT_LEVEL);
+			case 4: return new Level5(getResources(), SCORE_CARD, CURRENT_LEVEL);
 			default: return new Level1(getResources(), SCORE_CARD, CURRENT_LEVEL);
 		}
 	}
