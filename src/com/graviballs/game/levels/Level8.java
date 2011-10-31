@@ -31,9 +31,7 @@ public class Level8 extends Level {
 		
 		deflectors.add(new Deflector(-0.7f, -0.93f, 0.0015f));
 		deflectors.add(new Deflector(-0.93f, -0.7f, 0.0015f));
-		deflectors.add(new Deflector(-0.6f, -0.83f, 0.0015f));
 		deflectors.add(new Deflector(-0.83f, -0.6f, 0.0015f));
-		deflectors.add(new Deflector(-0.5f, -0.73f, 0.0015f));
 		deflectors.add(new Deflector(-0.73f, -0.5f, 0.0015f));
 		deflectors.add(new Deflector(-0.4f, -0.63f, 0.0015f));
 		deflectors.add(new Deflector(-0.63f, -0.4f, 0.0015f));
