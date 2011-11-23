@@ -1,23 +1,19 @@
 package com.graviballs.game.levels;
 
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Observable;
-
-import com.graviballs.TimeUtils;
-import com.graviballs.game.BallBag;
-import com.graviballs.game.Ballable;
-import com.graviballs.game.Deflector;
-import com.graviballs.game.Goal;
-import com.graviballs.game.ScreenItem;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Pair;
+import com.graviballs.TimeUtils;
+import com.graviballs.game.*;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Observable;
 
 
 public abstract class Level extends Observable {
@@ -190,7 +186,7 @@ public abstract class Level extends Observable {
 			final float mYOrigin, final Ballable mainBall) {
 		for (final Goal goal : getGoals()) {
         	if (goalBallCollision(goal, mainBall)) {
-	        	failLevel();
+	        	passLevel();
         	}
         	canvas.drawBitmap(goal.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), mXOrigin - goal.getRadius() * mMetersToPixelsX + (goal.getXProportion() * mHorizontalBound)* mMetersToPixelsX, mYOrigin - goal.getRadius() * mMetersToPixelsY + (goal.getYProportion() * mVerticalBound) * mMetersToPixelsY, null);
         }
@@ -233,15 +229,11 @@ public abstract class Level extends Observable {
             	if (goalBallCollision(goal, ball)) {
             		++totalBallsScored;
             		iter.remove();
-            		
-            		if (totalBallsScored >= getTotalBallCount()) {
-            			passLevel();
-            		}
             	}
             }
             
             processDeflectors(ball);
-            
+
             canvas.drawBitmap(ball.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), x1, y1, null);
         }
 	}
@@ -263,7 +255,7 @@ public abstract class Level extends Observable {
 		}
 	}
 	
-	public void failLevel() {
+	private void failLevel() {
 		SharedPreferences.Editor editor = currentLevel.edit();
 		editor.putInt("previousAttempt", -1);
 		editor.putInt("bestTime", bestTime);
@@ -341,10 +333,10 @@ public abstract class Level extends Observable {
 	}
 	
 	//TODO common interface so we can compare any 2 rendered objects
-	private boolean goalBallCollision(final ScreenItem screenItem, final Ballable ball) {
-		final double xDist = screenItem.getXProportion() * mHorizontalBound - ball.getmPosX();
-		final double yDist = -screenItem.getYProportion() * mVerticalBound - ball.getmPosY();
-		final double collisionDist = (screenItem.getRadius() + ball.getRadius());
+	private boolean goalBallCollision(final CircularScreenItem circularScreenItem, final Ballable ball) {
+		final double xDist = circularScreenItem.getXProportion() * mHorizontalBound - ball.getmPosX();
+		final double yDist = -circularScreenItem.getYProportion() * mVerticalBound - ball.getmPosY();
+		final double collisionDist = (circularScreenItem.getRadius() + ball.getRadius());
 		return (Math.pow(xDist, 2) + Math.pow(yDist, 2) < Math.pow(collisionDist, 2));
 	}
 	

@@ -2,12 +2,12 @@ package com.graviballs.game;
 
 import com.graviballs.R;
 
-public class Goal extends ScreenItem {
+public class Goal extends CircularScreenItem {
 	public Goal(float mPosXProp, float mPosYProp, float radius) {
 		super(mPosXProp, mPosYProp, radius);
 	}
 	
-	protected int getDrawable() {
+	public int getDrawable() {
 		return R.drawable.whitehole; 
 	}
 }

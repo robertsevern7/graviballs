@@ -2,12 +2,12 @@ package com.graviballs.game;
 
 import com.graviballs.R;
 
-public class Deflector extends ScreenItem {
+public class Deflector extends CircularScreenItem {
 	public Deflector(float mPosXProp, float mPosYProp, float radius) {
 		super(mPosXProp, mPosYProp, radius);
 	}
 	
-	protected int getDrawable() {
+	public int getDrawable() {
 		return R.drawable.yellowball; 
 	}
 }
