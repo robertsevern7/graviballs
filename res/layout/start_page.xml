@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_height="fill_parent" android:layout_width="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android" android:layout_gravity="center" android:orientation="vertical">
+    <TextView android:id="@+id/complete_text"
+              style="@style/CodeFont"
+              android:text="Let's Play GraviBalls" />
+    <Button android:id="@+id/play_button"
+    		style="@style/Button"
+            android:text="Play GraviBalls" />
+    <Button android:id="@+id/quick_play_button"
+    		style="@style/Button"
+            android:text="Continue Game" />
+    <Button android:id="@+id/instructions_button"
+    		style="@style/Button"
+            android:text="Instructions" />
+    <Button android:id="@+id/exit_button"
+    		style="@style/Button"
+            android:text="Quit Game" />
+</LinearLayout>
