@@ -70,8 +70,7 @@ public abstract class Level extends Observable {
 		this.mHorizontalBound = mHorizontalBound;
 		this.mVerticalBound = mVerticalBound;
 		ballBag.setBounds(mHorizontalBound, mVerticalBound);
-		ballBag.getMainBall().setInitialPos(getInitialMainBallPosition().first, getInitialMainBallPosition().second);
-		
+
 		if (ballBag.getAttackBallLaunchPoints().isEmpty()) {
 			ballBag.setAttackBallLaunchPoints(getAttackBallLaunchPoints());
 		}
@@ -87,12 +86,7 @@ public abstract class Level extends Observable {
 	
 	abstract int getBallReleaseTiming();
 	abstract int getTimeLimit();
-	public Pair<Float, Float> getInitialMainBallPosition() {
-		final float widthInPixels = (2 * mMetersToPixelsX * mHorizontalBound);
-		final float heightInPixels = (2 * mMetersToPixelsY * mVerticalBound);
-		return new Pair<Float, Float>(widthInPixels, heightInPixels);
-	}
-	
+
 	public List<Pair<Float, Float>> getAttackBallLaunchPoints() {
 		List<Pair<Float, Float>> launchPoints = new ArrayList<Pair<Float, Float>>();
 		launchPoints.add(new Pair<Float, Float>(2*mMetersToPixelsX * mHorizontalBound, 2*mMetersToPixelsY * mVerticalBound));
@@ -213,7 +207,8 @@ public abstract class Level extends Observable {
 	}
 
 	private void drawTheBallBag(Canvas canvas, final float mXOrigin,
-			final float mYOrigin, final Ballable mainBall) {
+								final float mYOrigin, final Ballable mainBall) {
+
 		final Iterator<Ballable> iter = ballBag.getIterator();
         
         while(iter.hasNext()) {

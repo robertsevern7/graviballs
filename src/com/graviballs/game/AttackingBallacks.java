@@ -9,11 +9,12 @@ public class AttackingBallacks extends Ballable {
 	private final float G = 40000f;
 	private boolean computed = false;
 
-	AttackingBallacks(final float radius, final Ballable bigBoy) {
-		super(1, radius);
+	// TODO define friction in ballable
+	public AttackingBallacks(final Ballable bigBoy, final float sFriction, final float mPosXProp, final float mPosYProp, final float radius) {
+		super(sFriction, mPosXProp, mPosYProp, radius);
 		this.bigBoy = bigBoy;
 	}
-	
+
 	@Override
 	public void computePhysics(float sx, float sy, float dT, float dTC) {	
 		if (!computed) {
@@ -39,7 +40,7 @@ public class AttackingBallacks extends Ballable {
         mPosY = (float) (mLastPosY + getVelocity().second * dT - a * Math.pow(dT, 2) * Math.cos(theta) * 0.5);
 	}
 	
-	protected int getDrawable() {
+	public int getDrawable() {
 		return R.drawable.spikyball; 
 	}
 }

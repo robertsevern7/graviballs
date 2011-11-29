@@ -5,8 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 public abstract class CircularScreenItem implements ScreenItem {
-	private final float mPosXProp;
-	private final float mPosYProp;
+	private float mPosXProp;
+	private float mPosYProp;
 	private final float radius;
 	private Bitmap bitmap;
 
@@ -26,6 +26,15 @@ public abstract class CircularScreenItem implements ScreenItem {
 		return mPosYProp;
 	}
 
+	public void setmPosXProp(float mPosXProp) {
+		this.mPosXProp = mPosXProp;
+	}
+
+	public void setmPosYProp(float mPosYProp) {
+		this.mPosYProp = mPosYProp;
+	}
+
+	// TODO NORMALIZE
 	public float getRadius() {
 		return radius;
 	}
