@@ -18,7 +18,7 @@ public class Level1 extends Level {
 	@Override
 	void setUpGoals() {
 		final List<Goal> goals = getGoals();
-		goals.add(new Goal(0, 0, 0.003f));
+		goals.add(new Goal(0, 0));
 	}
 
 	@Override

@@ -148,7 +148,7 @@ public abstract class Level extends Observable {
         final Ballable mainBall = ballBag.getMainBall();
         drawTheBallBag(canvas, mXOrigin, mYOrigin, mainBall);
         
-        processDeflectors(mainBall);
+        //processDeflectors(mainBall);
         	
         drawMainBall(canvas, mXOrigin, mYOrigin, mainBall);
         
@@ -176,26 +176,25 @@ public abstract class Level extends Observable {
 		}
 	}
 
-	private void drawIncidentals(Canvas canvas, final float mXOrigin,
-			final float mYOrigin, final Ballable mainBall) {
+	private void drawIncidentals(Canvas canvas, final float mXOrigin, final float mYOrigin, final Ballable mainBall) {
 		for (final Goal goal : getGoals()) {
         	if (goalBallCollision(goal, mainBall)) {
 	        	passLevel();
         	}
-        	canvas.drawBitmap(goal.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), mXOrigin - goal.getRadius() * mMetersToPixelsX + (goal.getXProportion() * mHorizontalBound)* mMetersToPixelsX, mYOrigin - goal.getRadius() * mMetersToPixelsY + (goal.getYProportion() * mVerticalBound) * mMetersToPixelsY, null);
+        	canvas.drawBitmap(goal.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY, mHorizontalBound), mXOrigin - goal.getRadius(mHorizontalBound) * mMetersToPixelsX + (goal.getXProportion() * mHorizontalBound)* mMetersToPixelsX, mYOrigin - goal.getRadius(mHorizontalBound) * mMetersToPixelsY + (goal.getYProportion() * mVerticalBound) * mMetersToPixelsY, null);
         }
         
         for (final Deflector deflector : getDeflectors()) {
-        	canvas.drawBitmap(deflector.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), mXOrigin - deflector.getRadius() * mMetersToPixelsX + deflector.getXProportion() * mHorizontalBound * mMetersToPixelsX, mYOrigin - deflector.getRadius() * mMetersToPixelsY + deflector.getYProportion() * mVerticalBound * mMetersToPixelsY, null);
+        	canvas.drawBitmap(deflector.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY, mHorizontalBound), mXOrigin - deflector.getRadius(mHorizontalBound) * mMetersToPixelsX + deflector.getXProportion() * mHorizontalBound * mMetersToPixelsX, mYOrigin - deflector.getRadius(mHorizontalBound) * mMetersToPixelsY + deflector.getYProportion() * mVerticalBound * mMetersToPixelsY, null);
         }
 	}
 
 	private void drawMainBall(Canvas canvas, final float mXOrigin,
 			final float mYOrigin, final Ballable mainBall) {
-		final float x = mXOrigin + (mainBall.getmPosX() - mainBall.getRadius()) * mMetersToPixelsX;
-        final float y = mYOrigin - (mainBall.getmPosY() + mainBall.getRadius()) * mMetersToPixelsY;
+		final float x = mXOrigin + (mainBall.getXProportion() * mHorizontalBound - mainBall.getRadius(mHorizontalBound)) * mMetersToPixelsX;
+        final float y = mYOrigin - (mainBall.getYProportion() * mVerticalBound + mainBall.getRadius(mHorizontalBound)) * mMetersToPixelsY;
         
-        canvas.drawBitmap(mainBall.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), x, y, null);
+        canvas.drawBitmap(mainBall.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY, mHorizontalBound), x, y, null);
 	}
 
 	private void processDeflectors(final Ballable mainBall) {
@@ -213,8 +212,8 @@ public abstract class Level extends Observable {
         
         while(iter.hasNext()) {
         	final Ballable ball = iter.next();
-            final float x1 = mXOrigin + (ball.getmPosX() - ball.getRadius()) * mMetersToPixelsX;
-            final float y1 = mYOrigin - (ball.getmPosY() + ball.getRadius()) * mMetersToPixelsY;
+            final float x1 = mXOrigin + (ball.getXProportion() * mHorizontalBound - ball.getRadius(mHorizontalBound)) * mMetersToPixelsX;
+            final float y1 = mYOrigin - (ball.getYProportion() * mVerticalBound + ball.getRadius(mHorizontalBound)) * mMetersToPixelsY;
             
             if (ballBallCollision(mainBall, ball)) {
             	failLevel();
@@ -229,7 +228,7 @@ public abstract class Level extends Observable {
             
             processDeflectors(ball);
 
-            canvas.drawBitmap(ball.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY), x1, y1, null);
+            canvas.drawBitmap(ball.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY, mHorizontalBound), x1, y1, null);
         }
 	}
 
@@ -287,8 +286,8 @@ public abstract class Level extends Observable {
 	}
 	
 	private void deflect(final Deflector deflector, final Ballable ball) {
-		final double xDist = ball.getmPosX() - deflector.getXProportion() * mHorizontalBound;
-		final double yDist = ball.getmPosY() + deflector.getYProportion() * mVerticalBound;
+		final double xDist = (ball.getXProportion() - deflector.getXProportion()) * mHorizontalBound;
+		final double yDist = (ball.getYProportion() + deflector.getYProportion()) * mVerticalBound;
 		
 		//rotation (cos2a  sin2a)(v_x) = (v_x')
 		//matrix   (-sin2a cos2a)(v_y)   (v_y')
@@ -329,16 +328,16 @@ public abstract class Level extends Observable {
 	
 	//TODO common interface so we can compare any 2 rendered objects
 	private boolean goalBallCollision(final CircularScreenItem circularScreenItem, final Ballable ball) {
-		final double xDist = circularScreenItem.getXProportion() * mHorizontalBound - ball.getmPosX();
-		final double yDist = -circularScreenItem.getYProportion() * mVerticalBound - ball.getmPosY();
-		final double collisionDist = (circularScreenItem.getRadius() + ball.getRadius());
+		final double xDist = (circularScreenItem.getXProportion() - ball.getXProportion()) * mHorizontalBound;
+		final double yDist = (-circularScreenItem.getYProportion() - ball.getYProportion()) * mVerticalBound;
+		final double collisionDist = (circularScreenItem.getRadius(mHorizontalBound) + ball.getRadius(mHorizontalBound));
 		return (Math.pow(xDist, 2) + Math.pow(yDist, 2) < Math.pow(collisionDist, 2));
 	}
 	
 	private boolean ballBallCollision(final Ballable ball1, final Ballable ball2) {
-		final double xDist = ball1.getmPosX() - ball2.getmPosX();
-		final double yDist = ball1.getmPosY() - ball2.getmPosY();
-		final double collisionDist = (ball1.getRadius() + ball2.getRadius());
+		final double xDist = (ball1.getXProportion() - ball2.getXProportion()) * mHorizontalBound;
+		final double yDist = (ball1.getYProportion() - ball2.getYProportion()) * mVerticalBound;
+		final double collisionDist = (ball1.getRadius(mHorizontalBound) + ball2.getRadius(mHorizontalBound));
 		return (Math.pow(xDist, 2) + Math.pow(yDist, 2) < Math.pow(collisionDist, 2));
 	}
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class BallBag {
 	private static final float sFriction = 0.07f;
-	public static final float MAIN_BALL_RADIUS_PIXELS = 0.002f;
+	public static final float MAIN_BALL_RADIUS = 0.05f;
 	private long mLastT;
     private float mLastDeltaT;
     private List<Ballable> mBalls = new ArrayList<Ballable>();
@@ -18,7 +18,7 @@ public class BallBag {
     List<Pair<Float, Float>> launchPoints = new ArrayList<Pair<Float, Float>>();
     
     public BallBag() {
-		mainBall = new Ballocks(sFriction, 1f, -1f, MAIN_BALL_RADIUS_PIXELS);
+		mainBall = new Ballocks(sFriction, 1f, 1f, MAIN_BALL_RADIUS);
 	}
     
     public void setBounds(final float mHorizontalBound, final float mVerticalBound) {
@@ -45,8 +45,8 @@ public class BallBag {
     			break;
     		}
 		}
-		float mPosX = startPoint.first - mHorizontalBound;
-		float mPosY = -startPoint.second + mVerticalBound;
+		float mPosX = (startPoint.first - mHorizontalBound)/mHorizontalBound;
+		float mPosY = (-startPoint.second + mVerticalBound)/mVerticalBound;
     	return new AttackingBallacks(mainBall, 1f, mPosX, mPosY, generateRandomRadius());  // TODO FIX THIS SHIT
     }
     
@@ -55,7 +55,7 @@ public class BallBag {
     }
     
     private float generateRandomRadius() {
-    	return (float) (0.001f + Math.random() * 0.001f);
+    	return (float) (0.03f + Math.random() * 0.01f);
     }
     
     public Ballable getBall(final int i) {
@@ -64,7 +64,7 @@ public class BallBag {
 
     private void updatePositions(float sx, float sy, long timestamp) {
 		if (mLastT != 0) {
-            final float dT = (float) (timestamp - mLastT) * (1.0f / 5000000000.0f);
+            final float dT = (float) (timestamp - mLastT) * (1.0f / 800000000.0f);
             if (mLastDeltaT != 0) {
                 final float dTC = dT / mLastDeltaT;
                 
@@ -98,12 +98,12 @@ public class BallBag {
     }
 
     public float getPosX(int i) {
-        return mBalls.get(i).getmPosX();
+        return mBalls.get(i).getXProportion();
         
     }
 
     public float getPosY(int i) {
-        return mBalls.get(i).getmPosY();
+        return mBalls.get(i).getYProportion();
     }
     
     public Ballable getMainBall() {

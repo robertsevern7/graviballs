@@ -6,7 +6,7 @@ public class AttackingBallacks extends Ballable {
 
 	private static final Double TAIL_OFF_EFFECT = 1.5d;
 	private final Ballable bigBoy;
-	private final float G = 40000f;
+	private final float G = 800f;
 	private boolean computed = false;
 
 	// TODO define friction in ballable
@@ -22,11 +22,11 @@ public class AttackingBallacks extends Ballable {
 			setVelocity(initialSpeedX, initialSpeedY);
 		}
 		
-		mLastPosX = mPosX;
-        mLastPosY = mPosY;
+		lastXProportion = getXProportion();
+		lastYProportion = getYProportion();
 
-        final double relX = mPosX - bigBoy.mPosX;
-        final double relY = mPosY - bigBoy.mPosY;
+        final double relX = getXProportion() - bigBoy.getXProportion();
+        final double relY = getYProportion() - bigBoy.getYProportion();
         final double a = G * bigBoy.getMass() / (Math.pow(Math.abs(relX), TAIL_OFF_EFFECT) + Math.pow(Math.abs(relY), TAIL_OFF_EFFECT));
         double theta = Math.atan(relX / relY);
         
@@ -36,8 +36,8 @@ public class AttackingBallacks extends Ballable {
         
         setVelocity((float) (getVelocity().first - a * Math.sin(theta) * dT), (float) (getVelocity().second - a * Math.cos(theta) * dT));
         
-        mPosX = (float) (mLastPosX + getVelocity().first * dT - a * Math.pow(dT, 2) * Math.sin(theta) * 0.5);
-        mPosY = (float) (mLastPosY + getVelocity().second * dT - a * Math.pow(dT, 2) * Math.cos(theta) * 0.5);
+        setXProportion((float) (lastXProportion + getVelocity().first * dT - a * Math.pow(dT, 2) * Math.sin(theta) * 0.5));
+        setYProportion((float) (lastYProportion + getVelocity().second * dT - a * Math.pow(dT, 2) * Math.cos(theta) * 0.5));
 	}
 	
 	public int getDrawable() {

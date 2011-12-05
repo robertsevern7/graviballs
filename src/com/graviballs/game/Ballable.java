@@ -9,8 +9,8 @@ import com.graviballs.R;
 public abstract class Ballable extends CircularScreenItem {
     private float mAccelX;
     private float mAccelY;
-    float mLastPosX;
-    float mLastPosY;
+    float lastXProportion;
+    float lastYProportion;
     private float mOneMinusFriction;
     float initialSpeedX;
     float initialSpeedY;
@@ -18,7 +18,7 @@ public abstract class Ballable extends CircularScreenItem {
     private float currentSpeedY;
     private Bitmap bitmap;
     
-    final private float SPEED_LIMIT = 0.3f;
+    final private float SPEED_LIMIT = 1f;
     
 	public Ballable(final float sFriction, final float mPosXProp, final float mPosYProp, final float radius) {
 		super(mPosXProp, mPosYProp, radius);
@@ -34,7 +34,6 @@ public abstract class Ballable extends CircularScreenItem {
         final float gx = -sx * m;
         final float gy = -sy * m;
 
-
         final float invm = 1.0f / m;
         final float ax = gx * invm;
         final float ay = gy * invm;
@@ -42,37 +41,35 @@ public abstract class Ballable extends CircularScreenItem {
         setVelocity(getVelocity().first + mAccelX * dT, (float) getVelocity().second + mAccelY * dT);
        
         final float dTdT = dT * dT;
-        final float x = getXProportion() + mOneMinusFriction * dT * currentSpeedX + mAccelX
-                * dTdT;
-        final float y = getYProportion() + mOneMinusFriction * dT * currentSpeedY + mAccelY
-                * dTdT;
-        mLastPosX = getXProportion();
-        mLastPosY = getYProportion();
+        final float x = getXProportion() + mOneMinusFriction * dT * currentSpeedX + mAccelX * dTdT;
+        final float y = getYProportion() + mOneMinusFriction * dT * currentSpeedY + mAccelY * dTdT;
+        lastXProportion = getXProportion();
+        lastYProportion = getYProportion();
 		setmPosXProp(x);
         setmPosYProp(y);
         mAccelX = ax;
         mAccelY = ay;
     }
 	
-	public void resolveCollisionWithBounds(final float mHorizontalBound, float mVerticalBound) {
-        final float xmax = mHorizontalBound - getRadius();
-        final float ymax = mVerticalBound - getRadius();
+	public void resolveCollisionWithBounds(final float mHorizontalBound, float mVerticalBound) { 
+        final float xmax = (mHorizontalBound - getRadius(mHorizontalBound))/mHorizontalBound;
+        final float ymax = (mVerticalBound - getRadius(mHorizontalBound))/mVerticalBound;
         final float x = getXProportion();
         final float y = getYProportion();
         final float slowingValue = 0.3f;
         if (x > xmax) {
-            mPosX = xmax;
+            setXProportion(xmax);
             currentSpeedX = -currentSpeedX * slowingValue;
         } else if (x < -xmax) {
-            mPosX = -xmax;
+            setXProportion(-xmax);
             currentSpeedX = -currentSpeedX * slowingValue;
         }
         if (y > ymax) {
         	currentSpeedY = -currentSpeedY * slowingValue;
-            mPosY = ymax;
+            setYProportion(ymax);
         } else if (y < -ymax) {
         	currentSpeedY = -currentSpeedY * slowingValue;
-            mPosY = -ymax;
+            setYProportion(-ymax);
         }
     }
 	
@@ -92,18 +89,18 @@ public abstract class Ballable extends CircularScreenItem {
 	}
 	
 	public float getMass() {
-		return (float) (4 * Math.PI * Math.pow(getRadius(), 3)/3f);
+		return (float) (4 * Math.PI * Math.pow(radius, 3)/3f);
 	}
 
 	public int getDrawable() {
 		return R.drawable.ball; 
 	}
 	
-	public Bitmap getBitmap(final Resources resources, final float mMetersToPixelsX, final float mMetersToPixelsY) {
+	public Bitmap getBitmap(final Resources resources, final float mMetersToPixelsX, final float mMetersToPixelsY, final float scaling) {
 		if (bitmap == null) {
 			final Bitmap ball = BitmapFactory.decodeResource(resources, getDrawable());
-			final int dstWidth = (int) (getRadius() * 2 * mMetersToPixelsX + 0.5f);
-	        final int dstHeight = (int) (getRadius() * 2 * mMetersToPixelsY + 0.5f);
+			final int dstWidth = (int) (getRadius(scaling) * 2 * mMetersToPixelsX + 0.5f);
+	        final int dstHeight = (int) (getRadius(scaling) * 2 * mMetersToPixelsY + 0.5f);
 	        bitmap =  Bitmap.createScaledBitmap(ball, dstWidth, dstHeight, true);
 		}
 		
