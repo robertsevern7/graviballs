@@ -33,7 +33,7 @@ public class Level6 extends Level {
 		
 		float xPos = -0.7f;
 		while(xPos <= 0.7f) {
-			deflectors.add(new Deflector(xPos, 0f, 0.0015f));
+			deflectors.add(new Deflector(xPos, 0f));
 			xPos += 0.15f;
 		}	
 	}

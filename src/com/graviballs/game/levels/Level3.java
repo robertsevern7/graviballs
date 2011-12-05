@@ -30,7 +30,7 @@ public class Level3 extends Level {
 	@Override
 	void setUpDeflectors() {
 		final List<Deflector> deflectors = getDeflectors();
-		deflectors.add(new Deflector(0, 0.33f, 0.002f));
+		deflectors.add(new Deflector(0, 0.33f));
 	}
 
 	@Override
