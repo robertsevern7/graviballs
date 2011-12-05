@@ -148,7 +148,7 @@ public abstract class Level extends Observable {
         final Ballable mainBall = ballBag.getMainBall();
         drawTheBallBag(canvas, mXOrigin, mYOrigin, mainBall);
         
-        //processDeflectors(mainBall);
+        processDeflectors(mainBall);
         	
         drawMainBall(canvas, mXOrigin, mYOrigin, mainBall);
         

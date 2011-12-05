@@ -33,7 +33,7 @@ public class Level10 extends Level {
 		while (yPos <= 0.8) {
 			float xPos = -0.2f;
 			while(xPos <= 0.8) {
-				deflectors.add(new Deflector(xPos, yPos, 0.0015f));
+				deflectors.add(new Deflector(xPos, yPos));
 				xPos += 0.4f;
 			}
 			yPos += 0.4f;

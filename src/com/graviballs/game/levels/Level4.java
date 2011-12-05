@@ -29,8 +29,8 @@ public class Level4 extends Level {
 	@Override
 	void setUpDeflectors() {
 		final List<Deflector> deflectors = getDeflectors();
-		deflectors.add(new Deflector(0.33f, 0.33f, 0.002f));
-		deflectors.add(new Deflector(-0.33f, -0.33f, 0.002f));
+		deflectors.add(new Deflector(0.33f, 0.33f));
+		deflectors.add(new Deflector(-0.33f, -0.33f));
 	}
 
 	@Override

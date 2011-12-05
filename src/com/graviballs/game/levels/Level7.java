@@ -31,17 +31,17 @@ public class Level7 extends Level {
 	void setUpDeflectors() {
 		final List<Deflector> deflectors = getDeflectors();
 		
-		deflectors.add(new Deflector(0.3f, -0.2f, 0.0015f));
-		deflectors.add(new Deflector(0.15f, -0.2f, 0.0015f));
-		deflectors.add(new Deflector(0f, -0.2f, 0.0015f));
-		deflectors.add(new Deflector(-0.13f, -0.16f, 0.0015f));
-		deflectors.add(new Deflector(-0.23f, -0.1f, 0.0015f));
-		deflectors.add(new Deflector(0.3f, 0.2f, 0.0015f));
-		deflectors.add(new Deflector(0.15f, 0.2f, 0.0015f));
-		deflectors.add(new Deflector(0f, 0.2f, 0.0015f));
-		deflectors.add(new Deflector(-0.13f, 0.16f, 0.0015f));
-		deflectors.add(new Deflector(-0.23f, 0.1f, 0.0015f));
-		deflectors.add(new Deflector(-0.32f, 0f, 0.0015f));
+		deflectors.add(new Deflector(0.3f, -0.2f));
+		deflectors.add(new Deflector(0.15f, -0.2f));
+		deflectors.add(new Deflector(0f, -0.2f));
+		deflectors.add(new Deflector(-0.13f, -0.16f));
+		deflectors.add(new Deflector(-0.23f, -0.1f));
+		deflectors.add(new Deflector(0.3f, 0.2f));
+		deflectors.add(new Deflector(0.15f, 0.2f));
+		deflectors.add(new Deflector(0f, 0.2f));
+		deflectors.add(new Deflector(-0.13f, 0.16f));
+		deflectors.add(new Deflector(-0.23f, 0.1f));
+		deflectors.add(new Deflector(-0.32f, 0f));
 	}
 
 	@Override
