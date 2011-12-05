@@ -22,7 +22,7 @@ public class Level4 extends Level {
 	@Override
 	void setUpGoals() {
 		final List<Goal> goals = getGoals();
-		goals.add(new Goal(0, 0, 0.004f));
+		goals.add(new Goal(0, 0));
 
 	}
 

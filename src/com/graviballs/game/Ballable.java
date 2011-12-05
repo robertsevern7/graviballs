@@ -1,36 +1,32 @@
 package com.graviballs.game;
 
-import com.graviballs.R;
-
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Pair;
+import com.graviballs.R;
 
-public abstract class Ballable {
-	float mPosX;
-    float mPosY;
+public abstract class Ballable extends CircularScreenItem {
     private float mAccelX;
     private float mAccelY;
-    float mLastPosX;
-    float mLastPosY;
+    float lastXProportion;
+    float lastYProportion;
     private float mOneMinusFriction;
-    private float radius;
     float initialSpeedX;
     float initialSpeedY;
     private float currentSpeedX;
     private float currentSpeedY;
     private Bitmap bitmap;
     
-    final private float SPEED_LIMIT = 0.3f;
+    final private float SPEED_LIMIT = 1f;
     
-    Ballable(final float sFriction, final float radius) {
-        // make each particle a bit different by randomizing its
-        // coefficient of friction
-        final float r = ((float) Math.random() - 0.5f) * 0.2f;
-        this.radius = radius;
-        setmOneMinusFriction(1.0f - sFriction + r);
-    }
+	public Ballable(final float sFriction, final float mPosXProp, final float mPosYProp, final float radius) {
+		super(mPosXProp, mPosYProp, radius);
+		float randomFriction = ((float) Math.random() - 0.5f) * 0.2f;
+		setmOneMinusFriction(1.0f - sFriction + randomFriction);
+		initialSpeedX = 0f;
+		initialSpeedY = 0f;
+	}
 
 	public void computePhysics(float sx, float sy, float dT, float dTC) {
         // Force of gravity applied to our virtual object
@@ -38,45 +34,42 @@ public abstract class Ballable {
         final float gx = -sx * m;
         final float gy = -sy * m;
 
-
         final float invm = 1.0f / m;
         final float ax = gx * invm;
         final float ay = gy * invm;
 
-        setVelocity((float)getVelocity().first + mAccelX * dT, (float) getVelocity().second + mAccelY * dT);
+        setVelocity(getVelocity().first + mAccelX * dT, (float) getVelocity().second + mAccelY * dT);
        
         final float dTdT = dT * dT;
-        final float x = mPosX + mOneMinusFriction * dT * currentSpeedX + mAccelX
-                * dTdT;
-        final float y = mPosY + mOneMinusFriction * dT * currentSpeedY + mAccelY
-                * dTdT;
-        mLastPosX = mPosX;
-        mLastPosY = mPosY;
-        mPosX = x;
-        mPosY = y;
+        final float x = getXProportion() + mOneMinusFriction * dT * currentSpeedX + mAccelX * dTdT;
+        final float y = getYProportion() + mOneMinusFriction * dT * currentSpeedY + mAccelY * dTdT;
+        lastXProportion = getXProportion();
+        lastYProportion = getYProportion();
+		setmPosXProp(x);
+        setmPosYProp(y);
         mAccelX = ax;
         mAccelY = ay;
     }
 	
-	public void resolveCollisionWithBounds(final float mHorizontalBound, float mVerticalBound) {
-        final float xmax = mHorizontalBound - radius;
-        final float ymax = mVerticalBound - radius;
-        final float x = mPosX;
-        final float y = mPosY;
+	public void resolveCollisionWithBounds(final float mHorizontalBound, float mVerticalBound) { 
+        final float xmax = (mHorizontalBound - getRadius(mHorizontalBound))/mHorizontalBound;
+        final float ymax = (mVerticalBound - getRadius(mHorizontalBound))/mVerticalBound;
+        final float x = getXProportion();
+        final float y = getYProportion();
         final float slowingValue = 0.3f;
         if (x > xmax) {
-            mPosX = xmax;
+            setXProportion(xmax);
             currentSpeedX = -currentSpeedX * slowingValue;
         } else if (x < -xmax) {
-            mPosX = -xmax;
+            setXProportion(-xmax);
             currentSpeedX = -currentSpeedX * slowingValue;
         }
         if (y > ymax) {
         	currentSpeedY = -currentSpeedY * slowingValue;
-            mPosY = ymax;
+            setYProportion(ymax);
         } else if (y < -ymax) {
         	currentSpeedY = -currentSpeedY * slowingValue;
-            mPosY = -ymax;
+            setYProportion(-ymax);
         }
     }
 	
@@ -90,31 +83,7 @@ public abstract class Ballable {
 		currentSpeedX = (float) (xVel/speedRatio);
 		currentSpeedY = (float) (yVel/speedRatio);
 	}
-	
-	public void setInitialPos(float x, float y) {
-		setmPosX(x);
-		setmPosY(y);
-		
-		initialSpeedX = (float) (-Math.random() * x * 0.0005);
-		initialSpeedY = (float) (-Math.random() * y * 0.0005);
-	}
 
-	public float getmPosX() {
-		return mPosX;
-	}
-
-	public void setmPosX(float mPosX) {
-		this.mPosX = mPosX;
-	}
-
-	public void setmPosY(float mPosY) {
-		this.mPosY = mPosY;
-	}
-
-	public float getmPosY() {
-		return mPosY;
-	}
-	
 	public void setmOneMinusFriction(final float mOneMinusFriction) {
 		this.mOneMinusFriction = mOneMinusFriction;
 	}
@@ -123,19 +92,15 @@ public abstract class Ballable {
 		return (float) (4 * Math.PI * Math.pow(radius, 3)/3f);
 	}
 
-	public float getRadius() {
-		return radius;
-	}
-	
-	protected int getDrawable() {
+	public int getDrawable() {
 		return R.drawable.ball; 
 	}
 	
-	public Bitmap getBitmap(final Resources resources, final float mMetersToPixelsX, final float mMetersToPixelsY) {
+	public Bitmap getBitmap(final Resources resources, final float mMetersToPixelsX, final float mMetersToPixelsY, final float scaling) {
 		if (bitmap == null) {
 			final Bitmap ball = BitmapFactory.decodeResource(resources, getDrawable());
-			final int dstWidth = (int) (radius * 2 * mMetersToPixelsX + 0.5f);
-	        final int dstHeight = (int) (radius * 2 * mMetersToPixelsY + 0.5f);
+			final int dstWidth = (int) (getRadius(scaling) * 2 * mMetersToPixelsX + 0.5f);
+	        final int dstHeight = (int) (getRadius(scaling) * 2 * mMetersToPixelsY + 0.5f);
 	        bitmap =  Bitmap.createScaledBitmap(ball, dstWidth, dstHeight, true);
 		}
 		
