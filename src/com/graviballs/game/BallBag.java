@@ -1,13 +1,14 @@
 package com.graviballs.game;
 
+import android.util.Pair;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import android.util.Pair;
-
 public class BallBag {
 	private static final float sFriction = 0.07f;
+	public static final float MAIN_BALL_RADIUS = 0.05f;
 	private long mLastT;
     private float mLastDeltaT;
     private List<Ballable> mBalls = new ArrayList<Ballable>();
@@ -17,8 +18,8 @@ public class BallBag {
     List<Pair<Float, Float>> launchPoints = new ArrayList<Pair<Float, Float>>();
     
     public BallBag() {
-    	mainBall = new Ballocks(sFriction, 0.002f);
-    }
+		mainBall = new Ballocks(sFriction, 1f, 1f, MAIN_BALL_RADIUS);
+	}
     
     public void setBounds(final float mHorizontalBound, final float mVerticalBound) {
 		this.mHorizontalBound = mHorizontalBound;
@@ -34,8 +35,6 @@ public class BallBag {
 	}
     
     private Ballable generateRandomBall() {
-    	final Ballable ball = new AttackingBallacks(generateRandomRadius(), mainBall);
-    	
     	final int launchOptions = launchPoints.size();
     	final double scaledRandom = Math.random() * launchOptions;
     	
@@ -45,10 +44,10 @@ public class BallBag {
     			startPoint = launchPoints.get(i);
     			break;
     		}
-    	}
-    	
-        ball.setInitialPos(startPoint.first - mHorizontalBound, -startPoint.second + mVerticalBound);
-        return ball;
+		}
+		float mPosX = (startPoint.first - mHorizontalBound)/mHorizontalBound;
+		float mPosY = (-startPoint.second + mVerticalBound)/mVerticalBound;
+    	return new AttackingBallacks(mainBall, 1f, mPosX, mPosY, generateRandomRadius());  // TODO FIX THIS SHIT
     }
     
     public boolean isEmpty() {
@@ -56,7 +55,7 @@ public class BallBag {
     }
     
     private float generateRandomRadius() {
-    	return (float) (0.001f + Math.random() * 0.001f);
+    	return (float) (0.03f + Math.random() * 0.01f);
     }
     
     public Ballable getBall(final int i) {
@@ -64,9 +63,8 @@ public class BallBag {
     }
 
     private void updatePositions(float sx, float sy, long timestamp) {
-        final long t = timestamp;
-        if (mLastT != 0) {
-            final float dT = (float) (t - mLastT) * (1.0f / 5000000000.0f);
+		if (mLastT != 0) {
+            final float dT = (float) (timestamp - mLastT) * (1.0f / 800000000.0f);
             if (mLastDeltaT != 0) {
                 final float dTC = dT / mLastDeltaT;
                 
@@ -78,7 +76,7 @@ public class BallBag {
             }
             mLastDeltaT = dT;
         }
-        mLastT = t;
+        mLastT = timestamp;
     }
     
     public Iterator<Ballable> getIterator() {
@@ -100,12 +98,12 @@ public class BallBag {
     }
 
     public float getPosX(int i) {
-        return mBalls.get(i).getmPosX();
+        return mBalls.get(i).getXProportion();
         
     }
 
     public float getPosY(int i) {
-        return mBalls.get(i).getmPosY();
+        return mBalls.get(i).getYProportion();
     }
     
     public Ballable getMainBall() {
