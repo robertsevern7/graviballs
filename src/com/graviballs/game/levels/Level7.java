@@ -1,14 +1,13 @@
 package com.graviballs.game.levels;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.util.Pair;
-
 import com.graviballs.game.Deflector;
 import com.graviballs.game.Goal;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Level7 extends Level {
 
@@ -42,6 +41,11 @@ public class Level7 extends Level {
 		deflectors.add(new Deflector(-0.13f, 0.16f));
 		deflectors.add(new Deflector(-0.23f, 0.1f));
 		deflectors.add(new Deflector(-0.32f, 0f));
+	}
+
+	@Override
+	void setUpMud() {
+
 	}
 
 	@Override

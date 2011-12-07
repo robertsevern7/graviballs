@@ -1,12 +1,11 @@
 package com.graviballs.game.levels;
 
-import java.util.List;
-
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-
 import com.graviballs.game.Deflector;
 import com.graviballs.game.Goal;
+
+import java.util.List;
 
 public class Level10 extends Level {
 
@@ -39,6 +38,10 @@ public class Level10 extends Level {
 			yPos += 0.4f;
 		}
 	}
+
+	@Override
+	void setUpMud() { }
+
 
 	@Override
 	int getTotalBallCount() {

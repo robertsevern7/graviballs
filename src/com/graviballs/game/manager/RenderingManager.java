@@ -3,6 +3,7 @@ package com.graviballs.game.manager;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import com.graviballs.game.CircularScreenItem;
+import com.graviballs.game.RectangularScreenItem;
 
 public class RenderingManager {
 	private final Canvas canvas;
@@ -29,6 +30,12 @@ public class RenderingManager {
 		final float x = mXOrigin + (someCircle.getXProportion() * mHorizontalBound - someCircle.getRadius(mHorizontalBound)) * mMetersToPixelsX;
 		final float y = mYOrigin - (someCircle.getYProportion() * mVerticalBound + someCircle.getRadius(mHorizontalBound)) * mMetersToPixelsY;
 		canvas.drawBitmap(someCircle.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY, mHorizontalBound), x, y, null);
+	}
+
+	public final void renderScreenItem(RectangularScreenItem someTangle) {
+		final float x = mXOrigin + (someTangle.getXProportion() * mHorizontalBound) * mMetersToPixelsX;
+		final float y = mYOrigin - (someTangle.getYProportion() * mVerticalBound) * mMetersToPixelsY;
+		canvas.drawBitmap(someTangle.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY, mHorizontalBound, mVerticalBound), x, y, null);
 	}
 
 }
