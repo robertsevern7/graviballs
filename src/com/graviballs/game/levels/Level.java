@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.util.Pair;
 import com.graviballs.TimeUtils;
 import com.graviballs.game.*;
+import com.graviballs.game.manager.CollisionManager;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -41,6 +42,7 @@ public abstract class Level extends Observable {
 	private long timePaused = 0;
 	private long totalTimePaused = 0;
 	private long pauseTime = 0;
+	private CollisionManager collisionManager;
 	
 	public Level(Resources resources, SharedPreferences scoreCard, SharedPreferences currentLevel) {
 		this.scoreCard = scoreCard;
@@ -75,6 +77,9 @@ public abstract class Level extends Observable {
 
 		if (ballBag.getAttackBallLaunchPoints().isEmpty()) {
 			ballBag.setAttackBallLaunchPoints(getAttackBallLaunchPoints());
+		}
+		if (collisionManager == null) {
+			collisionManager = new CollisionManager(mHorizontalBound, mVerticalBound);
 		}
 	}
 	
@@ -177,7 +182,7 @@ public abstract class Level extends Observable {
 
 	private void drawIncidentals(Canvas canvas, final float mXOrigin, final float mYOrigin, final Ballable mainBall) {
 		for (final Goal goal : getGoals()) {
-        	if (circularScreenItemCollision(goal, mainBall)) {
+        	if (collisionManager.circularScreenItemCollision(goal, mainBall)) {
 	        	passLevel();
         	}
 			drawCircularScreenItem(canvas, mXOrigin, mYOrigin, goal);
@@ -196,7 +201,7 @@ public abstract class Level extends Observable {
 
 	private void processDeflectors(final Ballable mainBall) {
 		for (final Deflector deflector : getDeflectors()) {
-        	if (circularScreenItemCollision(deflector, mainBall)) {
+        	if (collisionManager.circularScreenItemCollision(deflector, mainBall)) {
         		deflect(deflector, mainBall);
         	}
         }
@@ -212,12 +217,12 @@ public abstract class Level extends Observable {
             final float x1 = mXOrigin + (ball.getXProportion() * mHorizontalBound - ball.getRadius(mHorizontalBound)) * mMetersToPixelsX;
             final float y1 = mYOrigin - (ball.getYProportion() * mVerticalBound + ball.getRadius(mHorizontalBound)) * mMetersToPixelsY;
             
-            if (circularScreenItemCollision(mainBall, ball)) {
+            if (collisionManager.circularScreenItemCollision(mainBall, ball)) {
             	failLevel();
             }
             
             for (final Goal goal : getGoals()) {
-            	if (circularScreenItemCollision(goal, ball)) {
+            	if (collisionManager.circularScreenItemCollision(goal, ball)) {
             		++totalBallsScored;
             		iter.remove();
             	}
@@ -322,13 +327,5 @@ public abstract class Level extends Observable {
 		
 		return 0;
 	}
-	
-	//TODO common interface so we can compare any 2 rendered objects
-	private boolean circularScreenItemCollision(final CircularScreenItem circularScreenItem, final CircularScreenItem ball) {
-		final double xDist = (circularScreenItem.getXProportion() - ball.getXProportion()) * mHorizontalBound;
-		final double yDist = (circularScreenItem.getYProportion() - ball.getYProportion()) * mVerticalBound;
-		final double collisionDist = (circularScreenItem.getRadius(mHorizontalBound) + ball.getRadius(mHorizontalBound));
-		return (Math.pow(xDist, 2) + Math.pow(yDist, 2) < Math.pow(collisionDist, 2));
-	}
-	
+
 }
