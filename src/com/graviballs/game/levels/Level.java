@@ -8,10 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Pair;
 import com.graviballs.TimeUtils;
-import com.graviballs.game.BallBag;
-import com.graviballs.game.Ballable;
-import com.graviballs.game.Deflector;
-import com.graviballs.game.Goal;
+import com.graviballs.game.*;
 import com.graviballs.game.manager.CollisionManager;
 import com.graviballs.game.manager.RenderingManager;
 
@@ -24,6 +21,7 @@ import java.util.Observable;
 public abstract class Level extends Observable {
 	private final List<Goal> goals = new ArrayList<Goal>();
 	private final List<Deflector> deflectors = new ArrayList<Deflector>();
+	private final List<MuddyScreenItem> mud = new ArrayList<MuddyScreenItem>();
 	private final BallBag ballBag = new BallBag();
 	private final Resources resources;
 	float mMetersToPixelsX = 0;
@@ -52,6 +50,7 @@ public abstract class Level extends Observable {
 	public Level(Resources resources, SharedPreferences scoreCard, SharedPreferences currentLevel) {
 		this.scoreCard = scoreCard;
 		this.currentLevel = currentLevel;
+		setUpMud();
 		setUpGoals();
 		setUpDeflectors();
 		this.resources = resources;
@@ -66,10 +65,12 @@ public abstract class Level extends Observable {
 	abstract int getInitialCount();
 	abstract void setUpGoals();
 	abstract void setUpDeflectors();
+	abstract void setUpMud();
 	abstract int getTotalBallCount();
 	abstract String getLevelIdentifier();
 	abstract int getBallReleaseTiming();
 	abstract int getTimeLimit();
+
 
 	public void setBounds(final float mHorizontalBound, final float mVerticalBound) {
 		this.mHorizontalBound = mHorizontalBound;
@@ -90,6 +91,10 @@ public abstract class Level extends Observable {
 
 	List<Deflector> getDeflectors() {
 		return deflectors;
+	}
+
+	public List<MuddyScreenItem> getMud() {
+		return mud;
 	}
 
 	public List<Pair<Float, Float>> getAttackBallLaunchPoints() {
@@ -157,10 +162,8 @@ public abstract class Level extends Observable {
 		drawTheBallBag(mainBall);
 
 		processDeflectors(mainBall);
-
-		renderingManager.renderScreenItem(mainBall);
-
 		drawIncidentals(mainBall);
+		renderingManager.renderScreenItem(mainBall);
 
 		if (startTime == null) {
 			startTime = timeToUse;
@@ -194,6 +197,9 @@ public abstract class Level extends Observable {
 
 		for (final Deflector deflector : getDeflectors()) {
 			renderingManager.renderScreenItem(deflector);
+		}
+		for (MuddyScreenItem aMudPatch : mud) {
+			renderingManager.renderScreenItem(aMudPatch);
 		}
 	}
 

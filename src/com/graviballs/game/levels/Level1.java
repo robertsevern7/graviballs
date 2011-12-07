@@ -1,13 +1,11 @@
 package com.graviballs.game.levels;
 
 
-import java.util.List;
-
-import com.graviballs.game.Goal;
-
-
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import com.graviballs.game.Goal;
+
+import java.util.List;
 
 public class Level1 extends Level {
 
@@ -23,7 +21,10 @@ public class Level1 extends Level {
 
 	@Override
 	void setUpDeflectors() {}
-	
+
+	@Override
+	void setUpMud() { }
+
 	@Override
 	int getBallReleaseTiming() {
 		return 15;

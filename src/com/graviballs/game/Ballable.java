@@ -1,8 +1,6 @@
 package com.graviballs.game;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Pair;
 import com.graviballs.R;
 
@@ -45,8 +43,8 @@ public abstract class Ballable extends CircularScreenItem {
         final float y = getYProportion() + mOneMinusFriction * dT * currentSpeedY + mAccelY * dTdT;
         lastXProportion = getXProportion();
         lastYProportion = getYProportion();
-		setmPosXProp(x);
-        setmPosYProp(y);
+		setxProportion(x);
+        setyProportion(y);
         mAccelX = ax;
         mAccelY = ay;
     }
@@ -58,18 +56,18 @@ public abstract class Ballable extends CircularScreenItem {
         final float y = getYProportion();
         final float slowingValue = 0.3f;
         if (x > xmax) {
-            setXProportion(xmax);
+            setxProportion(xmax);
             currentSpeedX = -currentSpeedX * slowingValue;
         } else if (x < -xmax) {
-            setXProportion(-xmax);
+            setxProportion(-xmax);
             currentSpeedX = -currentSpeedX * slowingValue;
         }
         if (y > ymax) {
         	currentSpeedY = -currentSpeedY * slowingValue;
-            setYProportion(ymax);
+            setyProportion(ymax);
         } else if (y < -ymax) {
         	currentSpeedY = -currentSpeedY * slowingValue;
-            setYProportion(-ymax);
+            setyProportion(-ymax);
         }
     }
 	
@@ -94,16 +92,5 @@ public abstract class Ballable extends CircularScreenItem {
 
 	public int getDrawable() {
 		return R.drawable.ball; 
-	}
-	
-	public Bitmap getBitmap(final Resources resources, final float mMetersToPixelsX, final float mMetersToPixelsY, final float scaling) {
-		if (bitmap == null) {
-			final Bitmap ball = BitmapFactory.decodeResource(resources, getDrawable());
-			final int dstWidth = (int) (getRadius(scaling) * 2 * mMetersToPixelsX + 0.5f);
-	        final int dstHeight = (int) (getRadius(scaling) * 2 * mMetersToPixelsY + 0.5f);
-	        bitmap =  Bitmap.createScaledBitmap(ball, dstWidth, dstHeight, true);
-		}
-		
-		return bitmap;		
 	}
 }

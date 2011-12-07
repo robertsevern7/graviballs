@@ -36,8 +36,8 @@ public class AttackingBallacks extends Ballable {
         
         setVelocity((float) (getVelocity().first - a * Math.sin(theta) * dT), (float) (getVelocity().second - a * Math.cos(theta) * dT));
         
-        setXProportion((float) (lastXProportion + getVelocity().first * dT - a * Math.pow(dT, 2) * Math.sin(theta) * 0.5));
-        setYProportion((float) (lastYProportion + getVelocity().second * dT - a * Math.pow(dT, 2) * Math.cos(theta) * 0.5));
+        setxProportion((float) (lastXProportion + getVelocity().first * dT - a * Math.pow(dT, 2) * Math.sin(theta) * 0.5));
+        setyProportion((float) (lastYProportion + getVelocity().second * dT - a * Math.pow(dT, 2) * Math.cos(theta) * 0.5));
 	}
 	
 	public int getDrawable() {
