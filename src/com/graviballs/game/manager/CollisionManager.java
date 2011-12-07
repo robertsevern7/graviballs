@@ -2,10 +2,6 @@ package com.graviballs.game.manager;
 
 import com.graviballs.game.CircularScreenItem;
 
-/**
- * Author: Rahul Gidwani
- * 8:32 PM
- */
 public class CollisionManager {
 
 	private float mHorizontalBound;
