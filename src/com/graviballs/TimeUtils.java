@@ -11,4 +11,8 @@ public class TimeUtils {
             return minutes + ":" + seconds;            
         }
 	}
+
+	public static int getTimeInSeconds(long time) {
+		return (int) (time / 1000000000);
+	}
 }

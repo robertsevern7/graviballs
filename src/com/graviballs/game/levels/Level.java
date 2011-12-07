@@ -28,7 +28,7 @@ public abstract class Level extends Observable {
 	private final Resources resources;
 	float mMetersToPixelsX = 0;
 	float mMetersToPixelsY = 0;
-	float mHorizontalBound = 0; 
+	float mHorizontalBound = 0;
 	float mVerticalBound = 0;
 	long lastBallRelease = 0;
 	//TODO get the size earlier, so I don't have to add this boolean into the update logic
@@ -48,25 +48,21 @@ public abstract class Level extends Observable {
 	private long pauseTime = 0;
 	private CollisionManager collisionManager;
 	private RenderingManager renderingManager;
-	
+
 	public Level(Resources resources, SharedPreferences scoreCard, SharedPreferences currentLevel) {
 		this.scoreCard = scoreCard;
 		this.currentLevel = currentLevel;
 		setUpGoals();
 		setUpDeflectors();
 		this.resources = resources;
-		
 		textPaint.setTextSize(20);
-
 		textPaint.setStyle(Paint.Style.FILL);
 		textPaint.setColor(Color.WHITE);
-		
 		cornerPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 		cornerPaint.setColor(Color.DKGRAY);
-	
 		bestTime = scoreCard.getInt(getLevelIdentifier(), -1);
 	}
-	
+
 	abstract int getInitialCount();
 	abstract void setUpGoals();
 	abstract void setUpDeflectors();
@@ -87,50 +83,50 @@ public abstract class Level extends Observable {
 			collisionManager = new CollisionManager(mHorizontalBound, mVerticalBound);
 		}
 	}
-	
+
 	List<Goal> getGoals() {
 		return goals;
 	}
-	
+
 	List<Deflector> getDeflectors() {
 		return deflectors;
 	}
-	
+
 	public List<Pair<Float, Float>> getAttackBallLaunchPoints() {
 		List<Pair<Float, Float>> launchPoints = new ArrayList<Pair<Float, Float>>();
-		launchPoints.add(new Pair<Float, Float>(2*mMetersToPixelsX * mHorizontalBound, 2*mMetersToPixelsY * mVerticalBound));
-		launchPoints.add(new Pair<Float, Float>(0f, 2*mMetersToPixelsY * mVerticalBound));
-		
+		launchPoints.add(new Pair<Float, Float>(2 * mMetersToPixelsX * mHorizontalBound, 2 * mMetersToPixelsY * mVerticalBound));
+		launchPoints.add(new Pair<Float, Float>(0f, 2 * mMetersToPixelsY * mVerticalBound));
+
 		return launchPoints;
 	}
-	
+
 	public void setMetersToPixels(final float mMetersToPixelsX, final float mMetersToPixelsY) {
 		this.mMetersToPixelsX = mMetersToPixelsX;
 		this.mMetersToPixelsY = mMetersToPixelsY;
 	}
-	
+
 	public void pause() {
 		pauseTime = System.nanoTime();
 		if (!paused) {
 			totalTimePaused += timePaused;
 		}
-		
+
 		paused = !paused;
 	}
-	
+
 	public void drawMainBallStartPoint(Canvas canvas) {
 		cornerPaint.setColor(Color.argb(200, 255, 255, 255));
 		final int widthInPixels = (int) (2 * mMetersToPixelsX * mHorizontalBound);
 		canvas.drawCircle(widthInPixels, 0, 30, cornerPaint);
 	}
-	
+
 	public void drawAttackBallLaunchPoints(Canvas canvas) {
 		cornerPaint.setColor(Color.argb(100, 255, 20, 20));
 		for (Pair<Float, Float> launchPoints : getAttackBallLaunchPoints()) {
 			canvas.drawCircle(launchPoints.first, launchPoints.second, 30, cornerPaint);
 		}
 	}
-	
+
 	public void drawLevel(Canvas canvas, final long now, final float mSensorX, final float mSensorY,
 						  final float mXOrigin, final float mYOrigin) {
 		if (renderingManager == null) {
@@ -158,7 +154,7 @@ public abstract class Level extends Observable {
 		}
 
 		final Ballable mainBall = ballBag.getMainBall();
-		drawTheBallBag(canvas, mXOrigin, mYOrigin, mainBall);
+		drawTheBallBag(mainBall);
 
 		processDeflectors(mainBall);
 
@@ -174,13 +170,13 @@ public abstract class Level extends Observable {
 	}
 
 	private void drawText(Canvas canvas, final long now) {
-		elapsedTime = getTimeInSeconds(now - startTime);
+		elapsedTime = TimeUtils.getTimeInSeconds(now - startTime);
 		final int timeRemaining = getTimeLimit() - elapsedTime;
-		
-		if (timeRemaining <= 0 ) {
+
+		if (timeRemaining <= 0) {
 			failLevel();
-		} 
-		
+		}
+
 		canvas.drawText("Time Remaining: " + TimeUtils.justParsingTheTime(timeRemaining), 5, 25, textPaint);
 		canvas.drawText("Balls removed: " + totalBallsScored + "/" + getTotalBallCount(), 5, 50, textPaint);
 		if (bestTime > 0) {
@@ -190,49 +186,44 @@ public abstract class Level extends Observable {
 
 	private void drawIncidentals(final Ballable mainBall) {
 		for (final Goal goal : getGoals()) {
-        	if (collisionManager.circularScreenItemCollision(goal, mainBall)) {
-	        	passLevel();
-        	}
+			if (collisionManager.circularScreenItemCollision(goal, mainBall)) {
+				passLevel();
+			}
 			renderingManager.renderScreenItem(goal);
-        }
-        
-        for (final Deflector deflector : getDeflectors()) {
+		}
+
+		for (final Deflector deflector : getDeflectors()) {
 			renderingManager.renderScreenItem(deflector);
 		}
 	}
 
 	private void processDeflectors(final Ballable mainBall) {
 		for (final Deflector deflector : getDeflectors()) {
-        	if (collisionManager.circularScreenItemCollision(deflector, mainBall)) {
-        		deflect(deflector, mainBall);
-        	}
-        }
+			if (collisionManager.circularScreenItemCollision(deflector, mainBall)) {
+				collisionManager.deflect(deflector, mainBall);
+			}
+		}
 	}
 
-	private void drawTheBallBag(Canvas canvas, final float mXOrigin, final float mYOrigin, final Ballable mainBall) {
-
+	private void drawTheBallBag(final Ballable mainBall) {
 		final Iterator<Ballable> ballBagIterator = ballBag.getIterator();
-        
-        while(ballBagIterator.hasNext()) {
-        	final Ballable ball = ballBagIterator.next();
-            final float x1 = mXOrigin + (ball.getXProportion() * mHorizontalBound - ball.getRadius(mHorizontalBound)) * mMetersToPixelsX;
-            final float y1 = mYOrigin - (ball.getYProportion() * mVerticalBound + ball.getRadius(mHorizontalBound)) * mMetersToPixelsY;
-            
-            if (collisionManager.circularScreenItemCollision(mainBall, ball)) {
-            	failLevel();
-            }
-            
-            for (final Goal goal : getGoals()) {
-            	if (collisionManager.circularScreenItemCollision(goal, ball)) {
-            		++totalBallsScored;
-            		ballBagIterator.remove();
-            	}
-            }
-            
-            processDeflectors(ball);
 
-            canvas.drawBitmap(ball.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY, mHorizontalBound), x1, y1, null);
-        }
+		while (ballBagIterator.hasNext()) {
+			final Ballable ball = ballBagIterator.next();
+			if (collisionManager.circularScreenItemCollision(mainBall, ball)) {
+				failLevel();
+			}
+
+			for (final Goal goal : getGoals()) {
+				if (collisionManager.circularScreenItemCollision(goal, ball)) {
+					++totalBallsScored;
+					ballBagIterator.remove();
+				}
+			}
+
+			processDeflectors(ball);
+			renderingManager.renderScreenItem(ball);
+		}
 	}
 
 	private void timeToAddNewBall(final long now) {
@@ -251,7 +242,7 @@ public abstract class Level extends Observable {
 			}
 		}
 	}
-	
+
 	private void failLevel() {
 		SharedPreferences.Editor editor = currentLevel.edit();
 		editor.putInt("previousAttempt", -1);
@@ -261,7 +252,7 @@ public abstract class Level extends Observable {
 		setChanged();
 		notifyObservers();
 	}
-	
+
 	public void passLevel() {
 		ended = true;
 		if (bestTime < 0 || elapsedTime < bestTime) {
@@ -270,63 +261,18 @@ public abstract class Level extends Observable {
 			editor.putInt(getLevelIdentifier(), elapsedTime);
 			editor.commit();
 		}
-		
+
 		SharedPreferences.Editor editor = currentLevel.edit();
 		editor.putInt("bestTime", bestTime);
 		editor.putInt("previousAttempt", elapsedTime);
 		editor.commit();
-		
+
 		setChanged();
 		notifyObservers();
 	}
-	
+
 	public int getPassTime() {
 		return bestTime;
-	}
-	
-	private int getTimeInSeconds(long time) {
-		return (int) (time / 1000000000);
-	}
-	
-	private void deflect(final Deflector deflector, final Ballable ball) {
-		final double xDist = (ball.getXProportion() - deflector.getXProportion()) * mHorizontalBound;
-		final double yDist = (ball.getYProportion() - deflector.getYProportion()) * mVerticalBound;
-		
-		//rotation (cos2a  sin2a)(v_x) = (v_x')
-		//matrix   (-sin2a cos2a)(v_y)   (v_y')
-		//We want v_x' and v_y'
-		
-		final double theta = Math.atan(yDist/xDist) + getPiAddition(xDist, yDist);
-		
-		final Pair<Float, Float> vel = ball.getVelocity();
-		//Reverse velocity to get correct direction for angle
-		final float vel_x_dir = -vel.first;
-		final float vel_y_dir = -vel.second;
-		final double psi = Math.atan(vel_y_dir/vel_x_dir) + getPiAddition(vel_x_dir, vel_y_dir);
-		 
-		double tot = psi - theta;
-		//Log.i("dd",ball.getmPosX() + ", " + deflector.getXProportion() * mHorizontalBound);
-		//Log.i("dd",ball.getmPosY() + ", " + deflector.getYProportion() * mVerticalBound);
-				
-		//Log.i("dd", xDist + ", " + yDist + ", " + yDist/xDist + ", " + Math.atan(yDist/xDist));
-		//Log.i("tots = ", xDist + ", " + yDist + ", " + tot + ", " + psi + ", " + theta);
-		//Log.i("tot = ", vel_x_dir + ", " + vel_y_dir + ", " + tot + ", " + psi + ", " + theta);
-		final float newVelX = (float) (vel.first * Math.cos(2 * tot) + vel.second * Math.sin(2 * tot));
-		final float newVelY = (float) (-1 * vel.first * Math.sin(2 * tot) + vel.second * Math.cos(2 * tot));
-		
-		final float realignedVelX = (float) (vel.first * Math.cos(tot) + vel.second * Math.sin(tot));
-
-		if (realignedVelX <= 0 && xDist > 0 || realignedVelX >= 0 && xDist < 0) {
-			ball.setVelocity( - 2 * newVelX, - 2 * newVelY);
-		}
-	}
-	
-	private double getPiAddition(final double x, final double y) {
-		if (x < 0) {
-			return Math.PI;
-		}
-		
-		return 0;
 	}
 
 }
