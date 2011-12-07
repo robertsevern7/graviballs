@@ -8,8 +8,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Pair;
 import com.graviballs.TimeUtils;
-import com.graviballs.game.*;
+import com.graviballs.game.BallBag;
+import com.graviballs.game.Ballable;
+import com.graviballs.game.Deflector;
+import com.graviballs.game.Goal;
 import com.graviballs.game.manager.CollisionManager;
+import com.graviballs.game.manager.RenderingManager;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -43,6 +47,7 @@ public abstract class Level extends Observable {
 	private long totalTimePaused = 0;
 	private long pauseTime = 0;
 	private CollisionManager collisionManager;
+	private RenderingManager renderingManager;
 	
 	public Level(Resources resources, SharedPreferences scoreCard, SharedPreferences currentLevel) {
 		this.scoreCard = scoreCard;
@@ -127,41 +132,44 @@ public abstract class Level extends Observable {
 	}
 	
 	public void drawLevel(Canvas canvas, final long now, final float mSensorX, final float mSensorY,
-			final float mXOrigin, final float mYOrigin) {
+						  final float mXOrigin, final float mYOrigin) {
+		if (renderingManager == null) {
+			renderingManager = new RenderingManager(canvas, mMetersToPixelsX, mMetersToPixelsY, mHorizontalBound, mVerticalBound, mXOrigin, mYOrigin, resources);
+		}
 		if (paused) {
 			timePaused = (now - pauseTime);
 		}
-		
+
 		final long timeToUse = now - timePaused - totalTimePaused;
-		
+
 		if (ended) {
 			return;
 		}
-		
+
 		drawMainBallStartPoint(canvas);
 		drawAttackBallLaunchPoints(canvas);
-		
+
 		addBalls();
-		
+
 		timeToAddNewBall(timeToUse);
-		
+
 		if (!paused) {
-            ballBag.update(mSensorX, mSensorY, timeToUse);
+			ballBag.update(mSensorX, mSensorY, timeToUse);
 		}
-        
-        final Ballable mainBall = ballBag.getMainBall();
-        drawTheBallBag(canvas, mXOrigin, mYOrigin, mainBall);
-        
-        processDeflectors(mainBall);
-        	
-        drawCircularScreenItem(canvas, mXOrigin, mYOrigin, mainBall);
-        
-        drawIncidentals(canvas, mXOrigin, mYOrigin, mainBall);
-        
-        if (startTime == null) {
+
+		final Ballable mainBall = ballBag.getMainBall();
+		drawTheBallBag(canvas, mXOrigin, mYOrigin, mainBall);
+
+		processDeflectors(mainBall);
+
+		renderingManager.renderScreenItem(mainBall);
+
+		drawIncidentals(mainBall);
+
+		if (startTime == null) {
 			startTime = timeToUse;
 		}
-		
+
 		drawText(canvas, timeToUse);
 	}
 
@@ -180,23 +188,17 @@ public abstract class Level extends Observable {
 		}
 	}
 
-	private void drawIncidentals(Canvas canvas, final float mXOrigin, final float mYOrigin, final Ballable mainBall) {
+	private void drawIncidentals(final Ballable mainBall) {
 		for (final Goal goal : getGoals()) {
         	if (collisionManager.circularScreenItemCollision(goal, mainBall)) {
 	        	passLevel();
         	}
-			drawCircularScreenItem(canvas, mXOrigin, mYOrigin, goal);
+			renderingManager.renderScreenItem(goal);
         }
         
         for (final Deflector deflector : getDeflectors()) {
-			drawCircularScreenItem(canvas, mXOrigin, mYOrigin, deflector);
+			renderingManager.renderScreenItem(deflector);
 		}
-	}
-
-	private void drawCircularScreenItem(Canvas canvas, final float mXOrigin, final float mYOrigin, final CircularScreenItem someCircle) {
-		final float x = mXOrigin + (someCircle.getXProportion() * mHorizontalBound - someCircle.getRadius(mHorizontalBound)) * mMetersToPixelsX;
-        final float y = mYOrigin - (someCircle.getYProportion() * mVerticalBound + someCircle.getRadius(mHorizontalBound)) * mMetersToPixelsY;
-        canvas.drawBitmap(someCircle.getBitmap(resources, mMetersToPixelsX, mMetersToPixelsY, mHorizontalBound), x, y, null);
 	}
 
 	private void processDeflectors(final Ballable mainBall) {
@@ -207,13 +209,12 @@ public abstract class Level extends Observable {
         }
 	}
 
-	private void drawTheBallBag(Canvas canvas, final float mXOrigin,
-								final float mYOrigin, final Ballable mainBall) {
+	private void drawTheBallBag(Canvas canvas, final float mXOrigin, final float mYOrigin, final Ballable mainBall) {
 
-		final Iterator<Ballable> iter = ballBag.getIterator();
+		final Iterator<Ballable> ballBagIterator = ballBag.getIterator();
         
-        while(iter.hasNext()) {
-        	final Ballable ball = iter.next();
+        while(ballBagIterator.hasNext()) {
+        	final Ballable ball = ballBagIterator.next();
             final float x1 = mXOrigin + (ball.getXProportion() * mHorizontalBound - ball.getRadius(mHorizontalBound)) * mMetersToPixelsX;
             final float y1 = mYOrigin - (ball.getYProportion() * mVerticalBound + ball.getRadius(mHorizontalBound)) * mMetersToPixelsY;
             
@@ -224,7 +225,7 @@ public abstract class Level extends Observable {
             for (final Goal goal : getGoals()) {
             	if (collisionManager.circularScreenItemCollision(goal, ball)) {
             		++totalBallsScored;
-            		iter.remove();
+            		ballBagIterator.remove();
             	}
             }
             
@@ -235,7 +236,7 @@ public abstract class Level extends Observable {
 	}
 
 	private void timeToAddNewBall(final long now) {
-		final long scaledNow = now/1000;
+		final long scaledNow = now / 1000;
 		if (scaledNow - lastBallRelease > getBallReleaseTiming() * 1000000 || ballBag.isEmpty()) {
 			ballBag.addBall();
 			lastBallRelease = scaledNow;
