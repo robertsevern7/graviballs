@@ -162,6 +162,7 @@ public abstract class Level extends Observable {
 		drawTheBallBag(mainBall);
 
 		processDeflectors(mainBall);
+		processMud(mainBall);
 		drawIncidentals(mainBall);
 		renderingManager.renderScreenItem(mainBall);
 
@@ -211,6 +212,14 @@ public abstract class Level extends Observable {
 		}
 	}
 
+	private void processMud(final Ballable mainBall) {
+		for (final MuddyScreenItem mud : getMud()) {
+			if (collisionManager.rectangularItemCollision(mud, mainBall)) {
+				collisionManager.slowDown(mainBall);
+			}
+		}
+	}
+	
 	private void drawTheBallBag(final Ballable mainBall) {
 		final Iterator<Ballable> ballBagIterator = ballBag.getIterator();
 

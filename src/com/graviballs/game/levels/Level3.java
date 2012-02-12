@@ -36,7 +36,7 @@ public class Level3 extends Level {
 	@Override
 	void setUpMud() {
 		final List<MuddyScreenItem> muddyShit = getMud();
-		muddyShit.add(new MuddyScreenItem(.3f, .3f, .03f, .03f));
+		muddyShit.add(new MuddyScreenItem(.3f, .3f, .1f, .1f));
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import android.util.Pair;
 import com.graviballs.game.Ballable;
 import com.graviballs.game.CircularScreenItem;
 import com.graviballs.game.Deflector;
+import com.graviballs.game.RectangularScreenItem;
 
 public class CollisionManager {
 
@@ -20,6 +21,16 @@ public class CollisionManager {
 		final double yDist = (circularScreenItem.getYProportion() - ball.getYProportion()) * mVerticalBound;
 		final double collisionDist = (circularScreenItem.getRadius(mHorizontalBound) + ball.getRadius(mHorizontalBound));
 		return (Math.pow(xDist, 2) + Math.pow(yDist, 2) < Math.pow(collisionDist, 2));
+	}
+	
+	public boolean rectangularItemCollision(final RectangularScreenItem screenItem, final CircularScreenItem ball) {
+		final float xMin = screenItem.getXProportion()*mHorizontalBound - ball.getRadius(mHorizontalBound);
+		final float yMin = screenItem.getYProportion()*mVerticalBound - screenItem.getHeightProportion()*mVerticalBound - ball.getRadius(mHorizontalBound);
+		final float xMax = screenItem.getXProportion()*mHorizontalBound + screenItem.getWidthProportion()*mHorizontalBound + ball.getRadius(mHorizontalBound);
+		final float yMax = screenItem.getYProportion()*mVerticalBound + ball.getRadius(mHorizontalBound);
+		final float centerX = ball.getXProportion()*mHorizontalBound;
+		final float centerY = ball.getYProportion()*mVerticalBound;
+		return centerX > xMin && centerX < xMax && centerY > yMin && centerY < yMax;
 	}
 
 	public void deflect(final Deflector deflector, final Ballable ball) {
@@ -56,7 +67,10 @@ public class CollisionManager {
 		return 0;
 	}
 
-
+	public void slowDown(final Ballable ball) {
+		final Pair<Float, Float> velocity = ball.getVelocity();
+		ball.setVelocity(velocity.first/2, velocity.second/2);
+	}
 }
 
 /*
