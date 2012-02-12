@@ -28,4 +28,11 @@ public abstract class RectangularScreenItem extends ScreenItem {
 		return bitmap;
 	}
 
+	public float getWidthProportion() {
+		return widthProportion;
+	}
+	
+	public float getHeightProportion() {
+		return heightProportion;
+	}
 }
