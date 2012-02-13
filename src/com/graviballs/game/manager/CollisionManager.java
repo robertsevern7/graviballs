@@ -5,6 +5,7 @@ import com.graviballs.game.Ballable;
 import com.graviballs.game.CircularScreenItem;
 import com.graviballs.game.Deflector;
 import com.graviballs.game.RectangularScreenItem;
+import com.graviballs.game.Wall;
 
 public class CollisionManager {
 
@@ -70,6 +71,23 @@ public class CollisionManager {
 	public void slowDown(final Ballable ball) {
 		final Pair<Float, Float> velocity = ball.getVelocity();
 		ball.setVelocity(velocity.first/2, velocity.second/2);
+	}
+	
+	public void deflect(final Wall wall, final Ballable ballable) {
+		final float ballX = ballable.getXProportion();
+		final float ballY = ballable.getYProportion();
+		final float wallEast = Math.abs(wall.getXProportion() - ballX);
+		final float wallWest = Math.abs(wall.getXProportion() + wall.getWidthProportion() - ballX);
+		final float wallNorth = Math.abs(wall.getYProportion() - wall.getHeightProportion() - ballY);
+		final float wallSouth = Math.abs(wall.getYProportion() - ballY);
+		
+		final float minDist = Math.min(Math.min(wallEast, wallWest), Math.min(wallNorth, wallSouth));
+		final Pair<Float, Float> vel = ballable.getVelocity();
+		if (minDist == wallEast || minDist == wallWest) {
+			ballable.setVelocity(-vel.first, vel.second);
+		} else {
+			ballable.setVelocity(vel.first, -vel.second);
+		}
 	}
 }
 
