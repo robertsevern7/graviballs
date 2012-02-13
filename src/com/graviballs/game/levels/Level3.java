@@ -3,7 +3,6 @@ package com.graviballs.game.levels;
 
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import com.graviballs.game.Deflector;
 import com.graviballs.game.Goal;
 import com.graviballs.game.MuddyScreenItem;
 
@@ -23,20 +22,27 @@ public class Level3 extends Level {
 	@Override
 	void setUpGoals() {
 		final List<Goal> goals = getGoals();
-		goals.add(new Goal(0, -0.33f));
+		goals.add(new Goal(0, 0.33f));
 
 	}
 
 	@Override
-	void setUpDeflectors() {
-		final List<Deflector> deflectors = getDeflectors();
-		deflectors.add(new Deflector(0, 0.33f));
-	}
+	void setUpDeflectors() {}
 
 	@Override
 	void setUpMud() {
 		final List<MuddyScreenItem> muddyShit = getMud();
-		muddyShit.add(new MuddyScreenItem(.3f, .3f, .1f, .1f));
+		muddyShit.add(new MuddyScreenItem(.2f, .3f, -.3f, .8f));
+		muddyShit.add(new MuddyScreenItem(.2f, .3f, -.3f, .5f));
+		muddyShit.add(new MuddyScreenItem(.2f, .3f, -.28f, .2f));
+		muddyShit.add(new MuddyScreenItem(.2f, .3f, -.28f, -.1f));
+		
+		muddyShit.add(new MuddyScreenItem(.2f, .3f, -.1f, .8f));
+		
+		muddyShit.add(new MuddyScreenItem(.2f, .3f, .1f, .8f));
+		muddyShit.add(new MuddyScreenItem(.2f, .3f, .1f, .5f));
+		muddyShit.add(new MuddyScreenItem(.2f, .3f, .08f, .2f));
+		muddyShit.add(new MuddyScreenItem(.2f, .3f, .08f, -.1f));
 	}
 
 	@Override
