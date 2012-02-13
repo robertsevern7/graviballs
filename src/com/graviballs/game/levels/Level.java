@@ -243,7 +243,7 @@ public abstract class Level extends Observable {
 
 	private void timeToAddNewBall(final long now) {
 		final long scaledNow = now / 1000;
-		if (scaledNow - lastBallRelease > getBallReleaseTiming() * 1000000 || ballBag.isEmpty()) {
+		if (scaledNow - lastBallRelease > getBallReleaseTiming() * 1000000) {
 			ballBag.addBall();
 			lastBallRelease = scaledNow;
 		}
