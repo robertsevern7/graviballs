@@ -1,6 +1,5 @@
 package com.graviballs.game;
 
-import android.graphics.Bitmap;
 import android.util.Pair;
 import com.graviballs.R;
 
@@ -14,8 +13,6 @@ public abstract class Ballable extends CircularScreenItem {
     float initialSpeedY;
     private float currentSpeedX;
     private float currentSpeedY;
-    private Bitmap bitmap;
-    
     final private float SPEED_LIMIT = 1f;
     
 	public Ballable(final float sFriction, final float mPosXProp, final float mPosYProp, final float radius) {
