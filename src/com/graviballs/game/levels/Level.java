@@ -159,11 +159,11 @@ public abstract class Level extends Observable {
 		}
 
 		final Ballable mainBall = ballBag.getMainBall();
-		drawTheBallBag(mainBall);
 
 		processDeflectors(mainBall);
 		processMud(mainBall);
 		drawIncidentals(mainBall);
+		drawTheBallBag(mainBall);
 		renderingManager.renderScreenItem(mainBall);
 
 		if (startTime == null) {
