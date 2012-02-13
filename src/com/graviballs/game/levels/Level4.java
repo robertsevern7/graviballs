@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import com.graviballs.game.Deflector;
 import com.graviballs.game.Goal;
+import com.graviballs.game.Wall;
 
 import java.util.List;
 
@@ -28,13 +29,17 @@ public class Level4 extends Level {
 	@Override
 	void setUpDeflectors() {
 		final List<Deflector> deflectors = getDeflectors();
-		deflectors.add(new Deflector(0.33f, 0.33f));
-		deflectors.add(new Deflector(-0.33f, -0.33f));
+		//deflectors.add(new Deflector(0.33f, 0.33f));
+		//deflectors.add(new Deflector(-0.33f, -0.33f));
 	}
 
 	@Override
-	void setUpMud() {
-
+	void setUpMud() {}
+	
+	@Override
+	void setUpWalls() {
+		final List<Wall> walls = getWalls();
+		walls.add(new Wall(.6f, .6f, .2f, .2f));
 	}
 
 	@Override

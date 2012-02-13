@@ -22,6 +22,7 @@ public abstract class Level extends Observable {
 	private final List<Goal> goals = new ArrayList<Goal>();
 	private final List<Deflector> deflectors = new ArrayList<Deflector>();
 	private final List<MuddyScreenItem> mud = new ArrayList<MuddyScreenItem>();
+	private final List<Wall> walls = new ArrayList<Wall>();
 	private final BallBag ballBag = new BallBag();
 	private final Resources resources;
 	float mMetersToPixelsX = 0;
@@ -53,6 +54,7 @@ public abstract class Level extends Observable {
 		setUpMud();
 		setUpGoals();
 		setUpDeflectors();
+		setUpWalls();
 		this.resources = resources;
 		textPaint.setTextSize(20);
 		textPaint.setStyle(Paint.Style.FILL);
@@ -96,6 +98,12 @@ public abstract class Level extends Observable {
 	public List<MuddyScreenItem> getMud() {
 		return mud;
 	}
+	
+	public List<Wall> getWalls() {
+		return walls;
+	}
+	
+	void setUpWalls() {}
 
 	public List<Pair<Float, Float>> getAttackBallLaunchPoints() {
 		List<Pair<Float, Float>> launchPoints = new ArrayList<Pair<Float, Float>>();
@@ -162,6 +170,7 @@ public abstract class Level extends Observable {
 
 		processDeflectors(mainBall);
 		processMud(mainBall);
+		processWalls(mainBall);
 		drawIncidentals(mainBall);
 		drawTheBallBag(mainBall);
 		renderingManager.renderScreenItem(mainBall);
@@ -202,6 +211,9 @@ public abstract class Level extends Observable {
 		for (MuddyScreenItem aMudPatch : mud) {
 			renderingManager.renderScreenItem(aMudPatch);
 		}
+		for (Wall wall : walls) {
+			renderingManager.renderScreenItem(wall);
+		}
 	}
 
 	private void processDeflectors(final Ballable mainBall) {
@@ -216,6 +228,14 @@ public abstract class Level extends Observable {
 		for (final MuddyScreenItem mud : getMud()) {
 			if (collisionManager.rectangularItemCollision(mud, mainBall)) {
 				collisionManager.slowDown(mainBall);
+			}
+		}
+	}
+	
+	private void processWalls(final Ballable mainBall) {
+		for (final Wall wall : getWalls()) {
+			if (collisionManager.rectangularItemCollision(wall, mainBall)) {
+				collisionManager.deflect(wall, mainBall);
 			}
 		}
 	}
