@@ -4,7 +4,9 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.util.Pair;
 import com.graviballs.game.Deflector;
+import com.graviballs.game.Direction;
 import com.graviballs.game.Goal;
+import com.graviballs.game.Gun;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +74,11 @@ public class Level5 extends Level {
 
 	}
 
+	@Override void setUpGuns() {
+		final List<Gun> guns = getGuns();
+		guns.add(new Gun(Direction.WEST, .4f, .4f));
+	}
+
 	@Override
 	int getTotalBallCount() {
 		return 1;
@@ -98,4 +105,6 @@ public class Level5 extends Level {
 		
 		return launchPoints;
 	}
+
+
 }
