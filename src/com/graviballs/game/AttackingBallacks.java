@@ -43,4 +43,8 @@ public class AttackingBallacks extends Ballable {
 	public int getDrawable() {
 		return R.drawable.spikyball; 
 	}
+
+	@Override public void executeCollision(Ballable ball, double mHorizontalBound, double mVerticalBound) {
+		// finish level
+	}
 }

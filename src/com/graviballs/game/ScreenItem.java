@@ -25,4 +25,6 @@ public abstract class ScreenItem {
 	public void setyProportion(float yProportion) {
 		this.yProportion = yProportion;
 	}
+
+	public abstract void executeCollision(Ballable ball, double mHorizontalBound, double mVerticalBound);
 }

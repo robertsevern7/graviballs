@@ -12,7 +12,11 @@ public class Goal extends CircularScreenItem {
 	public Goal(float mPosXProp, float mPosYProp) {
 		super(mPosXProp, mPosYProp, DEFAULT_RADIUS);
 	}
-	
+
+	@Override public void executeCollision(Ballable ball, double mHorizontalBound, double mVerticalBound) {
+		// TODO pass level
+	}
+
 	public int getDrawable() {
 		return R.drawable.whitehole; 
 	}
