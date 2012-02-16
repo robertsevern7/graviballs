@@ -15,6 +15,7 @@ public class Deflector extends CircularScreenItem {
 		if (ball.isPreviousCollision()) {
 			return;
 		}
+		ball.setPreviousCollision(true);
 		final double xDist = (ball.getXProportion() - getXProportion()) * mHorizontalBound;
 		final double yDist = (ball.getYProportion() - getYProportion()) * mVerticalBound;
 
@@ -38,7 +39,6 @@ public class Deflector extends CircularScreenItem {
 
 		if (realignedVelX <= 0 && xDist > 0 || realignedVelX >= 0 && xDist < 0) {
 			ball.setVelocity(-VELOCITY_MULTIPLIER * newVelX, -VELOCITY_MULTIPLIER * newVelY);
-			ball.setPreviousCollision(true);
 		}
 
 	}
