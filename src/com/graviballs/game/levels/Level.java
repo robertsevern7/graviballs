@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public abstract class Level extends Observable {
@@ -25,6 +26,7 @@ public abstract class Level extends Observable {
 	private final List<MuddyScreenItem> mud = new ArrayList<MuddyScreenItem>();
 	private final List<Wall> walls = new ArrayList<Wall>();
 	private final BallBag ballBag = new BallBag();
+	private AtomicBoolean anyCollisions = new AtomicBoolean();
 	private final Resources resources;
 	float mMetersToPixelsX = 0;
 	float mMetersToPixelsY = 0;
@@ -176,11 +178,7 @@ public abstract class Level extends Observable {
 
 		final Ballable mainBall = ballBag.getMainBall();
 
-		processDeflectors(mainBall);
-		processMud(mainBall);
-		processWalls(mainBall);
-		processGun(mainBall);
-
+		processScreenItems(mainBall);
 		drawIncidentals(mainBall);
 		drawTheBallBag(mainBall);
 		renderingManager.renderScreenItem(mainBall);
@@ -209,7 +207,7 @@ public abstract class Level extends Observable {
 
 	private void drawIncidentals(final Ballable mainBall) {
 		for (final Goal goal : getGoals()) {
-			if (collisionManager.circularScreenItemCollision(goal, mainBall)) {
+			if (collisionManager.screenItemCollision(goal, mainBall)) {
 				passLevel();
 			}
 			renderingManager.renderScreenItem(goal);
@@ -229,49 +227,49 @@ public abstract class Level extends Observable {
 		}
 	}
 
+	private void processScreenItems(final Ballable mainBall) {
+		List<ScreenItem> screenItems = new ArrayList<ScreenItem>();
+		screenItems.addAll(getDeflectors());
+		screenItems.addAll(getGuns());
+		screenItems.addAll(getMud());
+		screenItems.addAll(getWalls());
+
+		anyCollisions.set(false);
+		for (final ScreenItem someScreenItem : screenItems) {
+			if (collisionManager.screenItemCollision(someScreenItem, mainBall) && !anyCollisions.get()) {
+				anyCollisions.getAndSet(true);
+				someScreenItem.executeCollision(mainBall, mHorizontalBound, mVerticalBound);
+			}
+		}
+		if (!anyCollisions.get()) {
+			mainBall.setPreviousCollision(false);
+		}
+	}
+
 	private void processDeflectors(final Ballable mainBall) {
+		anyCollisions.set(false);
 		for (final Deflector deflector : getDeflectors()) {
-			if (collisionManager.circularScreenItemCollision(deflector, mainBall)) {
+			if (collisionManager.screenItemCollision(deflector, mainBall) && !anyCollisions.get()) {
+				anyCollisions.getAndSet(true);
 				deflector.executeCollision(mainBall, mHorizontalBound, mVerticalBound);
 			}
 		}
-	}
-
-	private void processGun(final Ballable mainBall) {
-		for (final Gun gun : getGuns()) {
-			if (collisionManager.rectangularItemCollision(gun, mainBall)) {
-				gun.executeCollision(mainBall, mHorizontalBound, mVerticalBound);
-			}
+		if (!anyCollisions.get()) {
+			mainBall.setPreviousCollision(false);
 		}
 	}
 
-	private void processMud(final Ballable mainBall) {
-		for (final MuddyScreenItem mud : getMud()) {
-			if (collisionManager.rectangularItemCollision(mud, mainBall)) {
-				mud.executeCollision(mainBall, mHorizontalBound, mVerticalBound);
-			}
-		}
-	}
-	
-	private void processWalls(final Ballable mainBall) {
-		for (final Wall wall : getWalls()) {
-			if (collisionManager.rectangularItemCollision(wall, mainBall)) {
-				wall.executeCollision(mainBall, mHorizontalBound, mVerticalBound);
-			}
-		}
-	}
-	
 	private void drawTheBallBag(final Ballable mainBall) {
 		final Iterator<Ballable> ballBagIterator = ballBag.getIterator();
 
 		while (ballBagIterator.hasNext()) {
 			final Ballable ball = ballBagIterator.next();
-			if (collisionManager.circularScreenItemCollision(mainBall, ball)) {
+			if (collisionManager.screenItemCollision(mainBall, ball)) {
 				failLevel();
 			}
 
 			for (final Goal goal : getGoals()) {
-				if (collisionManager.circularScreenItemCollision(goal, ball)) {
+				if (collisionManager.screenItemCollision(goal, ball)) {
 					++totalBallsScored;
 					ballBagIterator.remove();
 				}

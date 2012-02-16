@@ -4,6 +4,7 @@ import android.util.Pair;
 import com.graviballs.R;
 
 public abstract class Ballable extends CircularScreenItem {
+	private boolean previousCollision;
     private float mAccelX;
     private float mAccelY;
     float lastXProportion;
@@ -21,6 +22,7 @@ public abstract class Ballable extends CircularScreenItem {
 		setmOneMinusFriction(1.0f - sFriction + randomFriction);
 		initialSpeedX = 0f;
 		initialSpeedY = 0f;
+		previousCollision = false;
 	}
 
 	public void computePhysics(float sx, float sy, float dT, float dTC) {
@@ -93,5 +95,13 @@ public abstract class Ballable extends CircularScreenItem {
 
 	public int getDrawable() {
 		return R.drawable.ball; 
+	}
+
+	public boolean isPreviousCollision() {
+		return previousCollision;
+	}
+
+	public void setPreviousCollision(boolean previousCollision) {
+		this.previousCollision = previousCollision;
 	}
 }
