@@ -13,7 +13,7 @@ public abstract class Ballable extends CircularScreenItem {
     float initialSpeedY;
     private float currentSpeedX;
     private float currentSpeedY;
-    final private float SPEED_LIMIT = 1f;
+    final private float SPEED_LIMIT = 5f;
     
 	public Ballable(final float sFriction, final float mPosXProp, final float mPosYProp, final float radius) {
 		super(mPosXProp, mPosYProp, radius);
@@ -70,6 +70,10 @@ public abstract class Ballable extends CircularScreenItem {
 	
 	public Pair<Float, Float> getVelocity() {
 		return new Pair<Float, Float>(currentSpeedX, currentSpeedY);
+	}
+
+	public void setVelocity(Pair<Float, Float> velocity) {
+		setVelocity(velocity.first, velocity.second);
 	}
 	
 	public void setVelocity(final float xVel, final float yVel) {

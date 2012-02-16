@@ -20,6 +20,7 @@ import java.util.Observable;
 
 public abstract class Level extends Observable {
 	private final List<Goal> goals = new ArrayList<Goal>();
+	private final List<Gun> guns = new ArrayList<Gun>();
 	private final List<Deflector> deflectors = new ArrayList<Deflector>();
 	private final List<MuddyScreenItem> mud = new ArrayList<MuddyScreenItem>();
 	private final List<Wall> walls = new ArrayList<Wall>();
@@ -53,6 +54,7 @@ public abstract class Level extends Observable {
 		this.currentLevel = currentLevel;
 		setUpMud();
 		setUpGoals();
+		setUpGuns();
 		setUpDeflectors();
 		setUpWalls();
 		this.resources = resources;
@@ -91,6 +93,10 @@ public abstract class Level extends Observable {
 		return goals;
 	}
 
+	List<Gun> getGuns() {
+		return guns;
+	}
+
 	List<Deflector> getDeflectors() {
 		return deflectors;
 	}
@@ -104,6 +110,8 @@ public abstract class Level extends Observable {
 	}
 	
 	void setUpWalls() {}
+
+	void setUpGuns(){}
 
 	public List<Pair<Float, Float>> getAttackBallLaunchPoints() {
 		List<Pair<Float, Float>> launchPoints = new ArrayList<Pair<Float, Float>>();
@@ -171,6 +179,8 @@ public abstract class Level extends Observable {
 		processDeflectors(mainBall);
 		processMud(mainBall);
 		processWalls(mainBall);
+		processGun(mainBall);
+
 		drawIncidentals(mainBall);
 		drawTheBallBag(mainBall);
 		renderingManager.renderScreenItem(mainBall);
@@ -214,12 +224,23 @@ public abstract class Level extends Observable {
 		for (Wall wall : walls) {
 			renderingManager.renderScreenItem(wall);
 		}
+		for (final Gun gun : getGuns()) {
+			renderingManager.renderScreenItem(gun);
+		}
 	}
 
 	private void processDeflectors(final Ballable mainBall) {
 		for (final Deflector deflector : getDeflectors()) {
 			if (collisionManager.circularScreenItemCollision(deflector, mainBall)) {
 				deflector.executeCollision(mainBall, mHorizontalBound, mVerticalBound);
+			}
+		}
+	}
+
+	private void processGun(final Ballable mainBall) {
+		for (final Gun gun : getGuns()) {
+			if (collisionManager.rectangularItemCollision(gun, mainBall)) {
+				gun.executeCollision(mainBall, mHorizontalBound, mVerticalBound);
 			}
 		}
 	}

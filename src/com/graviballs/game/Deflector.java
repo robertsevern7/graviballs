@@ -5,6 +5,8 @@ import com.graviballs.R;
 
 public class Deflector extends CircularScreenItem {
 	private static final float DEFAULT_DEFLECTOR_RADIUS = 0.05f;
+	public static final float VELOCITY_MULTIPLIER = 1.1f;
+
 	public Deflector(float mPosXProp, float mPosYProp) {
 		super(mPosXProp, mPosYProp, DEFAULT_DEFLECTOR_RADIUS);
 	}
@@ -32,7 +34,7 @@ public class Deflector extends CircularScreenItem {
 		final float realignedVelX = (float) (vel.first * Math.cos(tot) + vel.second * Math.sin(tot));
 
 		if (realignedVelX <= 0 && xDist > 0 || realignedVelX >= 0 && xDist < 0) {
-			ball.setVelocity( - 2 * newVelX, - 2 * newVelY);
+			ball.setVelocity( -VELOCITY_MULTIPLIER * newVelX, -VELOCITY_MULTIPLIER * newVelY);
 		}
 	}
 
