@@ -12,19 +12,22 @@ public class Deflector extends CircularScreenItem {
 	}
 
 	public void executeCollision(final Ballable ball, double mHorizontalBound, double mVerticalBound) {
+		if (ball.isPreviousCollision()) {
+			return;
+		}
 		final double xDist = (ball.getXProportion() - getXProportion()) * mHorizontalBound;
 		final double yDist = (ball.getYProportion() - getYProportion()) * mVerticalBound;
 
 		//rotation (cos2a  sin2a)(v_x) = (v_x')
 		//matrix   (-sin2a cos2a)(v_y)   (v_y')
 		//We want v_x' and v_y'
-		final double theta = Math.atan(yDist/xDist) + getPiAddition(xDist);
+		final double theta = Math.atan(yDist / xDist) + getPiAddition(xDist);
 
 		final Pair<Float, Float> vel = ball.getVelocity();
 		//Reverse velocity to get correct direction for angle
 		final float vel_x_dir = -vel.first;
 		final float vel_y_dir = -vel.second;
-		final double psi = Math.atan(vel_y_dir/vel_x_dir) + getPiAddition(vel_x_dir);
+		final double psi = Math.atan(vel_y_dir / vel_x_dir) + getPiAddition(vel_x_dir);
 
 		double tot = psi - theta;
 		// footnote :1
@@ -34,8 +37,10 @@ public class Deflector extends CircularScreenItem {
 		final float realignedVelX = (float) (vel.first * Math.cos(tot) + vel.second * Math.sin(tot));
 
 		if (realignedVelX <= 0 && xDist > 0 || realignedVelX >= 0 && xDist < 0) {
-			ball.setVelocity( -VELOCITY_MULTIPLIER * newVelX, -VELOCITY_MULTIPLIER * newVelY);
+			ball.setVelocity(-VELOCITY_MULTIPLIER * newVelX, -VELOCITY_MULTIPLIER * newVelY);
+			ball.setPreviousCollision(true);
 		}
+
 	}
 
 	private double getPiAddition(final double x) {

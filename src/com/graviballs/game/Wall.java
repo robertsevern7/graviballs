@@ -11,6 +11,9 @@ public class Wall extends RectangularScreenItem {
 
 	@Override
 	public void executeCollision(final Ballable ball, double mHorizontalBound, double mVerticalBound) {
+		if (ball.isPreviousCollision()) {
+			return;
+		}
 		final float ballX = ball.getXProportion();
 		final float ballY = ball.getYProportion();
 		final float wallEast = Math.abs(getXProportion() - ballX);
