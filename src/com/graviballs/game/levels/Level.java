@@ -219,7 +219,7 @@ public abstract class Level extends Observable {
 	private void processDeflectors(final Ballable mainBall) {
 		for (final Deflector deflector : getDeflectors()) {
 			if (collisionManager.circularScreenItemCollision(deflector, mainBall)) {
-				collisionManager.deflect(deflector, mainBall);
+				deflector.executeCollision(mainBall, mHorizontalBound, mVerticalBound);
 			}
 		}
 	}
@@ -227,7 +227,7 @@ public abstract class Level extends Observable {
 	private void processMud(final Ballable mainBall) {
 		for (final MuddyScreenItem mud : getMud()) {
 			if (collisionManager.rectangularItemCollision(mud, mainBall)) {
-				collisionManager.slowDown(mainBall);
+				mud.executeCollision(mainBall, mHorizontalBound, mVerticalBound);
 			}
 		}
 	}
@@ -235,7 +235,7 @@ public abstract class Level extends Observable {
 	private void processWalls(final Ballable mainBall) {
 		for (final Wall wall : getWalls()) {
 			if (collisionManager.rectangularItemCollision(wall, mainBall)) {
-				collisionManager.deflect(wall, mainBall);
+				wall.executeCollision(mainBall, mHorizontalBound, mVerticalBound);
 			}
 		}
 	}
